@@ -7,8 +7,10 @@ const path = require('path');
 const app = express();
 app.use(cors());
 
-// Express ko batane ke liye ki index.html file yahin se load hogi
-app.use(express.static(path.join(__dirname)));
+// Explicitly serve index.html for root route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 const server = http.createServer(app);
 const io = new Server(server, {
