@@ -6,7 +6,6 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
-// Poora HTML aur App code seedha server ke andar rakha gaya hai taaki blank aane ka koi chance na rahe
 app.get('/', (req, res) => {
     res.send(`<!DOCTYPE html>
 <html lang="hi">
@@ -24,9 +23,6 @@ app.get('/', (req, res) => {
         .btn-rider { background: #e63946; }
         .btn-sawari { background: #2a9d8f; }
         .status-card { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #fff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; display: none; box-shadow: 0 4px 18px rgba(0,0,0,0.18); }
-        .custom-pin { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 12px rgba(0,0,0,0.4); }
-        .pin-rider { background-color: #e63946; }
-        .pin-sawari { background-color: #2a9d8f; }
     </style>
 </head>
 <body>
@@ -46,40 +42,32 @@ app.get('/', (req, res) => {
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
-        let myRole = null, selfMarker = null, myLat = null, myLng = null;
+        let myRole = null, selfMarker = null, myLat = 20.5937, myLng = 78.9629;
 
         function handleRoleSelection(role) {
             myRole = role;
             document.getElementById('roleModal').style.display = 'none';
-            startSystem();
-        }
-
-        function startSystem() {
             document.getElementById('statusBar').style.display = 'flex';
-            document.getElementById('statusText.innerText') = myRole.toUpperCase() + ' Mode Active';
-            
-            setTimeout(() => {
-                if (!map) {
-                    map = L.map('map', { zoomControl: false }).setView([20.5937, 78.9629], 5);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-                }
-                map.invalidateSize();
-            }, 300);
+            document.getElementById('statusText').innerText = myRole.toUpperCase() + ' Mode Active';
 
-            if ("geolocation" in navigator) {
-                navigator.geolocation.watchPosition((pos) => {
-                    myLat = pos.coords.latitude;
-                    myLng = pos.coords.longitude;
-                    if (map) {
+            // Initialize Map
+            setTimeout(() => {
+                map = L.map('map').setView([myLat, myLng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.watchPosition((pos) => {
+                        myLat = pos.coords.latitude;
+                        myLng = pos.coords.longitude;
                         map.setView([myLat, myLng], 16);
                         if (selfMarker) {
                             selfMarker.setLatLng([myLat, myLng]);
                         } else {
                             selfMarker = L.marker([myLat, myLng]).addTo(map);
                         }
-                    }
-                }, err => {}, { enableHighAccuracy: true });
-            }
+                    }, err => {}, { enableHighAccuracy: true });
+                }
+            }, 200);
 
             socket = io({ transports: ['websocket'] });
         }
