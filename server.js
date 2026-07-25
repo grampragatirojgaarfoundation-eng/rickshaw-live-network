@@ -30,13 +30,13 @@ function getGlobalCounts() {
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
-    // Naye user ko baaki sabhi active users ki list bhejte hain
     socket.emit('init_users', activeUsers);
+
+    socket.updateSocketId = false;
 
     socket.on('update_location', (data) => {
         if (data && data.id) {
             activeUsers[data.id] = { ...data, socketId: socket.id };
-            // Sabhi users ko live location broadcast karte hain
             io.emit('live_broadcast', { user: activeUsers[data.id], counts: getGlobalCounts() });
         }
     });

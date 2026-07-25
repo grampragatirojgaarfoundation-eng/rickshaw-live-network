@@ -305,14 +305,16 @@
                 }
             });
 
+            // FIXED: Ab message chahe khud bheja ho ya samne wale ne, dono ki screen par barabar dikhega
             socket.on('chat_message', (msg) => {
                 if (activeChatRoom === msg.room) {
+                    let senderLabel = (msg.senderId === myId) ? 'Aap' : msg.senderRole.toUpperCase();
                     if (msg.type === 'audio') {
-                        appendAudioMessage(msg.senderRole.toUpperCase(), msg.audioData);
+                        appendAudioMessage(senderLabel, msg.audioData);
                     } else if (msg.type === 'location') {
-                        appendLocationMessage(msg.senderRole.toUpperCase(), msg.lat, msg.lng);
+                        appendLocationMessage(senderLabel, msg.lat, msg.lng);
                     } else {
-                        appendChatMessage(msg.senderRole.toUpperCase(), msg.text);
+                        appendChatMessage(senderLabel, msg.text);
                     }
                 }
             });
@@ -328,7 +330,6 @@
                         document.getElementById('chatOverlay').style.display = 'none';
                     }, 1500);
 
-                    // FIXED: Chat close hone par active room aur request data ko completely clean kar diya taaki naye requests me dikkat na aaye
                     activeChatRoom = null;
                     incomingReqData = null;
                 }
@@ -398,7 +399,6 @@
 
             if (myRole === 'rider' && user.role === 'sawari' && user.destination) {
                 if (activeRoutes[user.id]) {
-                    // FIXED: Map ko automatic zoom ya pan hone se rokne ke liye setLatLngs rakha hai bina map.setView ke
                     activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
                 } else {
                     activeRoutes[user.id] = L.polyline([[user.lat, user.lng], [user.destination.lat, user.destination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
@@ -427,11 +427,11 @@
             const text = document.getElementById('chatInput').value;
             
             if (text && activeChatRoom) {
-                socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, type: 'text', text: text });
+                socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'text', text: text });
                 document.getElementById('chatInput').value = '';
             } 
             else if (recordedAudioBase64 && activeChatRoom) {
-                socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, type: 'audio', audioData: recordedAudioBase64 });
+                socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'audio', audioData: recordedAudioBase64 });
                 recordedAudioBase64 = null;
                 document.getElementById('voiceBtn').innerText = '🎤 Voice Record';
                 alert('Voice recording bhej di gayi hai!');
@@ -462,7 +462,7 @@
                 alert('Location ya chat active nahi hai!');
                 return;
             }
-            socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
+            socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
         }
 
         function toggleVoiceRecording() {
@@ -504,7 +504,6 @@
             document.getElementById('statusText').innerText = 'Disconnected';
             document.getElementById('chatMessages').innerHTML = '';
             
-            // FIXED: Yahan bhi chat close hone par states ko clear kar diya gaya hai
             activeChatRoom = null;
             incomingReqData = null;
         }
