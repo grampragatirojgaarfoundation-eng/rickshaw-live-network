@@ -7,7 +7,6 @@ const path = require('path');
 const app = express();
 app.use(cors());
 
-// Serve static HTML file from the current directory
 app.use(express.static(__dirname));
 
 app.get('/', (req, res) => {

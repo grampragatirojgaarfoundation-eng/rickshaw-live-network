@@ -32,11 +32,16 @@
         .dest-card { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 12px 18px; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 13px; font-weight: 600; color: #222; display: none; align-items: center; gap: 12px; width: 90%; max-width: 360px; justify-content: space-between; }
         .btn-reset { background: #e63946; color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; }
 
+        /* Chat Overlay with Voice & Location support */
         .chat-overlay { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 360px; background: #fff; z-index: 2000; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); padding: 14px; }
-        .chat-box { max-height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; background: #f9f9f9; }
-        .chat-input-row { display: flex; gap: 6px; }
-        .chat-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 12px; }
-        .chat-send-btn { background: #7c3aed; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .chat-box { max-height: 140px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin-bottom: 8px; font-size: 12px; background: #f9f9f9; }
+        .chat-input-row { display: flex; gap: 4px; margin-bottom: 6px; }
+        .chat-input { flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 11px; }
+        .chat-send-btn { background: #7c3aed; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; }
+        .chat-extra-row { display: flex; gap: 6px; justify-content: space-between; }
+        .extra-btn { flex: 1; background: #2563eb; color: white; border: none; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
+        .extra-btn.recording { background: #dc2626; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         .request-popup { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #fff; padding: 12px 18px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 340px; }
         .req-btn-group { display: flex; gap: 10px; margin-top: 8px; justify-content: center; }
@@ -87,13 +92,17 @@
 
     <div class="chat-overlay" id="chatOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Private SMS Negotiation</span>
+            <span style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Private Chat, Voice & Location</span>
             <button onclick="closeChat()" style="background:none; border:none; font-weight:bold; cursor:pointer; color:#666;">✕ Close</button>
         </div>
         <div class="chat-box" id="chatMessages"></div>
         <div class="chat-input-row">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Kahan jana hai & kitna paisa?">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Message likhein...">
             <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
+        </div>
+        <div class="chat-extra-row">
+            <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 Voice Record</button>
+            <button class="extra-btn" style="background:#059669;" onclick="shareGoogleLocation()">📍 Share Location</button>
         </div>
     </div>
 
@@ -112,6 +121,8 @@
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null;
+        
+        let mediaRecorder = null, audioChunks = [], isRecording = false;
 
         function handleRoleSelection(role) {
             if (role === 'bike_rider' || role === 'bike_sawari') {
@@ -125,7 +136,6 @@
             myRole = role;
             document.getElementById('roleModal').style.display = 'none';
 
-            // Get live GPS location first before initializing map so it centers on self immediately
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((pos) => {
                     myLat = pos.coords.latitude;
@@ -311,7 +321,13 @@
 
             socket.on('chat_message', (msg) => {
                 if (activeChatRoom === msg.room) {
-                    appendChatMessage(msg.senderRole.toUpperCase(), msg.text);
+                    if (msg.type === 'audio') {
+                        appendAudioMessage(msg.senderRole.toUpperCase(), msg.audioUrl);
+                    } else if (msg.type === 'location') {
+                        appendLocationMessage(msg.senderRole.toUpperCase(), msg.lat, msg.lng);
+                    } else {
+                        appendChatMessage(msg.senderRole.toUpperCase(), msg.text);
+                    }
                 }
             });
         }
@@ -369,9 +385,9 @@
                 activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0, false));
             } else {
                 let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>Doori: ' + distance.toFixed(1) + ' KM';
-                // SMS Request Button for Bike Passenger (<= 2km) and Auto Passenger (<= 2km)
-                if ((myRole === 'bike_sawari' && user.role === 'bike_rider' && distance <= 2) || 
-                    (myRole === 'sawari' && user.role === 'rider' && distance <= 2)) {
+                // Updated distance threshold to 2.5 KM for both Bike Passenger and Auto Passenger
+                if (((myRole === 'bike_sawari' && user.role === 'bike_rider') || 
+                     (myRole === 'sawari' && user.role === 'rider')) && distance <= 2.5) {
                     popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
                 }
                 activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false) }).addTo(map)
@@ -389,7 +405,7 @@
 
         function sendSmsRequest(riderId) {
             socket.emit('send_sms_request', { passengerId: myId, riderId: riderId });
-            alert('SMS Request Rider ko bhej di gayi hai!');
+            alert('SMS Request bhej di gayi hai!');
         }
 
         function acceptRequest() {
@@ -407,7 +423,7 @@
         function sendChatMessage() {
             const text = document.getElementById('chatInput').value;
             if (!text || !activeChatRoom) return;
-            socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, text: text });
+            socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, type: 'text', text: text });
             document.getElementById('chatInput').value = '';
         }
 
@@ -415,6 +431,52 @@
             const box = document.getElementById('chatMessages');
             box.innerHTML += '<div><b>' + sender + ':</b> ' + text + '</div>';
             box.scrollTop = box.scrollHeight;
+        }
+
+        function appendAudioMessage(sender, audioUrl) {
+            const box = document.getElementById('chatMessages');
+            box.innerHTML += '<div><b>' + sender + ':</b> <audio controls src="' + audioUrl + '" style="height:25px; vertical-align:middle;"></audio></div>';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function appendLocationMessage(sender, lat, lng) {
+            const box = document.getElementById('chatMessages');
+            let mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+            box.innerHTML += '<div><b>' + sender + ':</b> <a href="' + mapsUrl + '" target="_blank" style="color:#2563eb; font-weight:bold;">📍 Google Map Location View</a></div>';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function shareGoogleLocation() {
+            if (!myLat || !myLng || !activeChatRoom) {
+                alert('Location ya chat active nahi hai!');
+                return;
+            }
+            socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
+        }
+
+        function toggleVoiceRecording() {
+            const btn = document.getElementById('voiceBtn');
+            if (!isRecording) {
+                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, type: 'audio', audioUrl: audioUrl });
+                    };
+                    mediaRecorder.start();
+                    isRecording = true;
+                    btn.innerText = '🔴 Recording... (Stop)';
+                    btn.classList.add('recording');
+                }).catch(err => alert('Microphone permission denied!'));
+            } else {
+                if (mediaRecorder) mediaRecorder.stop();
+                isRecording = false;
+                btn.innerText = '🎤 Voice Record';
+                btn.classList.remove('recording');
+            }
         }
 
         function closeChat() {
