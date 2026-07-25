@@ -18,7 +18,6 @@ app.get('/', (req, res) => {
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         html, body, #map { height: 100%; width: 100%; overflow: hidden; background: #e5e3df; }
 
-        /* Startup Selection Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.88); display: flex; justify-content: center; align-items: center; z-index: 99999; backdrop-filter: blur(8px); }
         .modal-box { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; width: 90%; max-width: 360px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
         .modal-box h2 { font-size: 20px; color: #111; margin-bottom: 6px; font-weight: 800; }
@@ -31,27 +30,22 @@ app.get('/', (req, res) => {
         .btn-bike-sawari { background: #7c3aed; }
         .btn-sawari { background: #2a9d8f; }
 
-        /* Top Live Bar */
         .status-card { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 10px 18px; border-radius: 30px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: none; align-items: center; gap: 8px; }
         .badge { width: 10px; height: 10px; border-radius: 50%; }
 
-        /* Global Traffic Counter */
-        .traffic-counter { position: fixed; top: 14px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 10px; font-weight: 600; display: none; backdrop-filter: blur(4px); }
+        .traffic-counter { position: fixed; top: 14px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 10px; font-weight: 600; display: none; }
 
-        /* Private Chat / SMS Negotiation Box */
         .chat-overlay { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 360px; background: #fff; z-index: 2000; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); padding: 14px; }
         .chat-box { max-height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; background: #f9f9f9; }
         .chat-input-row { display: flex; gap: 6px; }
         .chat-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 12px; }
         .chat-send-btn { background: #7c3aed; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
 
-        /* Request Notification Popup for Riders */
-        .request-popup { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #fff; padding: 12px 18px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 34px0; }
+        .request-popup { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #fff; padding: 12px 18px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 340px; }
         .req-btn-group { display: flex; gap: 10px; margin-top: 8px; justify-content: center; }
         .btn-accept { background: #16a34a; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .btn-reject { background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-        /* Marker Pin Styling */
         .custom-pin { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.4); }
         .pin-self { background-color: #1d4ed8; }
         .pin-auto { background-color: #e63946; }
@@ -86,7 +80,6 @@ app.get('/', (req, res) => {
         🌍 Traffic Active
     </div>
 
-    <!-- Request Notification for Bike Rider -->
     <div class="request-popup" id="requestPopup">
         <p id="reqText" style="font-size: 12px; font-weight: bold; color: #111;"></p>
         <div class="req-btn-group">
@@ -95,7 +88,6 @@ app.get('/', (req, res) => {
         </div>
     </div>
 
-    <!-- Private Chat UI -->
     <div class="chat-overlay" id="chatOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
             <span style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Private SMS Negotiation</span>
@@ -115,12 +107,11 @@ app.get('/', (req, res) => {
 
     <script>
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
-        let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0;
-        let activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
+        let myRole = null, selfMarker = null, myLat = 20.5937, myLng = 78.9629, myHeading = 0;
+        let activeMarkers = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null;
 
         function handleRoleSelection(role) {
-            // Check Time restriction for Bike modes (6 AM to 6 PM)
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
                 if (currentHour < 6 || currentHour >= 18) {
@@ -168,35 +159,44 @@ app.get('/', (req, res) => {
             document.getElementById('trafficCounter').style.display = 'block';
             statusText.innerText = myRole.toUpperCase() + ' Mode Active';
 
-            setTimeout(() => {
-                if (!map) {
-                    map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([20.5937, 78.9629], 5);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-                }
-                map.invalidateSize();
-            }, 300);
+            // Initialize Map immediately
+            map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([myLat, myLng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
             connectSocketServer();
             startLiveGPS();
 
-            let intervalTime = (myRole.includes('bike')) ? 2000 : 3000;
+            let intervalTime = (myRole && myRole.includes('bike')) ? 2000 : 3000;
             setInterval(() => { syncPosition(); }, intervalTime);
         }
 
         function startLiveGPS() {
             if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        myLat = pos.coords.latitude;
+                        myLng = pos.coords.longitude;
+                        myHeading = pos.coords.heading || 0;
+                        if (map) {
+                            map.setView([myLat, myLng], 15);
+                            selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>Aapki Location</b>');
+                        }
+                    },
+                    (err) => { console.log("GPS Error, using default location"); },
+                    { enableHighAccuracy: true, timeout: 5000 }
+                );
+
                 navigator.geolocation.watchPosition(
                     (pos) => {
                         myLat = pos.coords.latitude;
                         myLng = pos.coords.longitude;
                         myHeading = pos.coords.heading || 0;
 
-                        if (map && !isMapCentered) {
-                            map.setView([myLat, myLng], 15);
-                            isMapCentered = true;
-                        }
-
                         if (map) {
+                            if (!isMapCentered) {
+                                map.setView([myLat, myLng], 15);
+                                isMapCentered = true;
+                            }
                             if (selfMarker) {
                                 selfMarker.setLatLng([myLat, myLng]);
                                 selfMarker.setIcon(getIcon(myRole, myHeading, true));
@@ -228,11 +228,10 @@ app.get('/', (req, res) => {
 
             socket.on('remove_user', (id) => { removeUser(id); });
 
-            // SMS Request Handler for Bike Rider
             socket.on('receive_sms_request', (data) => {
                 if (myRole === 'bike_rider') {
                     incomingReqData = data;
-                    document.getElementById('reqText').innerText = '🙋‍♂️ Nayi Bike Sawari Request aayi hai! Distance kareeb hai.';
+                    document.getElementById('reqText').innerText = '🙋‍♂️ Nayi Bike Sawari Request aayi hai!';
                     document.getElementById('requestPopup').style.display = 'block';
                 }
             });
@@ -254,7 +253,7 @@ app.get('/', (req, res) => {
         }
 
         function syncPosition() {
-            if (socket && socket.connected && myLat !== null && myLng !== null) {
+            if (socket && socket.connected && myLat !== null && myLng !== null && myRole !== null) {
                 socket.emit('update_location', { id: myId, role: myRole, lat: myLat, lng: myLng, heading: myHeading });
             }
         }
@@ -268,19 +267,18 @@ app.get('/', (req, res) => {
         }
 
         function processIncomingUser(user) {
-            if (!myLat || !myLng || !map) return;
+            if (!myLat || !myLng || !map || !myRole) return;
             const distance = calculateDistance(myLat, myLng, user.lat, user.lng);
 
-            // Strict Filtering Rules
             let maxRadius = 10;
             if (myRole === 'bike_rider') {
                 if (user.role !== 'bike_sawari') { removeUser(user.id); return; }
-                maxRadius = 5; // Bike Rider sees Bike Passenger within 5km
+                maxRadius = 5;
             } else if (myRole === 'bike_sawari') {
                 if (user.role !== 'bike_rider') { removeUser(user.id); return; }
-                maxRadius = 5; // Bike Passenger sees Bike Rider within 5km
+                maxRadius = 5;
             } else if (myRole === 'rider' || myRole === 'sawari') {
-                if (user.role.includes('bike')) { removeUser(user.id); return; }
+                if (user.role && user.role.includes('bike')) { removeUser(user.id); return; }
             }
 
             if (distance > maxRadius) {
@@ -293,8 +291,6 @@ app.get('/', (req, res) => {
                 activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0, false));
             } else {
                 let markerObj = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false) }).addTo(map);
-                
-                // If I am bike sawari and user is bike rider within 2km, add SMS Request Button
                 let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>Doori: ' + distance.toFixed(1) + ' KM';
                 if (myRole === 'bike_sawari' && user.role === 'bike_rider' && distance <= 2) {
                     popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
