@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rickshaw & Bike Live Network - All India Enterprise</title>
+    <title>Rickshaw & Bike Live Network - Enterprise</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -129,7 +129,7 @@ app.get('/', (req, res) => {
 
     <script>
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
-        let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
+        let myRole = null, selfMarker = null, myLat = 28.6139, myLng = 77.2090, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false, wakeLock = null;
         let incomingReqData = null, activeChatRoom = null;
 
@@ -208,18 +208,16 @@ app.get('/', (req, res) => {
                 document.getElementById('destCard').style.display = 'flex';
             }
 
-            setTimeout(() => {
-                if (!map) {
-                    map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([20.5937, 78.9629], 5);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-                    L.control.zoom({ position: 'bottomright' }).addTo(map);
+            // Immediately load map without waiting for GPS response
+            map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([myLat, myLng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                        map.on('click', setDestination);
-                    }
-                }
-                map.invalidateSize();
-            }, 300);
+            if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                map.on('click', setDestination);
+            }
+
+            selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>Aapki Location (Aap)</b>');
 
             requestWakeLock();
             connectSocketServer();
@@ -253,23 +251,34 @@ app.get('/', (req, res) => {
 
         function startLiveGPS() {
             if ("geolocation" in navigator) {
+                // First get current position instantly
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    myLat = pos.coords.latitude;
+                    myLng = pos.coords.longitude;
+                    myHeading = pos.coords.heading || 0;
+                    if (map) {
+                        map.setView([myLat, myLng], 16);
+                        if (selfMarker) {
+                            selfMarker.setLatLng([myLat, myLng]);
+                        }
+                    }
+                }, (err) => {}, { enableHighAccuracy: true, timeout: 5000 });
+
+                // Then keep watching
                 navigator.geolocation.watchPosition(
                     (pos) => {
                         myLat = pos.coords.latitude;
                         myLng = pos.coords.longitude;
                         myHeading = pos.coords.heading || 0;
 
-                        if (map && !isMapCentered) {
-                            map.setView([myLat, myLng], 16);
-                            isMapCentered = true;
-                        }
-
                         if (map) {
+                            if (!isMapCentered) {
+                                map.setView([myLat, myLng], 16);
+                                isMapCentered = true;
+                            }
                             if (selfMarker) {
                                 selfMarker.setLatLng([myLat, myLng]);
                                 selfMarker.setIcon(getIcon(myRole, myHeading, true));
-                            } else {
-                                selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>Aapki Location (Aap)</b>');
                             }
                         }
 
@@ -345,8 +354,8 @@ app.get('/', (req, res) => {
         function updateTrafficCounts(users) {
             let rCount = 0, sCount = 0;
             for (let id in users) {
-                if (users[id].role === 'rider' || users[id].role === 'bike_riders') rCount++;
-                if (users[id].role === 'sawari' || users[id].role === 'bike_sawaris') sCount++;
+                if (users[id].role === 'rider' || users[id].role === 'bike_rider') rCount++;
+                if (users[id].role === 'sawari' || users[id].role === 'bike_sawari') sCount++;
             }
             document.getElementById('totalRiders').innerText = rCount;
             document.getElementById('totalSawaris').innerText = sCount;
@@ -371,7 +380,6 @@ app.get('/', (req, res) => {
             const distance = calculateDistance(myLat, myLng, user.lat, user.lng);
             let maxRadius = 10;
 
-            // Strict Filtering Rules
             if (myRole === 'bike_rider') {
                 if (user.role !== 'bike_sawari') { removeUser(user.id); return; }
                 maxRadius = 5;
@@ -379,10 +387,10 @@ app.get('/', (req, res) => {
                 if (user.role !== 'bike_rider') { removeUser(user.id); return; }
                 maxRadius = 5;
             } else if (myRole === 'rider') {
-                if (user.role.includes('bike')) { removeUser(user.id); return; }
+                if (user.role && user.role.includes('bike')) { removeUser(user.id); return; }
                 maxRadius = 25;
             } else if (myRole === 'sawari') {
-                if (user.role === 'sawari' || user.role.includes('bike')) { removeUser(user.id); return; }
+                if (user.role === 'sawari' || (user.role && user.role.includes('bike'))) { removeUser(user.id); return; }
                 maxRadius = 10;
             }
 
