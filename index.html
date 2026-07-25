@@ -109,7 +109,7 @@
 
     <script>
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
-        let myRole = null, selfMarker = null, myLat = 20.5937, myLng = 78.9629, myHeading = 0, myDestination = null;
+        let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null;
 
@@ -124,7 +124,23 @@
 
             myRole = role;
             document.getElementById('roleModal').style.display = 'none';
-            initMapAndSystem();
+
+            // Get live GPS location first before initializing map so it centers on self immediately
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    myLat = pos.coords.latitude;
+                    myLng = pos.coords.longitude;
+                    myHeading = pos.coords.heading || 0;
+                    initMapAndSystem();
+                }, (err) => {
+                    alert('Location access zaroori hai! Default location par set kiya ja raha hai.');
+                    myLat = 20.5937; myLng = 78.9629;
+                    initMapAndSystem();
+                }, { enableHighAccuracy: true, timeout: 10000 });
+            } else {
+                myLat = 20.5937; myLng = 78.9629;
+                initMapAndSystem();
+            }
         }
 
         function getIcon(role, heading = 0, isSelf = false) {
@@ -173,7 +189,7 @@
             }
 
             if (!map) {
-                map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([myLat, myLng], 14);
+                map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([myLat, myLng], 16);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
                 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -216,16 +232,6 @@
 
         function startLiveGPS() {
             if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    myLat = pos.coords.latitude;
-                    myLng = pos.coords.longitude;
-                    myHeading = pos.coords.heading || 0;
-                    if (map) {
-                        map.setView([myLat, myLng], 16);
-                        if (selfMarker) selfMarker.setLatLng([myLat, myLng]);
-                    }
-                }, (err) => {}, { enableHighAccuracy: true, timeout: 5000 });
-
                 navigator.geolocation.watchPosition(
                     (pos) => {
                         myLat = pos.coords.latitude;
@@ -287,9 +293,9 @@
             });
 
             socket.on('receive_sms_request', (data) => {
-                if (myRole === 'bike_rider') {
+                if (myRole === 'bike_rider' || myRole === 'rider') {
                     incomingReqData = data;
-                    document.getElementById('reqText').innerText = '🙋‍♂️ Nayi Bike Sawari Request aayi hai!';
+                    document.getElementById('reqText').innerText = '🙋‍♂️ Nayi Sawari Request aayi hai!';
                     document.getElementById('requestPopup').style.display = 'block';
                 }
             });
@@ -363,7 +369,9 @@
                 activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0, false));
             } else {
                 let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>Doori: ' + distance.toFixed(1) + ' KM';
-                if (myRole === 'bike_sawari' && user.role === 'bike_rider' && distance <= 2) {
+                // SMS Request Button for Bike Passenger (<= 2km) and Auto Passenger (<= 2km)
+                if ((myRole === 'bike_sawari' && user.role === 'bike_rider' && distance <= 2) || 
+                    (myRole === 'sawari' && user.role === 'rider' && distance <= 2)) {
                     popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
                 }
                 activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false) }).addTo(map)
