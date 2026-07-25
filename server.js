@@ -56,6 +56,12 @@ io.on('connection', (socket) => {
         io.emit('chat_message', msg);
     });
 
+    socket.on('close_chat', (data) => {
+        if (data && data.room) {
+            io.emit('chat_closed', data);
+        }
+    });
+
     socket.on('disconnect', () => {
         for (let id in activeUsers) {
             if (activeUsers[id].socketId === socket.id) {
