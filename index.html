@@ -305,7 +305,7 @@
                 }
             });
 
-            // FIXED: Ab message chahe khud bheja ho ya samne wale ne, dono ki screen par barabar dikhega
+            // FIXED: Server se aane wale messages ko cleanly dono taraf display karna
             socket.on('chat_message', (msg) => {
                 if (activeChatRoom === msg.room) {
                     let senderLabel = (msg.senderId === myId) ? 'Aap' : msg.senderRole.toUpperCase();

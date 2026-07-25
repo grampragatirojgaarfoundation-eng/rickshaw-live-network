@@ -32,8 +32,6 @@ io.on('connection', (socket) => {
 
     socket.emit('init_users', activeUsers);
 
-    socket.updateSocketId = false;
-
     socket.on('update_location', (data) => {
         if (data && data.id) {
             activeUsers[data.id] = { ...data, socketId: socket.id };
@@ -49,10 +47,18 @@ io.on('connection', (socket) => {
 
     socket.on('accept_sms_request', (data) => {
         const roomName = 'room_' + data.passengerId + '_' + data.riderId;
+        
+        // Passenger aur Rider dono ko is room mein join karwayein
         socket.join(roomName);
+        if (activeUsers[data.riderId]) {
+            const riderSocket = io.sockets.sockets.get(activeUsers[data.riderId].socketId);
+            if (riderSocket) {
+                riderSocket.join(roomName);
+            }
+        }
+
         if (activeUsers[data.passengerId] && activeUsers[data.riderId]) {
-            io.to(activeUsers[data.passengerId].socketId).emit('request_accepted', { ...data, room: roomName });
-            io.to(activeUsers[data.riderId].socketId).emit('request_accepted', { ...data, room: roomName });
+            io.to(roomName).emit('request_accepted', { ...data, room: roomName });
         }
     });
 
