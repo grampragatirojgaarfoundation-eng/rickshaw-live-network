@@ -42,8 +42,9 @@ app.get('/', (req, res) => {
         .dest-card { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 12px 18px; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 13px; font-weight: 600; color: #222; display: none; align-items: center; gap: 12px; width: 90%; max-width: 360px; justify-content: space-between; }
         .btn-reset { background: #e63946; color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; }
 
-        /* Marker Pin Styling with Heading Arrow */
+        /* Marker Pin Styling (Self = Blue, Rider = Red, Sawari = Green) */
         .custom-pin { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 12px rgba(0,0,0,0.4); }
+        .pin-self { background-color: #1d4ed8; }
         .pin-rider { background-color: #e63946; }
         .pin-sawari { background-color: #2a9d8f; }
         .direction-arrow { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 16px solid #ffffff; transition: transform 0.15s linear; }
@@ -94,16 +95,24 @@ app.get('/', (req, res) => {
             startSystem();
         }
 
-        function getIcon(role, heading = 0) {
-            const isRider = role === 'rider';
-            const bgClass = isRider ? 'pin-rider' : 'pin-sawari';
-            const innerElement = isRider 
-                ? \`<div class="direction-arrow" style="transform: rotate(\${heading}deg);"></div>\` 
-                : \`<div class="sawari-inner"></div>\`;
+        function getIcon(role, heading = 0, isSelf = false) {
+            let bgClass = '';
+            let innerElement = '';
+
+            if (isSelf) {
+                bgClass = 'pin-self'; // Khud ki location hamesha Blue
+                innerElement = '<div class="direction-arrow" style="transform: rotate(' + heading + 'deg);"></div>';
+            } else if (role === 'rider') {
+                bgClass = 'pin-rider'; // Doosre Riders Red
+                innerElement = '<div class="direction-arrow" style="transform: rotate(' + heading + 'deg);"></div>';
+            } else {
+                bgClass = 'pin-sawari'; // Passengers Green
+                innerElement = '<div class="sawari-inner"></div>';
+            }
 
             return L.divIcon({
                 className: '',
-                html: \`<div class="custom-pin \${bgClass}">\${innerElement}</div>\`,
+                html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>',
                 iconSize: [34, 34],
                 iconAnchor: [17, 17]
             });
@@ -194,9 +203,9 @@ app.get('/', (req, res) => {
                         if (map) {
                             if (selfMarker) {
                                 selfMarker.setLatLng([myLat, myLng]);
-                                selfMarker.setIcon(getIcon(myRole, myHeading));
+                                selfMarker.setIcon(getIcon(myRole, myHeading, true)); // true matlab khud ka marker (Blue)
                             } else {
-                                selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading) }).addTo(map).bindPopup('<b>Aapki Location</b>');
+                                selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>Aapki Location (Aap)</b>');
                             }
                         }
 
@@ -220,7 +229,6 @@ app.get('/', (req, res) => {
                 syncPosition(); 
             });
 
-            // Receive all active users list from server for traffic counter & rendering
             socket.on('init_users', (users) => {
                 updateTrafficCounts(users);
                 for (let id in users) {
@@ -288,9 +296,9 @@ app.get('/', (req, res) => {
 
             if (activeMarkers[user.id]) {
                 activeMarkers[user.id].setLatLng([user.lat, user.lng]);
-                activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0));
+                activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0, false));
             } else {
-                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0) }).addTo(map)
+                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false) }).addTo(map)
                     .bindPopup('<b>' + user.role.toUpperCase() + '</b><br>Doori: ' + distance.toFixed(1) + ' KM');
             }
 
@@ -304,7 +312,7 @@ app.get('/', (req, res) => {
         }
 
         function removeUser(id) {
-            if (activeMarkers[id]) { map.openPopup ? map.removeLayer(activeMarkers[id]) : ''; delete activeMarkers[id]; }
+            if (activeMarkers[id]) { map.removeLayer(activeMarkers[id]); delete activeMarkers[id]; }
             if (activeRoutes[id]) { map.removeLayer(activeRoutes[id]); delete activeRoutes[id]; }
         }
     </script>
@@ -328,13 +336,11 @@ function getGlobalCounts() {
 }
 
 io.on('connection', (socket) => {
-    // Send existing active users and live traffic counts on connect
     socket.emit('init_users', activeUsers);
 
     socket.on('update_location', (data) => {
         if (data && data.id) {
             activeUsers[data.id] = { ...data, socketId: socket.id };
-            // Broadcast user location along with updated global counts
             io.emit('live_broadcast', { user: activeUsers[data.id], counts: getGlobalCounts() });
         }
     });
