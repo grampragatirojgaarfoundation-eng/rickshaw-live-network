@@ -3,20 +3,19 @@ const http = require('http');
 const os = require('os');
 const express = require('express');
 const { Server } = require('socket.io');
-const redisAdapter = require('socket.io-redis');
 const cors = require('cors');
 const path = require('path');
 
 const numCPUs = os.cpus().length;
 
-// 1. Cluster Module: Server ke saare CPU cores ka use karne ke liye
+// Yeh code automatic aapke server ke saare CPU cores (jaise 2, 4, ya 8 vCPU) ka istemal karega
 if (cluster.isMaster && process.env.NODE_ENV === 'production' && numCPUs > 1) {
     console.log(`Master process ${process.pid} is running`);
     for (let i = 0; i < numCPUs; i++) {
         cluster.fork();
     }
     cluster.on('exit', (worker, code, signal) => {
-        console.log(`Worker process ${worker.process.pid} died. Restarting...`);
+        console.log(`Worker process ${worker.process.pid} died. Starting a new one...`);
         cluster.fork();
     });
 } else {
@@ -30,13 +29,6 @@ if (cluster.isMaster && process.env.NODE_ENV === 'production' && numCPUs > 1) {
 
     const server = http.createServer(app);
     const io = new Server(server, { cors: { origin: "*" } });
-
-    // 2. Redis Adapter: Multiple CPU cores ke beech live traffic sync ke liye
-    try {
-        io.adapter(redisAdapter({ host: 'localhost', port: 6379 }));
-    } catch (e) {
-        console.log("Redis adapter warning, running on single node memory.");
-    }
 
     let activeUsers = {};
 
