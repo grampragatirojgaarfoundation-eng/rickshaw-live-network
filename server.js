@@ -107,7 +107,7 @@ app.get('/', (req, res) => {
 
     <script>
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
-        let myRole = null, selfMarker = null, myLat = 20.5937, myLng = 78.9629, myHeading = 0;
+        let myRole = null, selfMarker = null, myLat = 28.6139, myLng = 77.2090, myHeading = 0; // Default Delhi Coordinates
         let activeMarkers = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null;
 
@@ -159,9 +159,11 @@ app.get('/', (req, res) => {
             document.getElementById('trafficCounter').style.display = 'block';
             statusText.innerText = myRole.toUpperCase() + ' Mode Active';
 
-            // Initialize Map immediately
+            // 1. Map open immediately with default/fallback location
             map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([myLat, myLng], 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+            selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>Aapki Location</b>');
 
             connectSocketServer();
             startLiveGPS();
@@ -172,20 +174,6 @@ app.get('/', (req, res) => {
 
         function startLiveGPS() {
             if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        myLat = pos.coords.latitude;
-                        myLng = pos.coords.longitude;
-                        myHeading = pos.coords.heading || 0;
-                        if (map) {
-                            map.setView([myLat, myLng], 15);
-                            selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>Aapki Location</b>');
-                        }
-                    },
-                    (err) => { console.log("GPS Error, using default location"); },
-                    { enableHighAccuracy: true, timeout: 5000 }
-                );
-
                 navigator.geolocation.watchPosition(
                     (pos) => {
                         myLat = pos.coords.latitude;
@@ -200,14 +188,12 @@ app.get('/', (req, res) => {
                             if (selfMarker) {
                                 selfMarker.setLatLng([myLat, myLng]);
                                 selfMarker.setIcon(getIcon(myRole, myHeading, true));
-                            } else {
-                                selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>Aapki Location</b>');
                             }
                         }
                         syncPosition();
                     },
-                    (err) => {},
-                    { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+                    (err) => { console.log("GPS warning: using fallback location"); },
+                    { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
                 );
             }
         }
