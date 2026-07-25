@@ -8,7 +8,6 @@ const path = require('path');
 
 const numCPUs = os.cpus().length;
 
-// Yeh code automatic aapke server ke saare CPU cores (jaise 2, 4, ya 8 vCPU) ka istemal karega
 if (cluster.isMaster && process.env.NODE_ENV === 'production' && numCPUs > 1) {
     console.log(`Master process ${process.pid} is running`);
     for (let i = 0; i < numCPUs; i++) {
