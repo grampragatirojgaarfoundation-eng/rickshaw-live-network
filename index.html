@@ -124,9 +124,8 @@
         function handleRoleSelection(role) {
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
-                // Updated time period: 6 AM to 7 PM (19:00)
                 if (currentHour < 6 || currentHour >= 19) {
-                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM tak hi active rehta hai!');
+                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM तक hi active rehta hai!');
                     return;
                 }
             }
@@ -296,10 +295,13 @@
             socket.on('request_accepted', (data) => {
                 if (myId === data.passengerId || myId === data.riderId) {
                     activeChatRoom = data.room;
+                    
+                    // Clear previous chat history completely when a new connection is established
+                    document.getElementById('chatMessages').innerHTML = '';
+                    
                     document.getElementById('requestPopup').style.display = 'none';
                     document.getElementById('chatOverlay').style.display = 'block';
                     
-                    // Show Green Connected Dot only upon request acceptance
                     document.getElementById('statusDot').className = 'badge badge-green';
                     document.getElementById('statusText').innerText = 'Connected';
                     appendChatMessage('System', 'Aapas mein connect ho gaye hain. Ab chat shuru karein.');
@@ -320,10 +322,16 @@
 
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
-                    // Show Red Disconnected Dot when chat is closed
                     document.getElementById('statusDot').className = 'badge badge-red';
                     document.getElementById('statusText').innerText = 'Disconnected';
                     appendChatMessage('System', 'Samne wale ne conversation band kar di hai.');
+                    
+                    // Completely clear chat box history on disconnect
+                    setTimeout(() => {
+                        document.getElementById('chatMessages').innerHTML = '';
+                        document.getElementById('chatOverlay').style.display = 'none';
+                    }, 1500);
+
                     activeChatRoom = null;
                 }
             });
@@ -471,7 +479,7 @@
                         const reader = new FileReader();
                         reader.readAsDataURL(audioBlob);
                         reader.onloadend = function() {
-                            recordedAudioBase64 = reader.result; // Base64 safe format
+                            recordedAudioBase64 = reader.result;
                             btn.innerText = '✅ Recorded (Send dabaein)';
                         };
                     };
@@ -495,6 +503,9 @@
             document.getElementById('chatOverlay').style.display = 'none';
             document.getElementById('statusDot').className = 'badge badge-red';
             document.getElementById('statusText').innerText = 'Disconnected';
+            
+            // Clear chat box immediately when closed by self
+            document.getElementById('chatMessages').innerHTML = '';
             activeChatRoom = null;
         }
 

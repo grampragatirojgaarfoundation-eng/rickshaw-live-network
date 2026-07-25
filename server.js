@@ -52,6 +52,7 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Messages are relayed live without server-side saving/storage
     socket.on('chat_message', (msg) => {
         io.emit('chat_message', msg);
     });
