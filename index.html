@@ -284,7 +284,6 @@
                 }
             });
 
-            // FIXED: Ab zoom in ya zoom out hone par bhi request direct rider ke screen par dikhegi
             socket.on('receive_sms_request', (data) => {
                 if (myRole === 'bike_rider' || myRole === 'rider') {
                     incomingReqData = data;
@@ -329,7 +328,9 @@
                         document.getElementById('chatOverlay').style.display = 'none';
                     }, 1500);
 
+                    // FIXED: Chat close hone par active room aur request data ko completely clean kar diya taaki naye requests me dikkat na aaye
                     activeChatRoom = null;
+                    incomingReqData = null;
                 }
             });
         }
@@ -397,6 +398,7 @@
 
             if (myRole === 'rider' && user.role === 'sawari' && user.destination) {
                 if (activeRoutes[user.id]) {
+                    // FIXED: Map ko automatic zoom ya pan hone se rokne ke liye setLatLngs rakha hai bina map.setView ke
                     activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
                 } else {
                     activeRoutes[user.id] = L.polyline([[user.lat, user.lng], [user.destination.lat, user.destination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
@@ -501,7 +503,10 @@
             document.getElementById('statusDot').className = 'badge badge-red';
             document.getElementById('statusText').innerText = 'Disconnected';
             document.getElementById('chatMessages').innerHTML = '';
+            
+            // FIXED: Yahan bhi chat close hone par states ko clear kar diya gaya hai
             activeChatRoom = null;
+            incomingReqData = null;
         }
 
         function removeUser(id) {
