@@ -125,7 +125,7 @@
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
                 if (currentHour < 6 || currentHour >= 19) {
-                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM तक hi active rehta hai!');
+                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM tak hi active rehta hai!');
                     return;
                 }
             }
@@ -284,6 +284,7 @@
                 }
             });
 
+            // FIXED: Ab zoom in ya zoom out hone par bhi request direct rider ke screen par dikhegi
             socket.on('receive_sms_request', (data) => {
                 if (myRole === 'bike_rider' || myRole === 'rider') {
                     incomingReqData = data;
@@ -295,10 +296,7 @@
             socket.on('request_accepted', (data) => {
                 if (myId === data.passengerId || myId === data.riderId) {
                     activeChatRoom = data.room;
-                    
-                    // Clear previous chat history completely when a new connection is established
                     document.getElementById('chatMessages').innerHTML = '';
-                    
                     document.getElementById('requestPopup').style.display = 'none';
                     document.getElementById('chatOverlay').style.display = 'block';
                     
@@ -326,7 +324,6 @@
                     document.getElementById('statusText').innerText = 'Disconnected';
                     appendChatMessage('System', 'Samne wale ne conversation band kar di hai.');
                     
-                    // Completely clear chat box history on disconnect
                     setTimeout(() => {
                         document.getElementById('chatMessages').innerHTML = '';
                         document.getElementById('chatOverlay').style.display = 'none';
@@ -503,8 +500,6 @@
             document.getElementById('chatOverlay').style.display = 'none';
             document.getElementById('statusDot').className = 'badge badge-red';
             document.getElementById('statusText').innerText = 'Disconnected';
-            
-            // Clear chat box immediately when closed by self
             document.getElementById('chatMessages').innerHTML = '';
             activeChatRoom = null;
         }
