@@ -18,20 +18,18 @@ app.get('/', (req, res) => {
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         html, body, #map { height: 100%; width: 100%; overflow: hidden; background: #e5e3df; }
 
-        /* Startup Selection Modal */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.88); display: flex; justify-content: center; align-items: center; z-index: 99999; backdrop-filter: blur(8px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 99999; }
         .modal-box { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; width: 90%; max-width: 360px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
         .modal-box h2 { font-size: 20px; color: #111; margin-bottom: 6px; font-weight: 800; }
         .modal-box p { font-size: 12px; color: #666; margin-bottom: 18px; line-height: 1.4; }
         .btn-group { display: flex; flex-direction: column; gap: 10px; }
         .role-btn { padding: 14px; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; color: #ffffff; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .role-btn:active { transform: scale(0.97); }
-        .btn-rider { background: #e63946; box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3); }
-        .btn-sawari { background: #2a9d8f; box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3); }
-        .btn-bike-rider { background: #d97706; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3); }
-        .btn-bike-sawari { background: #7c3aed; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); }
+        .btn-rider { background: #e63946; }
+        .btn-sawari { background: #2a9d8f; }
+        .btn-bike-rider { background: #d97706; }
+        .btn-bike-sawari { background: #7c3aed; }
 
-        /* Top Live Bar */
         .status-card { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: none; align-items: center; gap: 10px; }
         .badge { width: 12px; height: 12px; border-radius: 50%; }
         .badge-rider { background: #e63946; }
@@ -39,34 +37,29 @@ app.get('/', (req, res) => {
         .badge-bike-rider { background: #d97706; }
         .badge-bike-sawari { background: #7c3aed; }
 
-        /* Global Traffic Counter (Corner Widget) */
-        .traffic-counter { position: fixed; top: 14px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .traffic-counter { position: fixed; top: 14px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; }
 
-        /* Destination Control Card */
         .dest-card { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 12px 18px; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 13px; font-weight: 600; color: #222; display: none; align-items: center; gap: 12px; width: 90%; max-width: 360px; justify-content: space-between; }
         .btn-reset { background: #e63946; color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; }
 
-        /* Private Chat / SMS Negotiation Box */
         .chat-overlay { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 360px; background: #fff; z-index: 2000; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); padding: 14px; }
         .chat-box { max-height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; background: #f9f9f9; }
         .chat-input-row { display: flex; gap: 6px; }
         .chat-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 12px; }
         .chat-send-btn { background: #7c3aed; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
 
-        /* Request Notification Popup for Bike Riders */
         .request-popup { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #fff; padding: 12px 18px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 340px; }
         .req-btn-group { display: flex; gap: 10px; margin-top: 8px; justify-content: center; }
         .btn-accept { background: #16a34a; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .btn-reject { background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-        /* Marker Pin Styling */
         .custom-pin { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 12px rgba(0,0,0,0.4); }
         .pin-self { background-color: #1d4ed8; }
         .pin-rider { background-color: #e63946; }
         .pin-sawari { background-color: #2a9d8f; }
         .pin-bike-rider { background-color: #d97706; }
         .pin-bike-sawari { background-color: #7c3aed; }
-        .direction-arrow { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 16px solid #ffffff; transition: transform 0.15s linear; }
+        .direction-arrow { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 16px solid #ffffff; }
         .sawari-inner { width: 12px; height: 12px; background: #ffffff; border-radius: 50%; }
     </style>
 </head>
@@ -90,12 +83,10 @@ app.get('/', (req, res) => {
         <span id="statusText">Connecting...</span>
     </div>
 
-    <!-- All India Traffic Counter Widget -->
     <div class="traffic-counter" id="trafficCounter">
         🌍 Riders: <span id="totalRiders">0</span> | Sawari: <span id="totalSawaris">0</span>
     </div>
 
-    <!-- Request Notification for Bike Rider -->
     <div class="request-popup" id="requestPopup">
         <p id="reqText" style="font-size: 12px; font-weight: bold; color: #111;"></p>
         <div class="req-btn-group">
@@ -104,7 +95,6 @@ app.get('/', (req, res) => {
         </div>
     </div>
 
-    <!-- Private Chat UI -->
     <div class="chat-overlay" id="chatOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
             <span style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Private SMS Negotiation</span>
@@ -129,9 +119,16 @@ app.get('/', (req, res) => {
 
     <script>
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
-        let myRole = null, selfMarker = null, myLat = 28.6139, myLng = 77.2090, myHeading = 0, myDestination = null;
-        let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false, wakeLock = null;
+        let myRole = null, selfMarker = null, myLat = 20.5937, myLng = 78.9629, myHeading = 0, myDestination = null;
+        let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null;
+
+        // Initialize Map immediately on page load in background
+        window.onload = function() {
+            map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([myLat, myLng], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+        };
 
         function handleRoleSelection(role) {
             if (role === 'bike_rider' || role === 'bike_sawari') {
@@ -144,6 +141,12 @@ app.get('/', (req, res) => {
 
             myRole = role;
             document.getElementById('roleModal').style.display = 'none';
+            
+            // Fix map size after modal hide
+            if (map) {
+                setTimeout(() => { map.invalidateSize(); }, 200);
+            }
+
             startSystem();
         }
 
@@ -176,14 +179,6 @@ app.get('/', (req, res) => {
             });
         }
 
-        async function requestWakeLock() {
-            try {
-                if ('wakeLock' in navigator) {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                }
-            } catch (err) {}
-        }
-
         function startSystem() {
             const statusBar = document.getElementById('statusBar');
             const statusDot = document.getElementById('statusDot');
@@ -208,22 +203,16 @@ app.get('/', (req, res) => {
                 document.getElementById('destCard').style.display = 'flex';
             }
 
-            // Immediately load map without waiting for GPS response
-            map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([myLat, myLng], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-            L.control.zoom({ position: 'bottomright' }).addTo(map);
-
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 map.on('click', setDestination);
             }
 
             selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>Aapki Location (Aap)</b>');
 
-            requestWakeLock();
             connectSocketServer();
             startLiveGPS();
 
-            const syncIntervalTime = (myRole === 'rider' || myRole === 'bike_rider') ? 2000 : 3000;
+            let syncIntervalTime = (myRole === 'rider' || myRole === 'bike_rider') ? 2000 : 3000;
             setInterval(() => { syncPosition(); }, syncIntervalTime);
         }
 
@@ -251,20 +240,16 @@ app.get('/', (req, res) => {
 
         function startLiveGPS() {
             if ("geolocation" in navigator) {
-                // First get current position instantly
                 navigator.geolocation.getCurrentPosition((pos) => {
                     myLat = pos.coords.latitude;
                     myLng = pos.coords.longitude;
                     myHeading = pos.coords.heading || 0;
                     if (map) {
                         map.setView([myLat, myLng], 16);
-                        if (selfMarker) {
-                            selfMarker.setLatLng([myLat, myLng]);
-                        }
+                        if (selfMarker) selfMarker.setLatLng([myLat, myLng]);
                     }
                 }, (err) => {}, { enableHighAccuracy: true, timeout: 5000 });
 
-                // Then keep watching
                 navigator.geolocation.watchPosition(
                     (pos) => {
                         myLat = pos.coords.latitude;
@@ -298,9 +283,7 @@ app.get('/', (req, res) => {
             if (socket) return;
             socket = io({ transports: ['websocket'], reconnection: true });
 
-            socket.on('connect', () => { 
-                syncPosition(); 
-            });
+            socket.on('connect', () => { syncPosition(); });
 
             socket.on('init_users', (users) => {
                 updateTrafficCounts(users);
@@ -314,16 +297,16 @@ app.get('/', (req, res) => {
                     processIncomingUser(data.user);
                 }
                 if (data && data.counts) {
-                    document.getElementById('totalRiders').innerText = (data.counts.riders || 0) + (data.counts.bike_riders || 0);
-                    document.getElementById('totalSawaris').innerText = (data.counts.sawaris || 0) + (data.counts.bike_sawaris || 0);
+                    document.getElementById('totalRiders').innerText = (data.counts.riders || 0);
+                    document.getElementById('totalSawaris').innerText = (data.counts.sawaris || 0);
                 }
             });
 
             socket.on('remove_user', (data) => { 
                 removeUser(data.id);
                 if (data && data.counts) {
-                    document.getElementById('totalRiders').innerText = (data.counts.riders || 0) + (data.counts.bike_riders || 0);
-                    document.getElementById('totalSawaris').innerText = (data.counts.sawaris || 0) + (data.counts.bike_sawaris || 0);
+                    document.getElementById('totalRiders').innerText = (data.counts.riders || 0);
+                    document.getElementById('totalSawaris').innerText = (data.counts.sawaris || 0);
                 }
             });
 
