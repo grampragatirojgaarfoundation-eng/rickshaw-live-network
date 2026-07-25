@@ -29,16 +29,14 @@ app.get('/', (req, res) => {
         .btn-rider { background: #e63946; box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3); }
         .btn-sawari { background: #2a9d8f; box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3); }
 
-        /* Payment Modal */
-        .pay-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; justify-content: center; align-items: center; }
-        .pay-box { background: #fff; padding: 20px; border-radius: 16px; width: 90%; max-width: 320px; text-align: center; }
-        .pay-btn-close { background: #e63946; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-
         /* Top Live Bar */
         .status-card { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: none; align-items: center; gap: 10px; }
         .badge { width: 12px; height: 12px; border-radius: 50%; }
         .badge-rider { background: #e63946; }
         .badge-sawari { background: #2a9d8f; }
+
+        /* Global Traffic Counter (Corner Widget) */
+        .traffic-counter { position: fixed; top: 14px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
         /* Destination Control Card */
         .dest-card { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 12px 18px; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 13px; font-weight: 600; color: #222; display: none; align-items: center; gap: 12px; width: 90%; max-width: 360px; justify-content: space-between; }
@@ -65,18 +63,14 @@ app.get('/', (req, res) => {
         </div>
     </div>
 
-    <div class="pay-modal" id="paymentModal">
-        <div class="pay-box">
-            <h3 style="margin-bottom: 4px; color: #111; font-size: 18px;">Rider Pass (₹5)</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">UPI App se scan karke ₹5 pay karein</p>
-            <p style="font-size: 12px; color: #444; margin-top: 6px; font-weight: bold; background:#f1f1f1; padding:10px; border-radius:8px;">UPI ID: 8840176141@ptyes</p>
-            <button class="pay-btn-close" onclick="closePaymentAndStart()">Payment Ho Gaya (Start)</button>
-        </div>
-    </div>
-
     <div class="status-card" id="statusBar">
         <div id="statusDot" class="badge"></div>
         <span id="statusText">Connecting...</span>
+    </div>
+
+    <!-- All India Traffic Counter Widget -->
+    <div class="traffic-counter" id="trafficCounter">
+        🌍 Riders: <span id="totalRiders">0</span> | Sawari: <span id="totalSawaris">0</span>
     </div>
 
     <div class="dest-card" id="destCard">
@@ -96,23 +90,7 @@ app.get('/', (req, res) => {
 
         function handleRoleSelection(role) {
             myRole = role;
-            if (myRole === 'rider') {
-                const lastPaid = localStorage.getItem('rider_paid_time');
-                const now = new Date().getTime();
-                // 15 Hours Validation (15 * 60 * 60 * 1000 ms)
-                if (!lastPaid || (now - lastPaid > 15 * 60 * 60 * 1000)) {
-                    document.getElementById('roleModal').style.display = 'none';
-                    document.getElementById('paymentModal').style.display = 'flex';
-                    return;
-                }
-            }
             document.getElementById('roleModal').style.display = 'none';
-            startSystem();
-        }
-
-        function closePaymentAndStart() {
-            localStorage.setItem('rider_paid_time', new Date().getTime());
-            document.getElementById('paymentModal').style.display = 'none';
             startSystem();
         }
 
@@ -145,12 +123,14 @@ app.get('/', (req, res) => {
             const statusText = document.getElementById('statusText');
 
             statusBar.style.display = 'flex';
+            document.getElementById('trafficCounter').style.display = 'block';
+
             if (myRole === 'rider') {
                 statusDot.className = 'badge badge-rider';
-                statusText.innerText = 'Rider Mode (25km Radius)';
+                statusText.innerText = 'Rider Mode (25km - 2s Sync)';
             } else {
                 statusDot.className = 'badge badge-sawari';
-                statusText.innerText = 'Sawari Mode (10km Radius)';
+                statusText.innerText = 'Sawari Mode (10km - 3s Sync)';
                 document.getElementById('destCard').style.display = 'flex';
             }
 
@@ -170,6 +150,10 @@ app.get('/', (req, res) => {
             requestWakeLock();
             connectSocketServer();
             startLiveGPS();
+
+            // Dynamic Sync Interval: Rider = 2s, Sawari = 3s
+            const syncIntervalTime = (myRole === 'rider') ? 2000 : 3000;
+            setInterval(() => { syncPosition(); }, syncIntervalTime);
         }
 
         function setDestination(e) {
@@ -232,9 +216,45 @@ app.get('/', (req, res) => {
             if (socket) return;
             socket = io({ transports: ['websocket'], reconnection: true });
 
-            socket.on('connect', () => { syncPosition(); });
-            socket.on('live_broadcast', (user) => { if (user && user.id !== myId) processIncomingUser(user); });
-            socket.on('remove_user', (id) => { removeUser(id); });
+            socket.on('connect', () => { 
+                syncPosition(); 
+            });
+
+            // Receive all active users list from server for traffic counter & rendering
+            socket.on('init_users', (users) => {
+                updateTrafficCounts(users);
+                for (let id in users) {
+                    if (id !== myId) processIncomingUser(users[id]);
+                }
+            });
+
+            socket.on('live_broadcast', (data) => { 
+                if (data && data.user && data.user.id !== myId) {
+                    processIncomingUser(data.user);
+                }
+                if (data && data.counts) {
+                    document.getElementById('totalRiders').innerText = data.counts.riders;
+                    document.getElementById('totalSawaris').innerText = data.counts.sawaris;
+                }
+            });
+
+            socket.on('remove_user', (data) => { 
+                removeUser(data.id);
+                if (data && data.counts) {
+                    document.getElementById('totalRiders').innerText = data.counts.riders;
+                    document.getElementById('totalSawaris').innerText = data.counts.sawaris;
+                }
+            });
+        }
+
+        function updateTrafficCounts(users) {
+            let rCount = 0, sCount = 0;
+            for (let id in users) {
+                if (users[id].role === 'rider') rCount++;
+                if (users[id].role === 'sawari') sCount++;
+            }
+            document.getElementById('totalRiders').innerText = rCount;
+            document.getElementById('totalSawaris').innerText = sCount;
         }
 
         function syncPosition() {
@@ -256,7 +276,6 @@ app.get('/', (req, res) => {
             const distance = calculateDistance(myLat, myLng, user.lat, user.lng);
             let maxRadius = (myRole === 'rider') ? 25 : 10;
 
-            // Rule: Sawari should not see other Sawaris
             if (myRole === 'sawari' && user.role === 'sawari') {
                 removeUser(user.id);
                 return;
@@ -285,12 +304,9 @@ app.get('/', (req, res) => {
         }
 
         function removeUser(id) {
-            if (activeMarkers[id]) { map.removeLayer(activeMarkers[id]); delete activeMarkers[id]; }
+            if (activeMarkers[id]) { map.openPopup ? map.removeLayer(activeMarkers[id]) : ''; delete activeMarkers[id]; }
             if (activeRoutes[id]) { map.removeLayer(activeRoutes[id]); delete activeRoutes[id]; }
         }
-
-        // 1 Second High-Frequency Sync Loop
-        setInterval(() => { syncPosition(); }, 1000);
     </script>
 </body>
 </html>`);
@@ -300,19 +316,34 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
 let activeUsers = {};
+
+function getGlobalCounts() {
+    let riders = 0;
+    let sawaris = 0;
+    for (let id in activeUsers) {
+        if (activeUsers[id].role === 'rider') riders++;
+        if (activeUsers[id].role === 'sawari') sawaris++;
+    }
+    return { riders, sawaris };
+}
+
 io.on('connection', (socket) => {
+    // Send existing active users and live traffic counts on connect
+    socket.emit('init_users', activeUsers);
+
     socket.on('update_location', (data) => {
         if (data && data.id) {
             activeUsers[data.id] = { ...data, socketId: socket.id };
-            socket.broadcast.emit('live_broadcast', activeUsers[data.id]);
+            // Broadcast user location along with updated global counts
+            io.emit('live_broadcast', { user: activeUsers[data.id], counts: getGlobalCounts() });
         }
     });
 
     socket.on('disconnect', () => {
         for (let id in activeUsers) {
             if (activeUsers[id].socketId === socket.id) {
-                io.emit('remove_user', id);
                 delete activeUsers[id];
+                io.emit('remove_user', { id: id, counts: getGlobalCounts() });
                 break;
             }
         }
