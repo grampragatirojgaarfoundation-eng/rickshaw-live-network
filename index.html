@@ -21,9 +21,9 @@
         .btn-bike-sawari { background: #7c3aed; }
 
         .status-card { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: none; align-items: center; gap: 10px; }
-        .badge { width: 12px; height: 12px; border-radius: 50%; }
-        .badge-green { background: #16a34a; }
-        .badge-red { background: #dc2626; }
+        .badge { width: 12px; height: 12px; border-radius: 50%; display: none; }
+        .badge-green { background: #16a34a; display: inline-block; }
+        .badge-red { background: #dc2626; display: inline-block; }
 
         .traffic-counter { position: fixed; top: 14px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; }
 
@@ -64,15 +64,15 @@
             <div class="btn-group">
                 <button class="role-btn btn-rider" onclick="handleRoleSelection('rider')">Auto / E-Rickshaw Rider</button>
                 <button class="role-btn btn-sawari" onclick="handleRoleSelection('sawari')">Auto Passenger (Sawari)</button>
-                <button class="role-btn btn-bike-rider" onclick="handleRoleSelection('bike_rider')">🏍️ Bike Rider (6 AM - 6 PM)</button>
-                <button class="role-btn btn-bike-sawari" onclick="handleRoleSelection('bike_sawari')">🙋‍♂️ Bike Passenger (6 AM - 6 PM)</button>
+                <button class="role-btn btn-bike-rider" onclick="handleRoleSelection('bike_rider')">🏍️ Bike Rider (6 AM - 7 PM)</button>
+                <button class="role-btn btn-bike-sawari" onclick="handleRoleSelection('bike_sawari')">🙋‍♂️ Bike Passenger (6 AM - 7 PM)</button>
             </div>
         </div>
     </div>
 
     <div class="status-card" id="statusBar">
-        <div id="statusDot" class="badge badge-red"></div>
-        <span id="statusText">Connecting...</span>
+        <div id="statusDot" class="badge"></div>
+        <span id="statusText">Live Network Active</span>
     </div>
 
     <div class="traffic-counter" id="trafficCounter">
@@ -119,13 +119,14 @@
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null;
         
-        let mediaRecorder = null, audioChunks = [], recordedAudioUrl = null, isRecording = false;
+        let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
 
         function handleRoleSelection(role) {
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
-                if (currentHour < 6 || currentHour >= 18) {
-                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 6 PM tak hi active rehta hai!');
+                // Updated time period: 6 AM to 7 PM (19:00)
+                if (currentHour < 6 || currentHour >= 19) {
+                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM tak hi active rehta hai!');
                     return;
                 }
             }
@@ -175,8 +176,6 @@
             const statusBar = document.getElementById('statusBar');
             statusBar.style.display = 'flex';
             document.getElementById('trafficCounter').style.display = 'block';
-            document.getElementById('statusDot').className = 'badge badge-red';
-            document.getElementById('statusText').innerText = myRole.toUpperCase() + ' (Disconnected)';
 
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 document.getElementById('destCard').style.display = 'flex';
@@ -300,9 +299,9 @@
                     document.getElementById('requestPopup').style.display = 'none';
                     document.getElementById('chatOverlay').style.display = 'block';
                     
-                    // Turn Status Dot Green when connected
+                    // Show Green Connected Dot only upon request acceptance
                     document.getElementById('statusDot').className = 'badge badge-green';
-                    document.getElementById('statusText').innerText = myRole.toUpperCase() + ' (Connected)';
+                    document.getElementById('statusText').innerText = 'Connected';
                     appendChatMessage('System', 'Aapas mein connect ho gaye hain. Ab chat shuru karein.');
                 }
             });
@@ -310,7 +309,7 @@
             socket.on('chat_message', (msg) => {
                 if (activeChatRoom === msg.room) {
                     if (msg.type === 'audio') {
-                        appendAudioMessage(msg.senderRole.toUpperCase(), msg.audioUrl);
+                        appendAudioMessage(msg.senderRole.toUpperCase(), msg.audioData);
                     } else if (msg.type === 'location') {
                         appendLocationMessage(msg.senderRole.toUpperCase(), msg.lat, msg.lng);
                     } else {
@@ -321,8 +320,9 @@
 
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
+                    // Show Red Disconnected Dot when chat is closed
                     document.getElementById('statusDot').className = 'badge badge-red';
-                    document.getElementById('statusText').innerText = myRole.toUpperCase() + ' (Disconnected)';
+                    document.getElementById('statusText').innerText = 'Disconnected';
                     appendChatMessage('System', 'Samne wale ne conversation band kar di hai.');
                     activeChatRoom = null;
                 }
@@ -419,15 +419,13 @@
         function sendChatMessage() {
             const text = document.getElementById('chatInput').value;
             
-            // Agar text likha hai toh text bhejo
             if (text && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, type: 'text', text: text });
                 document.getElementById('chatInput').value = '';
             } 
-            // Agar voice recording padi hai toh send button dabane par audio bhejo
-            else if (recordedAudioUrl && activeChatRoom) {
-                socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, type: 'audio', audioUrl: recordedAudioUrl });
-                recordedAudioUrl = null;
+            else if (recordedAudioBase64 && activeChatRoom) {
+                socket.emit('chat_message', { room: activeChatRoom, senderRole: myRole, type: 'audio', audioData: recordedAudioBase64 });
+                recordedAudioBase64 = null;
                 document.getElementById('voiceBtn').innerText = '🎤 Voice Record';
                 alert('Voice recording bhej di gayi hai!');
             }
@@ -439,9 +437,9 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        function appendAudioMessage(sender, audioUrl) {
+        function appendAudioMessage(sender, audioData) {
             const box = document.getElementById('chatMessages');
-            box.innerHTML += '<div><b>' + sender + ':</b> <audio controls src="' + audioUrl + '" style="height:25px; vertical-align:middle;"></audio></div>';
+            box.innerHTML += '<div><b>' + sender + ':</b> <audio controls src="' + audioData + '" style="height:25px; vertical-align:middle;"></audio></div>';
             box.scrollTop = box.scrollHeight;
         }
 
@@ -467,11 +465,17 @@
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    
                     mediaRecorder.onstop = () => {
                         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                        recordedAudioUrl = URL.createObjectURL(audioBlob);
-                        btn.innerText = '✅ Recorded (Send dabaein)';
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = function() {
+                            recordedAudioBase64 = reader.result; // Base64 safe format
+                            btn.innerText = '✅ Recorded (Send dabaein)';
+                        };
                     };
+
                     mediaRecorder.start();
                     isRecording = true;
                     btn.innerText = '🔴 Recording... (Stop)';
@@ -490,7 +494,7 @@
             }
             document.getElementById('chatOverlay').style.display = 'none';
             document.getElementById('statusDot').className = 'badge badge-red';
-            document.getElementById('statusText').innerText = myRole.toUpperCase() + ' (Disconnected)';
+            document.getElementById('statusText').innerText = 'Disconnected';
             activeChatRoom = null;
         }
 
