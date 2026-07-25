@@ -45,18 +45,22 @@ io.on('connection', (socket) => {
         }
     });
 
+    // FIXED: Passenger aur Rider dono ko room join karwane ka sahi tarika
     socket.on('accept_sms_request', (data) => {
         const roomName = 'room_' + data.passengerId + '_' + data.riderId;
         
-        // Passenger aur Rider dono ko is room mein join karwayein
+        // Rider socket jo accept kar raha hai use room join karwayen
         socket.join(roomName);
-        if (activeUsers[data.riderId]) {
-            const riderSocket = io.sockets.sockets.get(activeUsers[data.riderId].socketId);
-            if (riderSocket) {
-                riderSocket.join(roomName);
+
+        // Passenger socket ko bhi activeUsers se dhundhkar room join karwayen
+        if (activeUsers[data.passengerId]) {
+            const passengerSocket = io.sockets.sockets.get(activeUsers[data.passengerId].socketId);
+            if (passengerSocket) {
+                passengerSocket.join(roomName);
             }
         }
 
+        // Ab room ke andar jude dono users (Passenger aur Rider) ko chat open karne ka signal bhejen
         if (activeUsers[data.passengerId] && activeUsers[data.riderId]) {
             io.to(roomName).emit('request_accepted', { ...data, room: roomName });
         }
