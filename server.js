@@ -74,16 +74,28 @@ io.on('connection', (socket) => {
         }
     });
 
-    // FIXED VOICE CALL STREAM RELAY
-    socket.on('voice_audio_stream', (data) => {
-        if (data && data.room && data.audioData) {
-            socket.to(data.room).emit('voice_audio_stream', data.audioData);
+    // --- CALL RINGING & ACCEPT / REJECT ROUTING ---
+    socket.on('request_voice_call', (data) => {
+        if (data && data.room) {
+            socket.to(data.room).emit('request_voice_call');
         }
     });
 
-    socket.on('start_voice_call', (data) => {
+    socket.on('accept_voice_call', (data) => {
         if (data && data.room) {
-            socket.to(data.room).emit('start_voice_call');
+            io.to(data.room).emit('voice_call_accepted');
+        }
+    });
+
+    socket.on('reject_voice_call', (data) => {
+        if (data && data.room) {
+            io.to(data.room).emit('voice_call_rejected');
+        }
+    });
+
+    socket.on('voice_audio_stream', (data) => {
+        if (data && data.room && data.audioData) {
+            socket.to(data.room).emit('voice_audio_stream', data.audioData);
         }
     });
 
@@ -115,3 +127,4 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+```[cite: 4, 6]
