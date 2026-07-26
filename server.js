@@ -39,20 +39,24 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Passenger minimize/switch hone par use turant map se hatane ka handler
+    socket.on('deactivate_passenger', (data) => {
+        if (data && data.id && activeUsers[data.id]) {
+            delete activeUsers[data.id];
+            io.emit('remove_user', { id: data.id, counts: getGlobalCounts() });
+        }
+    });
+
     socket.on('send_sms_request', (data) => {
         if (activeUsers[data.riderId]) {
             io.to(activeUsers[data.riderId].socketId).emit('receive_sms_request', data);
         }
     });
 
-    // FIXED: Passenger aur Rider dono ko room join karwane ka sahi tarika
     socket.on('accept_sms_request', (data) => {
         const roomName = 'room_' + data.passengerId + '_' + data.riderId;
-        
-        // Rider socket jo accept kar raha hai use room join karwayen
         socket.join(roomName);
 
-        // Passenger socket ko bhi activeUsers se dhundhkar room join karwayen
         if (activeUsers[data.passengerId]) {
             const passengerSocket = io.sockets.sockets.get(activeUsers[data.passengerId].socketId);
             if (passengerSocket) {
@@ -60,7 +64,6 @@ io.on('connection', (socket) => {
             }
         }
 
-        // Ab room ke andar jude dono users (Passenger aur Rider) ko chat open karne ka signal bhejen
         if (activeUsers[data.passengerId] && activeUsers[data.riderId]) {
             io.to(roomName).emit('request_accepted', { ...data, room: roomName });
         }

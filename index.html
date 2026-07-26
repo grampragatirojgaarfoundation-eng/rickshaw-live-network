@@ -52,7 +52,6 @@
         .pin-bike-rider { background-color: #d97706; }
         .pin-bike-sawari { background-color: #7c3aed; }
         
-        /* GLOWING SHADOW / PULSE EFFECT FOR CONNECTED USER */
         .pin-glow {
             box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.9), 0 3px 12px rgba(0,0,0,0.4);
             animation: ring-pulse 1.5s infinite;
@@ -130,6 +129,7 @@
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
+        let isPassengerActive = true; 
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
 
@@ -144,6 +144,23 @@
 
             myRole = role;
             document.getElementById('roleModal').style.display = 'none';
+
+            // STRICT PASSENGER MINIMIZE & BACKGROUND SWITCH DETECTION
+            if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                document.addEventListener("visibilitychange", () => {
+                    if (document.hidden) {
+                        // Jab passenger app minimize karega ya doosri app kholega
+                        isPassengerActive = false;
+                        if (socket && socket.connected) {
+                            socket.emit('deactivate_passenger', { id: myId });
+                        }
+                    } else {
+                        // Jab passenger wapas app par aayega
+                        isPassengerActive = true;
+                        syncPosition();
+                    }
+                });
+            }
 
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((pos) => {
@@ -323,15 +340,7 @@
 
                     document.getElementById('statusDot').className = 'badge badge-green';
                     document.getElementById('statusText').innerText = 'Connected Live';
-                    appendChatMessage('System', 'Aapas mein connect ho gaye hain. Connected partner par glowing shadow active hai.');
-
-                    // Refresh markers to apply glow effect to connected partner
-                    for (let id in activeMarkers) {
-                        let marker = activeMarkers[id];
-                        if (marker) {
-                            // marker update logic will handle glow on next sync or we can re-render
-                        }
-                    }
+                    appendChatMessage('System', 'Aapas mein connect ho gaye hain.');
                 }
             });
 
@@ -363,7 +372,6 @@
                     activeChatRoom = null;
                     incomingReqData = null;
 
-                    // Remove connected line/route if any
                     for (let id in activeRoutes) {
                         map.removeLayer(activeRoutes[id]);
                         delete activeRoutes[id];
@@ -383,6 +391,9 @@
         }
 
         function syncPosition() {
+            // Agar user passenger hai aur woh app minimize kar chuka hai, toh position send mat karo
+            if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
+
             if (socket && socket.connected && myLat !== null && myLng !== null) {
                 socket.emit('update_location', { id: myId, role: myRole, lat: myLat, lng: myLng, heading: myHeading, destination: myDestination });
             }
@@ -405,32 +416,26 @@
 
             if (myRole === 'rider') {
                 if ((user.role === 'rider' || user.role === 'sawari') && distance <= 25) {
-                    canSee = true;
-                    maxRadius = 25;
+                    canSee = true; maxRadius = 25;
                 }
             } 
             else if (myRole === 'sawari') {
                 if (user.role === 'rider' && distance <= 10) {
-                    canSee = true;
-                    maxRadius = 10;
-                    showPopupBtn = true;
+                    canSee = true; maxRadius = 10; showPopupBtn = true;
                 }
             } 
             else if (myRole === 'bike_rider') {
                 if ((user.role === 'bike_rider' || user.role === 'bike_sawari') && distance <= 5) {
-                    canSee = true;
-                    maxRadius = 5;
+                    canSee = true; maxRadius = 5;
                 }
             } 
             else if (myRole === 'bike_sawari') {
                 if (user.role === 'bike_rider' && distance <= 5) {
-                    canSee = true;
-                    maxRadius = 5;
+                    canSee = true; maxRadius = 5;
                     if (distance <= 2.5) showPopupBtn = true;
                 }
             }
 
-            // Agar ye user hamara connected partner hai, toh distance limit hata kar isko dikhana hi hai
             if (user.id === connectedPartnerId) {
                 canSee = true;
             }
@@ -454,7 +459,6 @@
                     .bindPopup(popupHtml);
             }
 
-            // Draw line to connected partner or destination
             if (user.id === connectedPartnerId) {
                 if (activeRoutes[user.id]) {
                     activeRoutes[user.id].setLatLngs([[myLat, myLng], [user.lat, user.lng]]);
@@ -489,7 +493,6 @@
 
         function sendChatMessage() {
             const text = document.getElementById('chatInput').value;
-            
             if (text && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'text', text: text });
                 document.getElementById('chatInput').value = '';
