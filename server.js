@@ -74,7 +74,13 @@ io.on('connection', (socket) => {
         }
     });
 
-    // In-App Voice Call Signal Handlers
+    // FIXED VOICE CALL STREAM RELAY
+    socket.on('voice_audio_stream', (data) => {
+        if (data && data.room && data.audioData) {
+            socket.to(data.room).emit('voice_audio_stream', data.audioData);
+        }
+    });
+
     socket.on('start_voice_call', (data) => {
         if (data && data.room) {
             socket.to(data.room).emit('start_voice_call');

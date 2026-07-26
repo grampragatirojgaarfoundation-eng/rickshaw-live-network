@@ -140,7 +140,7 @@
         let isPassengerActive = true; 
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
-        let localStream = null, remoteAudio = new Audio(), isCalling = false, callTimer = null;
+        let callMediaRecorder = null, isCalling = false, callTimer = null;
 
         function handleRoleSelection(role) {
             if (role === 'bike_rider' || role === 'bike_sawari') {
@@ -360,14 +360,21 @@
                 }
             });
 
-            // In-App 2-Minute Voice Call Signals
+            // FIXED LIVE VOICE STREAM AUDIO PLAYING
+            socket.on('voice_audio_stream', (audioBase64) => {
+                if (isCalling) {
+                    let audio = new Audio(audioBase64);
+                    audio.play().catch(e => console.log(e));
+                }
+            });
+
             socket.on('start_voice_call', () => {
-                startAudioStream(false);
+                appendChatMessage('System', '📞 Samne wale ne Voice Call join kar li hai.');
             });
 
             socket.on('end_voice_call', () => {
-                stopAudioStream(false);
-                appendChatMessage('System', 'Voice call samne wale ne ya limit poori hone par cut ho gayi.');
+                stopAudioCall(false);
+                appendChatMessage('System', 'Voice call cut ho gayi hai.');
             });
 
             socket.on('chat_closed', (data) => {
@@ -376,7 +383,7 @@
                     document.getElementById('statusText').innerText = 'Disconnected';
                     appendChatMessage('System', 'Samne wale ne conversation band kar di hai.');
                     
-                    stopAudioStream(false);
+                    stopAudioCall(false);
                     setTimeout(() => {
                         document.getElementById('chatMessages').innerHTML = '';
                         document.getElementById('chatOverlay').style.display = 'none';
@@ -518,37 +525,49 @@
             }
         }
 
-        // 2-MINUTE IN-APP VOICE CALL LOGIC
+        // FIXED 2-MINUTE LIVE VOICE CALL FUNCTIONALITY
         function toggleVoiceCall() {
             if (!activeChatRoom) {
                 alert('Call ke liye active connection zaroori hai!');
                 return;
             }
-            const btn = document.getElementById('callBtn');
             if (!isCalling) {
-                startAudioStream(true);
+                startAudioCall();
             } else {
-                stopAudioStream(true);
+                stopAudioCall(true);
             }
         }
 
-        function startAudioStream(isInitiator) {
+        function startAudioCall() {
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                localStream = stream;
                 isCalling = true;
                 const btn = document.getElementById('callBtn');
-                btn.innerText = '🔴 Call Active (2 Min Limit)... End';
+                btn.innerText = '🔴 Call Active (2 Min)... End';
                 btn.classList.add('calling');
 
-                appendChatMessage('System', '📞 Voice Call shuru ho gayi hai (2 Minute ki limit).');
+                appendChatMessage('System', '📞 Live Voice Call shuru ho gayi hai.');
+                socket.emit('start_voice_call', { room: activeChatRoom });
 
-                if (isInitiator && socket) {
-                    socket.emit('start_voice_call', { room: activeChatRoom });
-                }
+                callMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+                
+                callMediaRecorder.ondataavailable = e => {
+                    if (e.data.size > 0 && isCalling) {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(e.data);
+                        reader.onloadend = function() {
+                            if (socket && activeChatRoom && isCalling) {
+                                socket.emit('voice_audio_stream', { room: activeChatRoom, audioData: reader.result });
+                            }
+                        };
+                    }
+                };
 
-                // EXACT 2 MINUTES (120,000 milliseconds) TIMER TO DISCONNECT CALL
+                // Har 1 second mein voice chunk stream hoga taaki aawaz live sunai de
+                callMediaRecorder.start(1000);
+
+                // EXACT 2 MINUTES TIMER TO CUT CALL
                 callTimer = setTimeout(() => {
-                    stopAudioStream(true);
+                    stopAudioCall(true);
                     appendChatMessage('System', '⏱️ 2 minute ki limit poori hone par call automatic cut ho gayi.');
                 }, 120000);
 
@@ -557,10 +576,9 @@
             });
         }
 
-        function stopAudioStream(notifyServer) {
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-                localStream = null;
+        function stopAudioCall(notifyServer) {
+            if (callMediaRecorder && callMediaRecorder.state !== 'inactive') {
+                callMediaRecorder.stop();
             }
             if (callTimer) {
                 clearTimeout(callTimer);
@@ -634,7 +652,7 @@
         }
 
         function closeChat() {
-            stopAudioStream(true);
+            stopAudioCall(true);
             if (activeChatRoom) {
                 socket.emit('close_chat', { room: activeChatRoom });
             }
