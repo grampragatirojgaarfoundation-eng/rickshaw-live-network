@@ -39,6 +39,7 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Passenger minimize/switch hone par use turant map se hatane ka handler
     socket.on('deactivate_passenger', (data) => {
         if (data && data.id && activeUsers[data.id]) {
             delete activeUsers[data.id];
@@ -74,37 +75,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // --- CALL RINGING & ACCEPT / REJECT ROUTING ---
-    socket.on('request_voice_call', (data) => {
-        if (data && data.room) {
-            socket.to(data.room).emit('request_voice_call');
-        }
-    });
-
-    socket.on('accept_voice_call', (data) => {
-        if (data && data.room) {
-            io.to(data.room).emit('voice_call_accepted');
-        }
-    });
-
-    socket.on('reject_voice_call', (data) => {
-        if (data && data.room) {
-            io.to(data.room).emit('voice_call_rejected');
-        }
-    });
-
-    socket.on('voice_audio_stream', (data) => {
-        if (data && data.room && data.audioData) {
-            socket.to(data.room).emit('voice_audio_stream', data.audioData);
-        }
-    });
-
-    socket.on('end_voice_call', (data) => {
-        if (data && data.room) {
-            socket.to(data.room).emit('end_voice_call');
-        }
-    });
-
     socket.on('close_chat', (data) => {
         if (data && data.room) {
             io.to(data.room).emit('chat_closed', data);
@@ -127,4 +97,3 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-```[cite: 4, 6]

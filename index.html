@@ -31,26 +31,14 @@
         .btn-reset { background: #e63946; color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; }
 
         .chat-overlay { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 360px; background: #fff; z-index: 2000; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); padding: 14px; }
-        .chat-box { max-height: 120px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin-bottom: 8px; font-size: 12px; background: #f9f9f9; }
+        .chat-box { max-height: 140px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin-bottom: 8px; font-size: 12px; background: #f9f9f9; }
         .chat-input-row { display: flex; gap: 4px; margin-bottom: 6px; }
         .chat-input { flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 11px; }
         .chat-send-btn { background: #7c3aed; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; }
-        .chat-extra-row { display: flex; gap: 6px; justify-content: space-between; margin-bottom: 6px; }
+        .chat-extra-row { display: flex; gap: 6px; justify-content: space-between; }
         .extra-btn { flex: 1; background: #2563eb; color: white; border: none; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
         .extra-btn.recording { background: #dc2626; animation: pulse 1s infinite; }
-        
-        .call-row { display: flex; gap: 6px; }
-        .btn-call { flex: 1; background: #16a34a; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; }
-        .btn-call.calling { background: #dc2626; animation: pulse 1s infinite; }
-
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-
-        /* INCOMING CALL POPUP MODAL */
-        .call-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 30000; background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); text-align: center; width: 90%; max-width: 320px; animation: popup-bounce 0.3s ease; }
-        @keyframes popup-bounce { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-        .call-btn-group { display: flex; gap: 12px; margin-top: 15px; justify-content: center; }
-        .btn-call-accept { background: #16a34a; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .btn-call-reject { background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; }
 
         .request-popup { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #fff; padding: 12px 18px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 340px; }
         .req-btn-group { display: flex; gap: 10px; margin-top: 8px; justify-content: center; }
@@ -102,7 +90,6 @@
         🌍 Riders: <span id="totalRiders">0</span> | Sawari: <span id="totalSawaris">0</span>
     </div>
 
-    <!-- SMS Request Popup -->
     <div class="request-popup" id="requestPopup">
         <p id="reqText" style="font-size: 12px; font-weight: bold; color: #111;"></p>
         <div class="req-btn-group">
@@ -111,19 +98,9 @@
         </div>
     </div>
 
-    <!-- INCOMING VOICE CALL RINGING POPUP -->
-    <div class="call-popup" id="incomingCallPopup">
-        <h3 style="font-size: 16px; color: #111; margin-bottom: 6px;">📞 Nayi Voice Call Aayi Hai!</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Samne wala aapse baat karna chahta hai.</p>
-        <div class="call-btn-group">
-            <button class="btn-call-accept" onclick="acceptIncomingCall()">Call Uthayein</button>
-            <button class="btn-call-reject" onclick="rejectIncomingCall()">Kaat Dein</button>
-        </div>
-    </div>
-
     <div class="chat-overlay" id="chatOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span id="chatHeaderTitle" style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Chat & 2-Min Voice Call</span>
+            <span id="chatHeaderTitle" style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Private Chat & Live Tracking</span>
             <button onclick="closeChat()" style="background:none; border:none; font-weight:bold; cursor:pointer; color:#666;">✕ Close</button>
         </div>
         <div class="chat-box" id="chatMessages"></div>
@@ -134,9 +111,6 @@
         <div class="chat-extra-row">
             <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 Voice Record</button>
             <button class="extra-btn" style="background:#059669;" onclick="shareGoogleLocation()">📍 Share Location</button>
-        </div>
-        <div class="call-row">
-            <button class="btn-call" id="callBtn" onclick="toggleVoiceCall()">📞 Start 2-Min Voice Call</button>
         </div>
     </div>
 
@@ -158,7 +132,6 @@
         let isPassengerActive = true; 
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
-        let callMediaRecorder = null, isCalling = false, callTimer = null, remoteAudioPlayer = new Audio();
 
         function handleRoleSelection(role) {
             if (role === 'bike_rider' || role === 'bike_sawari') {
@@ -172,14 +145,17 @@
             myRole = role;
             document.getElementById('roleModal').style.display = 'none';
 
+            // STRICT PASSENGER MINIMIZE & BACKGROUND SWITCH DETECTION
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 document.addEventListener("visibilitychange", () => {
                     if (document.hidden) {
+                        // Jab passenger app minimize karega ya doosri app kholega
                         isPassengerActive = false;
                         if (socket && socket.connected) {
                             socket.emit('deactivate_passenger', { id: myId });
                         }
                     } else {
+                        // Jab passenger wapas app par aayega
                         isPassengerActive = true;
                         syncPosition();
                     }
@@ -222,7 +198,10 @@
                 innerElement = '<div class="sawari-inner"></div>';
             }
 
-            if (isGlowing) bgClass += ' pin-glow';
+            if (isGlowing) {
+                bgClass += ' pin-glow';
+            }
+
             return L.divIcon({ className: '', html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>', iconSize: [34, 34], iconAnchor: [17, 17] });
         }
 
@@ -378,40 +357,12 @@
                 }
             });
 
-            // --- INCOMING CALL RINGING SIGNALS ---
-            socket.on('request_voice_call', () => {
-                document.getElementById('incomingCallPopup').style.display = 'block';
-            });
-
-            socket.on('voice_call_accepted', () => {
-                startAudioStreamingEngine();
-                appendChatMessage('System', '📞 Call accept ho gayi hai. Baat shuru karein.');
-            });
-
-            socket.on('voice_call_rejected', () => {
-                stopAudioCall(false);
-                appendChatMessage('System', '❌ Samne wale ne call reject kar di.');
-            });
-
-            socket.on('voice_audio_stream', (audioBase64) => {
-                if (isCalling) {
-                    remoteAudioPlayer.src = audioBase64;
-                    remoteAudioPlayer.play().catch(e => {});
-                }
-            });
-
-            socket.on('end_voice_call', () => {
-                stopAudioCall(false);
-                appendChatMessage('System', '📴 Voice call cut ho gayi hai.');
-            });
-
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
                     document.getElementById('statusDot').className = 'badge badge-red';
                     document.getElementById('statusText').innerText = 'Disconnected';
                     appendChatMessage('System', 'Samne wale ne conversation band kar di hai.');
                     
-                    stopAudioCall(false);
                     setTimeout(() => {
                         document.getElementById('chatMessages').innerHTML = '';
                         document.getElementById('chatOverlay').style.display = 'none';
@@ -440,6 +391,7 @@
         }
 
         function syncPosition() {
+            // Agar user passenger hai aur woh app minimize kar chuka hai, toh position send mat karo
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
 
             if (socket && socket.connected && myLat !== null && myLng !== null) {
@@ -553,90 +505,6 @@
             }
         }
 
-        // --- CALL BUTTON CLICKED (SENDS RINGING REQUEST) ---
-        function toggleVoiceCall() {
-            if (!activeChatRoom) {
-                alert('Call ke liye active connection zaroori hai!');
-                return;
-            }
-            if (!isCalling) {
-                socket.emit('request_voice_call', { room: activeChatRoom });
-                const btn = document.getElementById('callBtn');
-                btn.innerText = '⏳ Calling Ringing...';
-                btn.classList.add('calling');
-                appendChatMessage('System', '📞 Call lag rahi hai, samne wale ke response ka intezar hai...');
-            } else {
-                stopAudioCall(true);
-            }
-        }
-
-        // --- ACCEPT INCOMING CALL ---
-        function acceptIncomingCall() {
-            document.getElementById('incomingCallPopup').style.display = 'none';
-            socket.emit('accept_voice_call', { room: activeChatRoom });
-            startAudioStreamingEngine();
-            appendChatMessage('System', '📞 Call connect ho gayi hai.');
-        }
-
-        // --- REJECT INCOMING CALL ---
-        function rejectIncomingCall() {
-            document.getElementById('incomingCallPopup').style.display = 'none';
-            socket.emit('reject_voice_call', { room: activeChatRoom });
-        }
-
-        function startAudioStreamingEngine() {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                isCalling = true;
-                const btn = document.getElementById('callBtn');
-                btn.innerText = '🔴 Call Active (2 Min)... End';
-                btn.classList.add('calling');
-
-                callMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-                
-                callMediaRecorder.ondataavailable = e => {
-                    if (e.data.size > 0 && isCalling) {
-                        const reader = new FileReader();
-                        reader.readAsDataURL(e.data);
-                        reader.onloadend = function() {
-                            if (socket && activeChatRoom && isCalling) {
-                                socket.emit('voice_audio_stream', { room: activeChatRoom, audioData: reader.result });
-                            }
-                        };
-                    }
-                };
-
-                callMediaRecorder.start(800);
-
-                // EXACT 2 MINUTES TIMER TO CUT CALL
-                callTimer = setTimeout(() => {
-                    stopAudioCall(true);
-                    appendChatMessage('System', '⏱️ 2 minute ki limit poori hone par call automatic cut ho gayi.');
-                }, 120000);
-
-            }).catch(err => {
-                alert('Microphone permission denied!');
-            });
-        }
-
-        function stopAudioCall(notifyServer) {
-            if (callMediaRecorder && callMediaRecorder.state !== 'inactive') {
-                callMediaRecorder.stop();
-            }
-            if (callTimer) {
-                clearTimeout(callTimer);
-                callTimer = null;
-            }
-            isCalling = false;
-            const btn = document.getElementById('callBtn');
-            btn.innerText = '📞 Start 2-Min Voice Call';
-            btn.classList.remove('calling');
-            document.getElementById('incomingCallPopup').style.display = 'none';
-
-            if (notifyServer && socket && activeChatRoom) {
-                socket.emit('end_voice_call', { room: activeChatRoom });
-            }
-        }
-
         function appendChatMessage(sender, text) {
             const box = document.getElementById('chatMessages');
             box.innerHTML += '<div><b>' + sender + ':</b> ' + text + '</div>';
@@ -695,7 +563,6 @@
         }
 
         function closeChat() {
-            stopAudioCall(true);
             if (activeChatRoom) {
                 socket.emit('close_chat', { room: activeChatRoom });
             }
