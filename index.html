@@ -305,7 +305,6 @@
                 }
             });
 
-            // FIXED: Server se aane wale messages ko cleanly dono taraf display karna
             socket.on('chat_message', (msg) => {
                 if (activeChatRoom === msg.room) {
                     let senderLabel = (msg.senderId === myId) ? 'Aap' : msg.senderRole.toUpperCase();
@@ -360,26 +359,46 @@
             return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
+        // UPDATED STRICT FILTERING RULES WITH FULL 10KM SMS RANGE FOR AUTO PASSENGERS
         function processIncomingUser(user) {
             if (!myLat || !myLng || !map) return;
             const distance = calculateDistance(myLat, myLng, user.lat, user.lng);
-            let maxRadius = 10;
+            let maxRadius = 0;
+            let showPopupBtn = false;
+            let canSee = false;
 
-            if (myRole === 'bike_rider') {
-                if (user.role !== 'bike_sawari') { removeUser(user.id); return; }
-                maxRadius = 5;
-            } else if (myRole === 'bike_sawari') {
-                if (user.role !== 'bike_rider') { removeUser(user.id); return; }
-                maxRadius = 5;
-            } else if (myRole === 'rider') {
-                if (user.role && user.role.includes('bike')) { removeUser(user.id); return; }
-                maxRadius = 25;
-            } else if (myRole === 'sawari') {
-                if (user.role === 'sawari' || (user.role && user.role.includes('bike'))) { removeUser(user.id); return; }
-                maxRadius = 10;
+            if (myRole === 'rider') {
+                // 1. Auto Rider: 25km radius me Auto Riders aur Auto Passengers dikhenge
+                if ((user.role === 'rider' || user.role === 'sawari') && distance <= 25) {
+                    canSee = true;
+                    maxRadius = 25;
+                }
+            } 
+            else if (myRole === 'sawari') {
+                // 2. Auto Passenger: 10km radius me sirf Auto Riders dikhenge aur poore 10km tak request bhej sakenge
+                if (user.role === 'rider' && distance <= 10) {
+                    canSee = true;
+                    maxRadius = 10;
+                    showPopupBtn = true; // Poore 10km ke andar request button available rahega
+                }
+            } 
+            else if (myRole === 'bike_rider') {
+                // 3. Bike Rider: 5km radius me Bike Riders aur Bike Passengers dikhenge
+                if ((user.role === 'bike_rider' || user.role === 'bike_sawari') && distance <= 5) {
+                    canSee = true;
+                    maxRadius = 5;
+                }
+            } 
+            else if (myRole === 'bike_sawari') {
+                // 4. Bike Passenger: 5km radius me sirf Bike Riders dikhenge, aur 2.5km ke andar request button milega
+                if (user.role === 'bike_rider' && distance <= 5) {
+                    canSee = true;
+                    maxRadius = 5;
+                    if (distance <= 2.5) showPopupBtn = true;
+                }
             }
 
-            if (distance > maxRadius) {
+            if (!canSee || distance > maxRadius) {
                 removeUser(user.id);
                 return;
             }
@@ -389,8 +408,7 @@
                 activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0, false));
             } else {
                 let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>Doori: ' + distance.toFixed(1) + ' KM';
-                if (((myRole === 'bike_sawari' && user.role === 'bike_rider') || 
-                     (myRole === 'sawari' && user.role === 'rider')) && distance <= 2.5) {
+                if (showPopupBtn) {
                     popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
                 }
                 activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false) }).addTo(map)
