@@ -51,6 +51,18 @@
         .pin-sawari { background-color: #2a9d8f; }
         .pin-bike-rider { background-color: #d97706; }
         .pin-bike-sawari { background-color: #7c3aed; }
+        
+        /* GLOWING SHADOW / PULSE EFFECT FOR CONNECTED USER */
+        .pin-glow {
+            box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.9), 0 3px 12px rgba(0,0,0,0.4);
+            animation: ring-pulse 1.5s infinite;
+        }
+        @keyframes ring-pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.8); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 12px rgba(22, 163, 74, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+        }
+
         .direction-arrow { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 16px solid #ffffff; }
         .sawari-inner { width: 12px; height: 12px; background: #ffffff; border-radius: 50%; }
     </style>
@@ -89,7 +101,7 @@
 
     <div class="chat-overlay" id="chatOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Private Chat, Voice & Location</span>
+            <span id="chatHeaderTitle" style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Private Chat & Live Tracking</span>
             <button onclick="closeChat()" style="background:none; border:none; font-weight:bold; cursor:pointer; color:#666;">✕ Close</button>
         </div>
         <div class="chat-box" id="chatMessages"></div>
@@ -117,7 +129,7 @@
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
-        let incomingReqData = null, activeChatRoom = null;
+        let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
 
@@ -150,7 +162,7 @@
             }
         }
 
-        function getIcon(role, heading = 0, isSelf = false) {
+        function getIcon(role, heading = 0, isSelf = false, isGlowing = false) {
             let bgClass = '', innerElement = '';
             if (isSelf) {
                 bgClass = 'pin-self';
@@ -168,6 +180,11 @@
                 bgClass = 'pin-sawari';
                 innerElement = '<div class="sawari-inner"></div>';
             }
+
+            if (isGlowing) {
+                bgClass += ' pin-glow';
+            }
+
             return L.divIcon({ className: '', html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>', iconSize: [34, 34], iconAnchor: [17, 17] });
         }
 
@@ -295,13 +312,26 @@
             socket.on('request_accepted', (data) => {
                 if (myId === data.passengerId || myId === data.riderId) {
                     activeChatRoom = data.room;
+                    connectedPartnerId = (myId === data.riderId) ? data.passengerId : data.riderId;
+
                     document.getElementById('chatMessages').innerHTML = '';
                     document.getElementById('requestPopup').style.display = 'none';
                     document.getElementById('chatOverlay').style.display = 'block';
                     
+                    let partnerLabel = (myId === data.riderId) ? 'Passenger (Sawari)' : 'Rider';
+                    document.getElementById('chatHeaderTitle').innerText = '💬 Connected with ' + partnerLabel;
+
                     document.getElementById('statusDot').className = 'badge badge-green';
-                    document.getElementById('statusText').innerText = 'Connected';
-                    appendChatMessage('System', 'Aapas mein connect ho gaye hain. Ab chat shuru karein.');
+                    document.getElementById('statusText').innerText = 'Connected Live';
+                    appendChatMessage('System', 'Aapas mein connect ho gaye hain. Connected partner par glowing shadow active hai.');
+
+                    // Refresh markers to apply glow effect to connected partner
+                    for (let id in activeMarkers) {
+                        let marker = activeMarkers[id];
+                        if (marker) {
+                            // marker update logic will handle glow on next sync or we can re-render
+                        }
+                    }
                 }
             });
 
@@ -329,8 +359,15 @@
                         document.getElementById('chatOverlay').style.display = 'none';
                     }, 1500);
 
+                    connectedPartnerId = null;
                     activeChatRoom = null;
                     incomingReqData = null;
+
+                    // Remove connected line/route if any
+                    for (let id in activeRoutes) {
+                        map.removeLayer(activeRoutes[id]);
+                        delete activeRoutes[id];
+                    }
                 }
             });
         }
@@ -359,7 +396,6 @@
             return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
-        // UPDATED STRICT FILTERING RULES WITH FULL 10KM SMS RANGE FOR AUTO PASSENGERS
         function processIncomingUser(user) {
             if (!myLat || !myLng || !map) return;
             const distance = calculateDistance(myLat, myLng, user.lat, user.lng);
@@ -368,29 +404,25 @@
             let canSee = false;
 
             if (myRole === 'rider') {
-                // 1. Auto Rider: 25km radius me Auto Riders aur Auto Passengers dikhenge
                 if ((user.role === 'rider' || user.role === 'sawari') && distance <= 25) {
                     canSee = true;
                     maxRadius = 25;
                 }
             } 
             else if (myRole === 'sawari') {
-                // 2. Auto Passenger: 10km radius me sirf Auto Riders dikhenge aur poore 10km tak request bhej sakenge
                 if (user.role === 'rider' && distance <= 10) {
                     canSee = true;
                     maxRadius = 10;
-                    showPopupBtn = true; // Poore 10km ke andar request button available rahega
+                    showPopupBtn = true;
                 }
             } 
             else if (myRole === 'bike_rider') {
-                // 3. Bike Rider: 5km radius me Bike Riders aur Bike Passengers dikhenge
                 if ((user.role === 'bike_rider' || user.role === 'bike_sawari') && distance <= 5) {
                     canSee = true;
                     maxRadius = 5;
                 }
             } 
             else if (myRole === 'bike_sawari') {
-                // 4. Bike Passenger: 5km radius me sirf Bike Riders dikhenge, aur 2.5km ke andar request button milega
                 if (user.role === 'bike_rider' && distance <= 5) {
                     canSee = true;
                     maxRadius = 5;
@@ -398,24 +430,38 @@
                 }
             }
 
-            if (!canSee || distance > maxRadius) {
+            // Agar ye user hamara connected partner hai, toh distance limit hata kar isko dikhana hi hai
+            if (user.id === connectedPartnerId) {
+                canSee = true;
+            }
+
+            if (!canSee || (user.id !== connectedPartnerId && distance > maxRadius)) {
                 removeUser(user.id);
                 return;
             }
 
+            let isGlowing = (user.id === connectedPartnerId);
+
             if (activeMarkers[user.id]) {
                 activeMarkers[user.id].setLatLng([user.lat, user.lng]);
-                activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0, false));
+                activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0, false, isGlowing));
             } else {
                 let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>Doori: ' + distance.toFixed(1) + ' KM';
                 if (showPopupBtn) {
                     popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
                 }
-                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false) }).addTo(map)
+                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map)
                     .bindPopup(popupHtml);
             }
 
-            if (myRole === 'rider' && user.role === 'sawari' && user.destination) {
+            // Draw line to connected partner or destination
+            if (user.id === connectedPartnerId) {
+                if (activeRoutes[user.id]) {
+                    activeRoutes[user.id].setLatLngs([[myLat, myLng], [user.lat, user.lng]]);
+                } else {
+                    activeRoutes[user.id] = L.polyline([[myLat, myLng], [user.lat, user.lng]], { color: '#16a34a', weight: 5, dashArray: '6, 8' }).addTo(map);
+                }
+            } else if (myRole === 'rider' && user.role === 'sawari' && user.destination) {
                 if (activeRoutes[user.id]) {
                     activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
                 } else {
@@ -524,6 +570,12 @@
             
             activeChatRoom = null;
             incomingReqData = null;
+            connectedPartnerId = null;
+
+            for (let id in activeRoutes) {
+                map.removeLayer(activeRoutes[id]);
+                delete activeRoutes[id];
+            }
         }
 
         function removeUser(id) {
