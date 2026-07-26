@@ -39,7 +39,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Passenger minimize/switch hone par use turant map se hatane ka handler
     socket.on('deactivate_passenger', (data) => {
         if (data && data.id && activeUsers[data.id]) {
             delete activeUsers[data.id];
@@ -72,6 +71,19 @@ io.on('connection', (socket) => {
     socket.on('chat_message', (msg) => {
         if (msg && msg.room) {
             io.to(msg.room).emit('chat_message', msg);
+        }
+    });
+
+    // In-App Voice Call Signal Handlers
+    socket.on('start_voice_call', (data) => {
+        if (data && data.room) {
+            socket.to(data.room).emit('start_voice_call');
+        }
+    });
+
+    socket.on('end_voice_call', (data) => {
+        if (data && data.room) {
+            socket.to(data.room).emit('end_voice_call');
         }
     });
 

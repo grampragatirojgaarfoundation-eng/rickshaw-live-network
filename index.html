@@ -31,13 +31,18 @@
         .btn-reset { background: #e63946; color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; }
 
         .chat-overlay { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 360px; background: #fff; z-index: 2000; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); padding: 14px; }
-        .chat-box { max-height: 140px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin-bottom: 8px; font-size: 12px; background: #f9f9f9; }
+        .chat-box { max-height: 120px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin-bottom: 8px; font-size: 12px; background: #f9f9f9; }
         .chat-input-row { display: flex; gap: 4px; margin-bottom: 6px; }
         .chat-input { flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 11px; }
         .chat-send-btn { background: #7c3aed; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; }
-        .chat-extra-row { display: flex; gap: 6px; justify-content: space-between; }
+        .chat-extra-row { display: flex; gap: 6px; justify-content: space-between; margin-bottom: 6px; }
         .extra-btn { flex: 1; background: #2563eb; color: white; border: none; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
         .extra-btn.recording { background: #dc2626; animation: pulse 1s infinite; }
+        
+        .call-row { display: flex; gap: 6px; }
+        .btn-call { flex: 1; background: #16a34a; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; }
+        .btn-call.calling { background: #dc2626; animation: pulse 1s infinite; }
+
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         .request-popup { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #fff; padding: 12px 18px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 340px; }
@@ -100,7 +105,7 @@
 
     <div class="chat-overlay" id="chatOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span id="chatHeaderTitle" style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Private Chat & Live Tracking</span>
+            <span id="chatHeaderTitle" style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Chat & 2-Min Voice Call</span>
             <button onclick="closeChat()" style="background:none; border:none; font-weight:bold; cursor:pointer; color:#666;">✕ Close</button>
         </div>
         <div class="chat-box" id="chatMessages"></div>
@@ -111,6 +116,9 @@
         <div class="chat-extra-row">
             <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 Voice Record</button>
             <button class="extra-btn" style="background:#059669;" onclick="shareGoogleLocation()">📍 Share Location</button>
+        </div>
+        <div class="call-row">
+            <button class="btn-call" id="callBtn" onclick="toggleVoiceCall()">📞 Start 2-Min Voice Call</button>
         </div>
     </div>
 
@@ -132,6 +140,7 @@
         let isPassengerActive = true; 
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
+        let localStream = null, remoteAudio = new Audio(), isCalling = false, callTimer = null;
 
         function handleRoleSelection(role) {
             if (role === 'bike_rider' || role === 'bike_sawari') {
@@ -145,17 +154,14 @@
             myRole = role;
             document.getElementById('roleModal').style.display = 'none';
 
-            // STRICT PASSENGER MINIMIZE & BACKGROUND SWITCH DETECTION
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 document.addEventListener("visibilitychange", () => {
                     if (document.hidden) {
-                        // Jab passenger app minimize karega ya doosri app kholega
                         isPassengerActive = false;
                         if (socket && socket.connected) {
                             socket.emit('deactivate_passenger', { id: myId });
                         }
                     } else {
-                        // Jab passenger wapas app par aayega
                         isPassengerActive = true;
                         syncPosition();
                     }
@@ -198,10 +204,7 @@
                 innerElement = '<div class="sawari-inner"></div>';
             }
 
-            if (isGlowing) {
-                bgClass += ' pin-glow';
-            }
-
+            if (isGlowing) bgClass += ' pin-glow';
             return L.divIcon({ className: '', html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>', iconSize: [34, 34], iconAnchor: [17, 17] });
         }
 
@@ -357,12 +360,23 @@
                 }
             });
 
+            // In-App 2-Minute Voice Call Signals
+            socket.on('start_voice_call', () => {
+                startAudioStream(false);
+            });
+
+            socket.on('end_voice_call', () => {
+                stopAudioStream(false);
+                appendChatMessage('System', 'Voice call samne wale ne ya limit poori hone par cut ho gayi.');
+            });
+
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
                     document.getElementById('statusDot').className = 'badge badge-red';
                     document.getElementById('statusText').innerText = 'Disconnected';
                     appendChatMessage('System', 'Samne wale ne conversation band kar di hai.');
                     
+                    stopAudioStream(false);
                     setTimeout(() => {
                         document.getElementById('chatMessages').innerHTML = '';
                         document.getElementById('chatOverlay').style.display = 'none';
@@ -391,7 +405,6 @@
         }
 
         function syncPosition() {
-            // Agar user passenger hai aur woh app minimize kar chuka hai, toh position send mat karo
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
 
             if (socket && socket.connected && myLat !== null && myLng !== null) {
@@ -505,6 +518,64 @@
             }
         }
 
+        // 2-MINUTE IN-APP VOICE CALL LOGIC
+        function toggleVoiceCall() {
+            if (!activeChatRoom) {
+                alert('Call ke liye active connection zaroori hai!');
+                return;
+            }
+            const btn = document.getElementById('callBtn');
+            if (!isCalling) {
+                startAudioStream(true);
+            } else {
+                stopAudioStream(true);
+            }
+        }
+
+        function startAudioStream(isInitiator) {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                localStream = stream;
+                isCalling = true;
+                const btn = document.getElementById('callBtn');
+                btn.innerText = '🔴 Call Active (2 Min Limit)... End';
+                btn.classList.add('calling');
+
+                appendChatMessage('System', '📞 Voice Call shuru ho gayi hai (2 Minute ki limit).');
+
+                if (isInitiator && socket) {
+                    socket.emit('start_voice_call', { room: activeChatRoom });
+                }
+
+                // EXACT 2 MINUTES (120,000 milliseconds) TIMER TO DISCONNECT CALL
+                callTimer = setTimeout(() => {
+                    stopAudioStream(true);
+                    appendChatMessage('System', '⏱️ 2 minute ki limit poori hone par call automatic cut ho gayi.');
+                }, 120000);
+
+            }).catch(err => {
+                alert('Microphone permission denied!');
+            });
+        }
+
+        function stopAudioStream(notifyServer) {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            if (callTimer) {
+                clearTimeout(callTimer);
+                callTimer = null;
+            }
+            isCalling = false;
+            const btn = document.getElementById('callBtn');
+            btn.innerText = '📞 Start 2-Min Voice Call';
+            btn.classList.remove('calling');
+
+            if (notifyServer && socket && activeChatRoom) {
+                socket.emit('end_voice_call', { room: activeChatRoom });
+            }
+        }
+
         function appendChatMessage(sender, text) {
             const box = document.getElementById('chatMessages');
             box.innerHTML += '<div><b>' + sender + ':</b> ' + text + '</div>';
@@ -563,6 +634,7 @@
         }
 
         function closeChat() {
+            stopAudioStream(true);
             if (activeChatRoom) {
                 socket.emit('close_chat', { room: activeChatRoom });
             }
