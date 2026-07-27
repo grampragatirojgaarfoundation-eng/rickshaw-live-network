@@ -71,8 +71,8 @@
 </head>
 <body>
 
-    <!-- Role Selection Modal -->
-    <div class="modal-overlay" id="roleModal">
+    <!-- Role Selection Modal (Sari choices dikhane ke liye) -->
+    <div class="modal-overlay" id="roleModal" style="display: none;">
         <div class="modal-box">
             <h2>Select Your Mode</h2>
             <p>Aap kis rup me kaam karna chahte hain?</p>
@@ -148,17 +148,18 @@
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
 
-        // Page load hote hi check karo kya pehle se login hai?
+        // Page load hote hi check karo kya mobile number pehle se verified hai?
         window.onload = function() {
             const savedMobile = localStorage.getItem('rickshaw_user_mobile');
-            const savedRole = localStorage.getItem('rickshaw_user_role');
 
-            if (savedMobile && savedRole) {
-                // Agar pehle se login hai, toh OTP screen mat dikhao, seedha map chalu karo!
-                myRole = savedRole;
-                document.getElementById('roleModal').style.display = 'none';
+            if (savedMobile) {
+                // Agar mobile pehle se saved hai, toh OTP mat maango, seedha MODE SELECTION modal dikhao![cite: 5]
                 document.getElementById('otpModal').style.display = 'none';
-                initializeAppAfterLogin();
+                document.getElementById('roleModal').style.display = 'flex';
+            } else {
+                // Agar pehle verify nahi kiya, toh pehle OTP modal dikhao[cite: 5]
+                document.getElementById('otpModal').style.display = 'flex';
+                document.getElementById('roleModal').style.display = 'none';
             }
         };
 
@@ -166,13 +167,13 @@
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
                 if (currentHour < 6 || currentHour >= 19) {
-                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM तक hi active rehta hai!');
+                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM tak hi active rehta hai!');
                     return;
                 }
             }
-            tempSelectedRole = role;
+            myRole = role;
             document.getElementById('roleModal').style.display = 'none';
-            document.getElementById('otpModal').style.display = 'flex';
+            initializeAppAfterLogin();
         }
 
         async function verifyOtpAndStart() {
@@ -193,13 +194,12 @@
                 let result = await response.json();
 
                 if (result.success) {
-                    // Browser mein save kar lo taaki 180 din tak dubara OTP na mange
+                    // Sirf Mobile number save karo, role save mat karo taaki har baar choice mile[cite: 5]
                     localStorage.setItem('rickshaw_user_mobile', mobileNumber);
-                    localStorage.setItem('rickshaw_user_role', tempSelectedRole);
 
                     document.getElementById('otpModal').style.display = 'none';
-                    myRole = tempSelectedRole;
-                    initializeAppAfterLogin();
+                    // OTP ke baad ab Mode Selection screen dikhao[cite: 5]
+                    document.getElementById('roleModal').style.display = 'flex';
                 } else {
                     alert(result.message);
                 }
