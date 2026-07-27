@@ -13,11 +13,12 @@ app.use(express.static(__dirname));
 const USERS_FILE = path.join(__dirname, 'users.json');
 
 function readUsers() {
-    if (!fs.existsSync(USERS_FILE)) {
-        fs.writeFileSync(USERS_FILE, JSON.stringify([]));
-    }
-    const data = fs.readFileSync(USERS_FILE, 'utf8');
     try {
+        if (!fs.existsSync(USERS_FILE)) {
+            fs.writeFileSync(USERS_FILE, JSON.stringify([], null, 2), 'utf8');
+            return [];
+        }
+        const data = fs.readFileSync(USERS_FILE, 'utf8');
         return JSON.parse(data);
     } catch (e) {
         return [];
@@ -25,7 +26,11 @@ function readUsers() {
 }
 
 function writeUsers(users) {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    try {
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
+    } catch (e) {
+        console.log("Error writing users.json:", e);
+    }
 }
 
 app.post('/verify-otp', (req, res) => {
@@ -54,6 +59,7 @@ app.post('/verify-otp', (req, res) => {
         }
 
         writeUsers(users);
+        console.log("User verified and saved successfully:", mobileNumber);
 
         return res.json({ 
             success: true, 
@@ -148,10 +154,10 @@ io.on('connection', (socket) => {
         console.log('User disconnected:', socket.id);
         for (let id in activeUsers) {
             if (activeUsers[id].socketId === socket.id) {
-                // Agar rider background me gaya aur connection drop hua, toh thodi der hold ya turant remove ke liye check kar sakte hain. 
-                // Lekin normal close par passenger hi deactivate hoga.
-                delete activeUsers[id];
-                io.emit('remove_user', { id: id, counts: getGlobalCounts() });
+                if (activeUsers[id].role === 'sawari' || activeUsers[id].role === 'bike_sawari') {
+                    delete activeUsers[id];
+                    io.emit('remove_user', { id: id, counts: getGlobalCounts() });
+                }
                 break;
             }
         }
