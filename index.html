@@ -143,11 +143,16 @@
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
         let isPassengerActive = true, tempSelectedRole = null;
-        let requestedRiders = {}; // Track jin riders ko request bhej di gayi hai
+        let requestedRiders = {}; 
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
 
         window.onload = function() {
+            // Notification permission request for background push/system notifications
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+
             const savedMobile = localStorage.getItem('rickshaw_user_mobile');
             if (savedMobile) {
                 document.getElementById('otpModal').style.display = 'none';
@@ -215,7 +220,6 @@
                 });
             }
 
-            // Window close ya reload hone par bhi server ko notify karein
             window.addEventListener('beforeunload', () => {
                 if (socket && socket.connected) {
                     socket.emit('deactivate_passenger', { id: myId });
@@ -381,6 +385,14 @@
                     incomingReqData = data;
                     document.getElementById('reqText').innerText = '🙋‍♂️ Nayi Sawari Request aayi hai!';
                     document.getElementById('requestPopup').style.display = 'block';
+
+                    // Notification bar alert trigger
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification("Nayi Sawari Request!", {
+                            body: "Aapke paas ek nayi SMS ride request aayi hai.",
+                            icon: "https://cdn-icons-png.flaticon.com/512/854/854878.png"
+                        });
+                    }
                 }
             });
 
@@ -402,11 +414,10 @@
                 }
             });
 
-            // Rider dwara request reject karne ka handler
             socket.on('request_rejected', (data) => {
                 if (myId === data.passengerId) {
                     alert('❌ Rider ne aapki SMS request reject kar di hai.');
-                    requestedRiders[data.riderId] = false; // Button wapas normal karne ke liye
+                    requestedRiders[data.riderId] = false; 
                     if (activeMarkers[data.riderId]) {
                         processIncomingUserMarkerRefresh(data.riderId);
                     }
@@ -528,10 +539,18 @@
                 activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map)
                     .bindPopup(popupHtml);
             }
+
+            // Passenger ki destination direction line rider ko dikhane ke liye
+            if (myRole === 'rider' && (user.role === 'sawari' || user.role === 'bike_sawari') && user.destination) {
+                if (activeRoutes[user.id]) {
+                    activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
+                } else {
+                    activeRoutes[user.id] = L.polyline([[user.lat, user.lng], [user.destination.lat, user.destination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
+                }
+            }
         }
 
         function processIncomingUserMarkerRefresh(riderId) {
-            // Popup button state refresh karne ke liye
             if (activeMarkers[riderId]) {
                 let popupHtml = '<b>RIDER</b><br><button onclick="sendSmsRequest(\'' + riderId + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
                 activeMarkers[riderId].bindPopup(popupHtml).openPopup();
