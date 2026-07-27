@@ -148,7 +148,6 @@
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
 
         window.onload = function() {
-            // Notification permission request for background push/system notifications
             if ("Notification" in window && Notification.permission !== "granted") {
                 Notification.requestPermission();
             }
@@ -206,20 +205,25 @@
         }
 
         function initializeAppAfterLogin() {
-            if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                document.addEventListener("visibilitychange", () => {
-                    if (document.hidden) {
-                        isPassengerActive = false;
-                        if (socket && socket.connected) {
-                            socket.emit('deactivate_passenger', { id: myId });
-                        }
-                    } else {
-                        isPassengerActive = true;
-                        syncPosition();
+            // Strong background/minimize detection for passengers
+            const handleVisibility = () => {
+                if (document.hidden || document.visibilityState === 'hidden') {
+                    isPassengerActive = false;
+                    if (socket && socket.connected && (myRole === 'sawari' || myRole === 'bike_sawari')) {
+                        socket.emit('deactivate_passenger', { id: myId });
                     }
-                });
-            }
+                } else {
+                    isPassengerActive = true;
+                    syncPosition();
+                }
+            };
 
+            document.addEventListener("visibilitychange", handleVisibility);
+            window.addEventListener("pagehide", () => {
+                if (socket && socket.connected && (myRole === 'sawari' || myRole === 'bike_sawari')) {
+                    socket.emit('deactivate_passenger', { id: myId });
+                }
+            });
             window.addEventListener('beforeunload', () => {
                 if (socket && socket.connected) {
                     socket.emit('deactivate_passenger', { id: myId });
@@ -386,7 +390,6 @@
                     document.getElementById('reqText').innerText = '🙋‍♂️ Nayi Sawari Request aayi hai!';
                     document.getElementById('requestPopup').style.display = 'block';
 
-                    // Notification bar alert trigger
                     if ("Notification" in window && Notification.permission === "granted") {
                         new Notification("Nayi Sawari Request!", {
                             body: "Aapke paas ek nayi SMS ride request aayi hai.",
@@ -540,8 +543,8 @@
                     .bindPopup(popupHtml);
             }
 
-            // Passenger ki destination direction line rider ko dikhane ke liye
-            if (myRole === 'rider' && (user.role === 'sawari' || user.role === 'bike_sawari') && user.destination) {
+            // Rider ko passenger ki destination direction line dikhane ke liye
+            if ((myRole === 'rider' || myRole === 'bike_rider') && (user.role === 'sawari' || user.role === 'bike_sawari') && user.destination) {
                 if (activeRoutes[user.id]) {
                     activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
                 } else {
