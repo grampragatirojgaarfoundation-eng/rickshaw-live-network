@@ -71,7 +71,6 @@
 </head>
 <body>
 
-    <!-- Role Selection Modal (Sari choices dikhane ke liye) -->
     <div class="modal-overlay" id="roleModal" style="display: none;">
         <div class="modal-box">
             <h2>Select Your Mode</h2>
@@ -85,7 +84,6 @@
         </div>
     </div>
 
-    <!-- OTP Modal -->
     <div class="modal-overlay" id="otpModal" style="display: none;">
         <div class="modal-box">
             <h2>Mobile Verification</h2>
@@ -145,19 +143,16 @@
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
         let isPassengerActive = true, tempSelectedRole = null;
+        let requestedRiders = {}; // Track jin riders ko request bhej di gayi hai
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
 
-        // Page load hote hi check karo kya mobile number pehle se verified hai?
         window.onload = function() {
             const savedMobile = localStorage.getItem('rickshaw_user_mobile');
-
             if (savedMobile) {
-                // Agar mobile pehle se saved hai, toh OTP mat maango, seedha MODE SELECTION modal dikhao![cite: 5]
                 document.getElementById('otpModal').style.display = 'none';
                 document.getElementById('roleModal').style.display = 'flex';
             } else {
-                // Agar pehle verify nahi kiya, toh pehle OTP modal dikhao[cite: 5]
                 document.getElementById('otpModal').style.display = 'flex';
                 document.getElementById('roleModal').style.display = 'none';
             }
@@ -194,11 +189,8 @@
                 let result = await response.json();
 
                 if (result.success) {
-                    // Sirf Mobile number save karo, role save mat karo taaki har baar choice mile[cite: 5]
                     localStorage.setItem('rickshaw_user_mobile', mobileNumber);
-
                     document.getElementById('otpModal').style.display = 'none';
-                    // OTP ke baad ab Mode Selection screen dikhao[cite: 5]
                     document.getElementById('roleModal').style.display = 'flex';
                 } else {
                     alert(result.message);
@@ -222,6 +214,13 @@
                     }
                 });
             }
+
+            // Window close ya reload hone par bhi server ko notify karein
+            window.addEventListener('beforeunload', () => {
+                if (socket && socket.connected) {
+                    socket.emit('deactivate_passenger', { id: myId });
+                }
+            });
 
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((pos) => {
@@ -259,9 +258,7 @@
                 innerElement = '<div class="sawari-inner"></div>';
             }
 
-            if (isGlowing) {
-                bgClass += ' pin-glow';
-            }
+            if (isGlowing) bgClass += ' pin-glow';
 
             return L.divIcon({ className: '', html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>', iconSize: [34, 34], iconAnchor: [17, 17] });
         }
@@ -405,6 +402,17 @@
                 }
             });
 
+            // Rider dwara request reject karne ka handler
+            socket.on('request_rejected', (data) => {
+                if (myId === data.passengerId) {
+                    alert('❌ Rider ne aapki SMS request reject kar di hai.');
+                    requestedRiders[data.riderId] = false; // Button wapas normal karne ke liye
+                    if (activeMarkers[data.riderId]) {
+                        processIncomingUserMarkerRefresh(data.riderId);
+                    }
+                }
+            });
+
             socket.on('chat_message', (msg) => {
                 if (activeChatRoom === msg.room) {
                     let senderLabel = (msg.senderId === myId) ? 'Aap' : msg.senderRole.toUpperCase();
@@ -496,9 +504,7 @@
                 }
             }
 
-            if (user.id === connectedPartnerId) {
-                canSee = true;
-            }
+            if (user.id === connectedPartnerId) canSee = true;
 
             if (!canSee || (user.id !== connectedPartnerId && distance > maxRadius)) {
                 removeUser(user.id);
@@ -513,30 +519,30 @@
             } else {
                 let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>Doori: ' + distance.toFixed(1) + ' KM';
                 if (showPopupBtn) {
-                    popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
+                    if (requestedRiders[user.id]) {
+                        popupHtml += '<br><button style="background:#6b7280; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px;" disabled>⏳ Request Sent...</button>';
+                    } else {
+                        popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
+                    }
                 }
                 activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map)
                     .bindPopup(popupHtml);
             }
+        }
 
-            if (user.id === connectedPartnerId) {
-                if (activeRoutes[user.id]) {
-                    activeRoutes[user.id].setLatLngs([[myLat, myLng], [user.lat, user.lng]]);
-                } else {
-                    activeRoutes[user.id] = L.polyline([[myLat, myLng], [user.lat, user.lng]], { color: '#16a34a', weight: 5, dashArray: '6, 8' }).addTo(map);
-                }
-            } else if (myRole === 'rider' && user.role === 'sawari' && user.destination) {
-                if (activeRoutes[user.id]) {
-                    activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
-                } else {
-                    activeRoutes[user.id] = L.polyline([[user.lat, user.lng], [user.destination.lat, user.destination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
-                }
+        function processIncomingUserMarkerRefresh(riderId) {
+            // Popup button state refresh karne ke liye
+            if (activeMarkers[riderId]) {
+                let popupHtml = '<b>RIDER</b><br><button onclick="sendSmsRequest(\'' + riderId + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
+                activeMarkers[riderId].bindPopup(popupHtml).openPopup();
             }
         }
 
         function sendSmsRequest(riderId) {
+            requestedRiders[riderId] = true;
             socket.emit('send_sms_request', { passengerId: myId, riderId: riderId });
             alert('SMS Request bhej di gayi hai!');
+            processIncomingUserMarkerRefresh(riderId);
         }
 
         function acceptRequest() {
@@ -548,7 +554,10 @@
 
         function rejectRequest() {
             document.getElementById('requestPopup').style.display = 'none';
-            incomingReqData = null;
+            if (incomingReqData) {
+                socket.emit('reject_sms_request', incomingReqData);
+                incomingReqData = null;
+            }
         }
 
         function sendChatMessage() {

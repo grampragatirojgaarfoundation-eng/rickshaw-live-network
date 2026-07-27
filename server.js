@@ -12,7 +12,6 @@ app.use(express.static(__dirname));
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 
-// Helper function to read/create users.json automatically
 function readUsers() {
     if (!fs.existsSync(USERS_FILE)) {
         fs.writeFileSync(USERS_FILE, JSON.stringify([]));
@@ -25,15 +24,13 @@ function readUsers() {
     }
 }
 
-// Helper function to write users
 function writeUsers(users) {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
-// Fixed OTP Verification & 180-Day Log Route
 app.post('/verify-otp', (req, res) => {
     const { mobileNumber, enteredOtp } = req.body;
-    const FIXED_OTP = "7317"; // Aapka manga gaya fix OTP
+    const FIXED_OTP = "7317";
 
     if (!mobileNumber || mobileNumber.length < 10) {
         return res.json({ success: false, message: "Kripya sahi 10 ankon ka mobile number daalein." });
@@ -43,14 +40,11 @@ app.post('/verify-otp', (req, res) => {
         let users = readUsers();
         const currentTime = new Date().toISOString();
         
-        // Check karo ki number pehle se file mein hai ya nahi
         let user = users.find(u => u.mobile === mobileNumber);
 
         if (user) {
-            // Agar pehle se hai, toh sirf Last Active Time update kar do (Overwrite)
             user.lastActive = currentTime;
         } else {
-            // Agar naya user hai, toh naya record jod do
             user = {
                 mobile: mobileNumber,
                 token: "token_" + Math.random().toString(36).substring(2),
@@ -124,13 +118,17 @@ io.on('connection', (socket) => {
 
         if (activeUsers[data.passengerId]) {
             const passengerSocket = io.sockets.sockets.get(activeUsers[data.passengerId].socketId);
-            if (passengerSocket) {
-                passengerSocket.join(roomName);
-            }
+            if (passengerSocket) passengerSocket.join(roomName);
         }
 
         if (activeUsers[data.passengerId] && activeUsers[data.riderId]) {
             io.to(roomName).emit('request_accepted', { ...data, room: roomName });
+        }
+    });
+
+    socket.on('reject_sms_request', (data) => {
+        if (activeUsers[data.passengerId]) {
+            io.to(activeUsers[data.passengerId].socketId).emit('request_rejected', data);
         }
     });
 
