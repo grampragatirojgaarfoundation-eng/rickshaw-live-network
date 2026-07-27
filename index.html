@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <!-- OTP Modal (Hidden initially) -->
+    <!-- OTP Modal -->
     <div class="modal-overlay" id="otpModal" style="display: none;">
         <div class="modal-box">
             <h2>Mobile Verification</h2>
@@ -148,11 +148,25 @@
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
 
+        // Page load hote hi check karo kya pehle se login hai?
+        window.onload = function() {
+            const savedMobile = localStorage.getItem('rickshaw_user_mobile');
+            const savedRole = localStorage.getItem('rickshaw_user_role');
+
+            if (savedMobile && savedRole) {
+                // Agar pehle se login hai, toh OTP screen mat dikhao, seedha map chalu karo!
+                myRole = savedRole;
+                document.getElementById('roleModal').style.display = 'none';
+                document.getElementById('otpModal').style.display = 'none';
+                initializeAppAfterLogin();
+            }
+        };
+
         function selectRole(role) {
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
                 if (currentHour < 6 || currentHour >= 19) {
-                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM tak hi active rehta hai!');
+                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM तक hi active rehta hai!');
                     return;
                 }
             }
@@ -179,6 +193,10 @@
                 let result = await response.json();
 
                 if (result.success) {
+                    // Browser mein save kar lo taaki 180 din tak dubara OTP na mange
+                    localStorage.setItem('rickshaw_user_mobile', mobileNumber);
+                    localStorage.setItem('rickshaw_user_role', tempSelectedRole);
+
                     document.getElementById('otpModal').style.display = 'none';
                     myRole = tempSelectedRole;
                     initializeAppAfterLogin();
