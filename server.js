@@ -77,17 +77,62 @@ const io = new Server(server, { cors: { origin: "*" } });
 
 let activeUsers = {};
 
-function getGlobalCounts() {
-    let riders = 0;
-    let sawaris = 0;
-    for (let id in activeUsers) {
-        if (activeUsers[id].role === 'rider' || activeUsers[id].role === 'bike_rider') riders++;
-        if (activeUsers[id].role === 'sawari' || activeUsers[id].role === 'bike_sawari') sawaris++;
-    }
-    return { riders, sawaris };
+// ==========================================
+// SPATIAL GRID INDEXING LOGIC (50,000+ TRAFFIC ENGINE)
+// Grid Cell Size: 0.05 degrees (~5.5 km x 5.5 km)
+// ==========================================
+const GRID_SIZE = 0.05; 
+let spatialGrid = {};
+
+function getCellKey(lat, lng) {
+    const gridLat = Math.floor(lat / GRID_SIZE);
+    const gridLng = Math.floor(lng / GRID_SIZE);
+    return `${gridLat}_${gridLng}`;
 }
 
-// Server-Side Spatial Distance Calculator (Haversine Formula in KM)
+function getNeighborCellKeys(lat, lng) {
+    const gridLat = Math.floor(lat / GRID_SIZE);
+    const gridLng = Math.floor(lng / GRID_SIZE);
+    const keys = [];
+    
+    // 5x5 grid cells around user (~25km radius coverage)
+    for (let dLat = -2; dLat <= 2; dLat++) {
+        for (let dLng = -2; dLng <= 2; dLng++) {
+            keys.push(`${gridLat + dLat}_${gridLng + dLng}`);
+        }
+    }
+    return keys;
+}
+
+function updateUserInGrid(user) {
+    const newCellKey = getCellKey(user.lat, user.lng);
+    
+    if (user.currentGridKey && user.currentGridKey !== newCellKey) {
+        if (spatialGrid[user.currentGridKey]) {
+            delete spatialGrid[user.currentGridKey][user.id];
+            if (Object.keys(spatialGrid[user.currentGridKey]).length === 0) {
+                delete spatialGrid[user.currentGridKey];
+            }
+        }
+    }
+    
+    user.currentGridKey = newCellKey;
+    if (!spatialGrid[newCellKey]) {
+        spatialGrid[newCellKey] = {};
+    }
+    spatialGrid[newCellKey][user.id] = user;
+}
+
+function removeUserFromGrid(userId) {
+    const user = activeUsers[userId];
+    if (user && user.currentGridKey && spatialGrid[user.currentGridKey]) {
+        delete spatialGrid[user.currentGridKey][userId];
+        if (Object.keys(spatialGrid[user.currentGridKey]).length === 0) {
+            delete spatialGrid[user.currentGridKey];
+        }
+    }
+}
+
 function calculateDistance(lat1, lon1, lat2, lon2) {
     if (!lat1 || !lon1 || !lat2 || !lon2) return 9999;
     const R = 6371;
@@ -99,6 +144,16 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+function getGlobalCounts() {
+    let riders = 0;
+    let sawaris = 0;
+    for (let id in activeUsers) {
+        if (activeUsers[id].role === 'rider' || activeUsers[id].role === 'bike_rider') riders++;
+        if (activeUsers[id].role === 'sawari' || activeUsers[id].role === 'bike_sawari') sawaris++;
+    }
+    return { riders, sawaris };
+}
+
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
@@ -106,22 +161,32 @@ io.on('connection', (socket) => {
 
     socket.on('update_location', (data) => {
         if (data && data.id && data.lat !== undefined && data.lng !== undefined) {
-            activeUsers[data.id] = { ...data, socketId: socket.id };
+            const userData = { ...data, socketId: socket.id };
+            activeUsers[data.id] = userData;
+            
+            // Grid Bucket अपडेट करें
+            updateUserInGrid(userData);
+
             const globalCounts = getGlobalCounts();
-
-            // Maximum Distance for Server Broadcast (25 KM)
-            const MAX_SERVER_BROADCAST_DIST_KM = 25;
-
-            // Only send broadcast to users who are within 25 km
-            for (let targetId in activeUsers) {
-                const targetUser = activeUsers[targetId];
-                if (targetUser && targetUser.socketId) {
-                    const dist = calculateDistance(data.lat, data.lng, targetUser.lat, targetUser.lng);
-                    if (dist <= MAX_SERVER_BROADCAST_DIST_KM || targetId === data.id) {
-                        io.to(targetUser.socketId).emit('live_broadcast', {
-                            user: activeUsers[data.id],
-                            counts: globalCounts
-                        });
+            const neighborKeys = getNeighborCellKeys(data.lat, data.lng);
+            const notifiedSockets = new Set();
+            
+            // केवल 25 KM के आसपास के ग्रिड डिब्बों में लाइव ब्रॉडकास्ट भेजें
+            for (let key of neighborKeys) {
+                if (spatialGrid[key]) {
+                    for (let targetId in spatialGrid[key]) {
+                        const targetUser = spatialGrid[key][targetId];
+                        if (targetUser && targetUser.socketId && !notifiedSockets.has(targetUser.socketId)) {
+                            notifiedSockets.add(targetUser.socketId);
+                            
+                            const dist = calculateDistance(data.lat, data.lng, targetUser.lat, targetUser.lng);
+                            if (dist <= 25 || targetId === data.id) {
+                                io.to(targetUser.socketId).emit('live_broadcast', {
+                                    user: userData,
+                                    counts: globalCounts
+                                });
+                            }
+                        }
                     }
                 }
             }
@@ -130,6 +195,7 @@ io.on('connection', (socket) => {
 
     socket.on('deactivate_passenger', (data) => {
         if (data && data.id && activeUsers[data.id]) {
+            removeUserFromGrid(data.id);
             delete activeUsers[data.id];
             io.emit('remove_user', { id: data.id, counts: getGlobalCounts() });
         }
@@ -177,6 +243,7 @@ io.on('connection', (socket) => {
         console.log('User disconnected:', socket.id);
         for (let id in activeUsers) {
             if (activeUsers[id].socketId === socket.id) {
+                removeUserFromGrid(id);
                 delete activeUsers[id];
                 io.emit('remove_user', { id: id, counts: getGlobalCounts() });
                 break;
