@@ -148,12 +148,10 @@ io.on('connection', (socket) => {
         console.log('User disconnected:', socket.id);
         for (let id in activeUsers) {
             if (activeUsers[id].socketId === socket.id) {
-                // Agar user passenger tha ya tab poori tarah close kiya toh remove karo, 
-                // lekin background me rider ke liye active state maintain karne do.
-                if (activeUsers[id].role === 'sawari' || activeUsers[id].role === 'bike_sawari') {
-                    delete activeUsers[id];
-                    io.emit('remove_user', { id: id, counts: getGlobalCounts() });
-                }
+                // Agar rider background me gaya aur connection drop hua, toh thodi der hold ya turant remove ke liye check kar sakte hain. 
+                // Lekin normal close par passenger hi deactivate hoga.
+                delete activeUsers[id];
+                io.emit('remove_user', { id: id, counts: getGlobalCounts() });
                 break;
             }
         }
