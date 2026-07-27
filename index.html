@@ -20,6 +20,9 @@
         .btn-bike-rider { background: #d97706; }
         .btn-bike-sawari { background: #7c3aed; }
 
+        .otp-input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; text-align: center; }
+        .otp-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
+
         .status-card { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: none; align-items: center; gap: 10px; }
         .badge { width: 12px; height: 12px; border-radius: 50%; display: none; }
         .badge-green { background: #16a34a; display: inline-block; }
@@ -68,16 +71,28 @@
 </head>
 <body>
 
+    <!-- Role Selection Modal -->
     <div class="modal-overlay" id="roleModal">
         <div class="modal-box">
             <h2>Select Your Mode</h2>
             <p>Aap kis rup me kaam karna chahte hain?</p>
             <div class="btn-group">
-                <button class="role-btn btn-rider" onclick="handleRoleSelection('rider')">Auto / E-Rickshaw Rider</button>
-                <button class="role-btn btn-sawari" onclick="handleRoleSelection('sawari')">Auto Passenger (Sawari)</button>
-                <button class="role-btn btn-bike-rider" onclick="handleRoleSelection('bike_rider')">🏍️ Bike Rider (6 AM - 7 PM)</button>
-                <button class="role-btn btn-bike-sawari" onclick="handleRoleSelection('bike_sawari')">🙋‍♂️ Bike Passenger (6 AM - 7 PM)</button>
+                <button class="role-btn btn-rider" onclick="selectRole('rider')">Auto / E-Rickshaw Rider</button>
+                <button class="role-btn btn-sawari" onclick="selectRole('sawari')">Auto Passenger (Sawari)</button>
+                <button class="role-btn btn-bike-rider" onclick="selectRole('bike_rider')">🏍️ Bike Rider (6 AM - 7 PM)</button>
+                <button class="role-btn btn-bike-sawari" onclick="selectRole('bike_sawari')">🙋‍♂️ Bike Passenger (6 AM - 7 PM)</button>
             </div>
+        </div>
+    </div>
+
+    <!-- OTP Modal (Hidden initially) -->
+    <div class="modal-overlay" id="otpModal" style="display: none;">
+        <div class="modal-box">
+            <h2>Mobile Verification</h2>
+            <p>Kripya apna mobile number aur OTP (Code: 7317) darj karein.</p>
+            <input type="tel" id="mobileInput" class="otp-input" placeholder="Mobile Number (10 digits)" maxlength="10">
+            <input type="password" id="otpInput" class="otp-input" placeholder="Enter OTP (7317)" maxlength="4">
+            <button class="otp-btn" onclick="verifyOtpAndStart()">Verify & Continue</button>
         </div>
     </div>
 
@@ -129,11 +144,11 @@
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
-        let isPassengerActive = true; 
+        let isPassengerActive = true, tempSelectedRole = null;
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
 
-        function handleRoleSelection(role) {
+        function selectRole(role) {
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
                 if (currentHour < 6 || currentHour >= 19) {
@@ -141,21 +156,49 @@
                     return;
                 }
             }
-
-            myRole = role;
+            tempSelectedRole = role;
             document.getElementById('roleModal').style.display = 'none';
+            document.getElementById('otpModal').style.display = 'flex';
+        }
 
-            // STRICT PASSENGER MINIMIZE & BACKGROUND SWITCH DETECTION
+        async function verifyOtpAndStart() {
+            const mobileNumber = document.getElementById('mobileInput').value.trim();
+            const enteredOtp = document.getElementById('otpInput').value.trim();
+
+            if (mobileNumber.length < 10) {
+                alert('Kripya sahi 10 ankon ka mobile number daalein.');
+                return;
+            }
+
+            try {
+                let response = await fetch('/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobileNumber, enteredOtp })
+                });
+                let result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('otpModal').style.display = 'none';
+                    myRole = tempSelectedRole;
+                    initializeAppAfterLogin();
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) {
+                alert('Server connection error!');
+            }
+        }
+
+        function initializeAppAfterLogin() {
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 document.addEventListener("visibilitychange", () => {
                     if (document.hidden) {
-                        // Jab passenger app minimize karega ya doosri app kholega
                         isPassengerActive = false;
                         if (socket && socket.connected) {
                             socket.emit('deactivate_passenger', { id: myId });
                         }
                     } else {
-                        // Jab passenger wapas app par aayega
                         isPassengerActive = true;
                         syncPosition();
                     }
@@ -169,7 +212,7 @@
                     myHeading = pos.coords.heading || 0;
                     initMapAndSystem();
                 }, (err) => {
-                    alert('Location access zaroori hai! Default location par set kiya ja raha hai.');
+                    alert('Location access zaroori hai! Default location set ki ja rahi hai.');
                     myLat = 20.5937; myLng = 78.9629;
                     initMapAndSystem();
                 }, { enableHighAccuracy: true, timeout: 10000 });
@@ -391,7 +434,6 @@
         }
 
         function syncPosition() {
-            // Agar user passenger hai aur woh app minimize kar chuka hai, toh position send mat karo
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
 
             if (socket && socket.connected && myLat !== null && myLng !== null) {

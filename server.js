@@ -3,10 +3,76 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 app.use(express.static(__dirname));
+
+const USERS_FILE = path.join(__dirname, 'users.json');
+
+// Helper function to read/create users.json automatically
+function readUsers() {
+    if (!fs.existsSync(USERS_FILE)) {
+        fs.writeFileSync(USERS_FILE, JSON.stringify([]));
+    }
+    const data = fs.readFileSync(USERS_FILE, 'utf8');
+    try {
+        return JSON.parse(data);
+    } catch (e) {
+        return [];
+    }
+}
+
+// Helper function to write users
+function writeUsers(users) {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+}
+
+// Fixed OTP Verification & 180-Day Log Route
+app.post('/verify-otp', (req, res) => {
+    const { mobileNumber, enteredOtp } = req.body;
+    const FIXED_OTP = "7317"; // Aapka manga gaya fix OTP
+
+    if (!mobileNumber || mobileNumber.length < 10) {
+        return res.json({ success: false, message: "Kripya sahi 10 ankon ka mobile number daalein." });
+    }
+
+    if (enteredOtp === FIXED_OTP) {
+        let users = readUsers();
+        const currentTime = new Date().toISOString();
+        
+        // Check karo ki number pehle se file mein hai ya nahi
+        let user = users.find(u => u.mobile === mobileNumber);
+
+        if (user) {
+            // Agar pehle se hai, toh sirf Last Active Time update kar do (Overwrite)
+            user.lastActive = currentTime;
+        } else {
+            // Agar naya user hai, toh naya record jod do
+            user = {
+                mobile: mobileNumber,
+                token: "token_" + Math.random().toString(36).substring(2),
+                lastActive: currentTime
+            };
+            users.push(user);
+        }
+
+        writeUsers(users);
+
+        return res.json({ 
+            success: true, 
+            message: "Login Successful!", 
+            token: user.token 
+        });
+    } else {
+        return res.json({ 
+            success: false, 
+            message: "Galat OTP hai! Kripya '7317' daalein." 
+        });
+    }
+});
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -39,7 +105,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Passenger minimize/switch hone par use turant map se hatane ka handler
     socket.on('deactivate_passenger', (data) => {
         if (data && data.id && activeUsers[data.id]) {
             delete activeUsers[data.id];
