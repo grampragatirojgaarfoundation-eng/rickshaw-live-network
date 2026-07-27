@@ -87,15 +87,44 @@ function getGlobalCounts() {
     return { riders, sawaris };
 }
 
+// Server-Side Spatial Distance Calculator (Haversine Formula in KM)
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    if (!lat1 || !lon1 || !lat2 || !lon2) return 9999;
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
     socket.emit('init_users', activeUsers);
 
     socket.on('update_location', (data) => {
-        if (data && data.id) {
+        if (data && data.id && data.lat !== undefined && data.lng !== undefined) {
             activeUsers[data.id] = { ...data, socketId: socket.id };
-            io.emit('live_broadcast', { user: activeUsers[data.id], counts: getGlobalCounts() });
+            const globalCounts = getGlobalCounts();
+
+            // Maximum Distance for Server Broadcast (25 KM)
+            const MAX_SERVER_BROADCAST_DIST_KM = 25;
+
+            // Only send broadcast to users who are within 25 km
+            for (let targetId in activeUsers) {
+                const targetUser = activeUsers[targetId];
+                if (targetUser && targetUser.socketId) {
+                    const dist = calculateDistance(data.lat, data.lng, targetUser.lat, targetUser.lng);
+                    if (dist <= MAX_SERVER_BROADCAST_DIST_KM || targetId === data.id) {
+                        io.to(targetUser.socketId).emit('live_broadcast', {
+                            user: activeUsers[data.id],
+                            counts: globalCounts
+                        });
+                    }
+                }
+            }
         }
     });
 
