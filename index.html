@@ -205,30 +205,27 @@
         }
 
         function initializeAppAfterLogin() {
-            // Strong background/minimize detection for passengers
-            const handleVisibility = () => {
-                if (document.hidden || document.visibilityState === 'hidden') {
-                    isPassengerActive = false;
-                    if (socket && socket.connected && (myRole === 'sawari' || myRole === 'bike_sawari')) {
+            // Background tracking logic: Sirf Passenger ke liye minimize/background par disconnect hoga, Riders ke liye nahi!
+            if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                const handleVisibility = () => {
+                    if (document.hidden || document.visibilityState === 'hidden') {
+                        isPassengerActive = false;
+                        if (socket && socket.connected) {
+                            socket.emit('deactivate_passenger', { id: myId });
+                        }
+                    } else {
+                        isPassengerActive = true;
+                        syncPosition();
+                    }
+                };
+
+                document.addEventListener("visibilitychange", handleVisibility);
+                window.addEventListener("pagehide", () => {
+                    if (socket && socket.connected) {
                         socket.emit('deactivate_passenger', { id: myId });
                     }
-                } else {
-                    isPassengerActive = true;
-                    syncPosition();
-                }
-            };
-
-            document.addEventListener("visibilitychange", handleVisibility);
-            window.addEventListener("pagehide", () => {
-                if (socket && socket.connected && (myRole === 'sawari' || myRole === 'bike_sawari')) {
-                    socket.emit('deactivate_passenger', { id: myId });
-                }
-            });
-            window.addEventListener('beforeunload', () => {
-                if (socket && socket.connected) {
-                    socket.emit('deactivate_passenger', { id: myId });
-                }
-            });
+                });
+            }
 
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((pos) => {
@@ -474,6 +471,7 @@
         }
 
         function syncPosition() {
+            // Agar passenger hai aur background mein chala gaya hai, tabhi position rokna hai. Rider ke liye hamesha chalu rahega!
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
 
             if (socket && socket.connected && myLat !== null && myLng !== null) {
@@ -543,7 +541,6 @@
                     .bindPopup(popupHtml);
             }
 
-            // Rider ko passenger ki destination direction line dikhane ke liye
             if ((myRole === 'rider' || myRole === 'bike_rider') && (user.role === 'sawari' || user.role === 'bike_sawari') && user.destination) {
                 if (activeRoutes[user.id]) {
                     activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
