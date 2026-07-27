@@ -138,9 +138,7 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
-        // Mobile number ko hi unique ID banayenge taaki bar-bar naya id na bane
-        let savedMobile = localStorage.getItem('rickshaw_user_mobile');
-        let myId = savedMobile ? ('user_' + savedMobile) : ('user_' + Math.floor(Math.random() * 1000000));
+        let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
@@ -154,6 +152,7 @@
                 Notification.requestPermission();
             }
 
+            const savedMobile = localStorage.getItem('rickshaw_user_mobile');
             if (savedMobile) {
                 document.getElementById('otpModal').style.display = 'none';
                 document.getElementById('roleModal').style.display = 'flex';
@@ -167,7 +166,7 @@
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
                 if (currentHour < 6 || currentHour >= 19) {
-                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM तक hi active rehta hai!');
+                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM tak hi active rehta hai!');
                     return;
                 }
             }
@@ -195,7 +194,6 @@
 
                 if (result.success) {
                     localStorage.setItem('rickshaw_user_mobile', mobileNumber);
-                    myId = 'user_' + mobileNumber; // Update ID instantly
                     document.getElementById('otpModal').style.display = 'none';
                     document.getElementById('roleModal').style.display = 'flex';
                 } else {
@@ -207,6 +205,7 @@
         }
 
         function initializeAppAfterLogin() {
+            // Background tracking logic: Sirf Passenger ke liye minimize/background par disconnect hoga, Riders ke liye nahi!
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 const handleVisibility = () => {
                     if (document.hidden || document.visibilityState === 'hidden') {
@@ -472,6 +471,7 @@
         }
 
         function syncPosition() {
+            // Agar passenger hai aur background mein chala gaya hai, tabhi position rokna hai. Rider ke liye hamesha chalu rahega!
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
 
             if (socket && socket.connected && myLat !== null && myLng !== null) {
