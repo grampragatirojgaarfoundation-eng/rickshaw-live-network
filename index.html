@@ -205,7 +205,7 @@
         }
 
         function initializeAppAfterLogin() {
-            // Background tracking logic: Sirf Passenger ke liye minimize/background par disconnect hoga, Riders ke liye nahi!
+            // Background tracking logic: Sirf Passenger ke liye minimize/background par disconnect hoga, Riders ke liye hamesha chalu rahega!
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 const handleVisibility = () => {
                     if (document.hidden || document.visibilityState === 'hidden') {
@@ -321,6 +321,7 @@
 
         function startLiveGPS() {
             if ("geolocation" in navigator) {
+                // Rider ke liye background mein bhi continuous watchPosition chale iske liye high accuracy aur options set hain
                 navigator.geolocation.watchPosition(
                     (pos) => {
                         myLat = pos.coords.latitude;
@@ -344,7 +345,9 @@
 
                         syncPosition();
                     },
-                    (err) => {},
+                    (err) => {
+                        console.log("GPS Error: ", err);
+                    }, 
                     { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
                 );
             }
@@ -352,9 +355,20 @@
 
         function connectSocketServer() {
             if (socket) return;
-            socket = io({ transports: ['websocket'], reconnection: true });
+            socket = io({ transports: ['websocket'], reconnection: true, reconnectionAttempts: Infinity, reconnectionDelay: 1000 });
 
-            socket.on('connect', () => { syncPosition(); });
+            socket.on('connect', () => { 
+                syncPosition(); 
+            });
+
+            // Rider ke liye Background Heartbeat Fallback (agar browser tab sleep mode mein bhi jaye toh har 3 second mein location push karta rahega)
+            if (myRole === 'rider' || myRole === 'bike_rider') {
+                setInterval(() => {
+                    if (myLat !== null && myLng !== null && socket && socket.connected) {
+                        socket.emit('update_location', { id: myId, role: myRole, lat: myLat, lng: myLng, heading: myHeading, destination: myDestination });
+                    }
+                }, 3000);
+            }
 
             socket.on('init_users', (users) => {
                 updateTrafficCounts(users);
@@ -471,7 +485,6 @@
         }
 
         function syncPosition() {
-            // Agar passenger hai aur background mein chala gaya hai, tabhi position rokna hai. Rider ke liye hamesha chalu rahega!
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
 
             if (socket && socket.connected && myLat !== null && myLng !== null) {
