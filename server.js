@@ -3,31 +3,13 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-const USERS_FILE = path.join(__dirname, 'users.json');
-
-function readUsers() {
-    if (!fs.existsSync(USERS_FILE)) {
-        fs.writeFileSync(USERS_FILE, JSON.stringify([]));
-    }
-    const data = fs.readFileSync(USERS_FILE, 'utf8');
-    try {
-        return JSON.parse(data);
-    } catch (e) {
-        return [];
-    }
-}
-
-function writeUsers(users) {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-}
-
+// ZERO DISK I/O - OTP Authentication in Memory Only
 app.post('/verify-otp', (req, res) => {
     const { mobileNumber, enteredOtp } = req.body;
     const FIXED_OTP = "7317";
@@ -37,28 +19,10 @@ app.post('/verify-otp', (req, res) => {
     }
 
     if (enteredOtp === FIXED_OTP) {
-        let users = readUsers();
-        const currentTime = new Date().toISOString();
-        
-        let user = users.find(u => u.mobile === mobileNumber);
-
-        if (user) {
-            user.lastActive = currentTime;
-        } else {
-            user = {
-                mobile: mobileNumber,
-                token: "token_" + Math.random().toString(36).substring(2),
-                lastActive: currentTime
-            };
-            users.push(user);
-        }
-
-        writeUsers(users);
-
         return res.json({ 
             success: true, 
             message: "Login Successful!", 
-            token: user.token 
+            token: "token_" + Math.random().toString(36).substring(2)
         });
     } else {
         return res.json({ 
@@ -74,6 +38,26 @@ app.get('/', (req, res) => {
 
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
+
+// ==========================================
+// REDIS ADAPTER SETUP (AUTOMATIC FALLBACK)
+// ==========================================
+try {
+    const { createClient } = require('redis');
+    const { createAdapter } = require('@socket.io/redis-adapter');
+
+    const pubClient = createClient({ url: process.env.REDIS_URL || 'redis://localhost:6379' });
+    const subClient = pubClient.duplicate();
+
+    Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+        io.adapter(createAdapter(pubClient, subClient));
+        console.log("🚀 Redis Adapter Connected Successfully! Multi-Core Clustering Active.");
+    }).catch((err) => {
+        console.log("⚠️ Redis connection skipped (Running in Standalone Memory Mode).");
+    });
+} catch (e) {
+    console.log("⚠️ Redis package missing or skipped. Running in Standalone Mode.");
+}
 
 let activeUsers = {};
 

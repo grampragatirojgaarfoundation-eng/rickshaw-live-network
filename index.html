@@ -205,7 +205,6 @@
         }
 
         function initializeAppAfterLogin() {
-            // Background tracking logic: Sirf Passenger ke liye minimize/background par disconnect hoga, Riders ke liye nahi!
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 const handleVisibility = () => {
                     if (document.hidden || document.visibilityState === 'hidden') {
@@ -384,12 +383,12 @@
             socket.on('receive_sms_request', (data) => {
                 if (myRole === 'bike_rider' || myRole === 'rider') {
                     incomingReqData = data;
-                    document.getElementById('reqText').innerText = '🙋‍♂️ Nayi Sawari Request aayi hai!';
+                    document.getElementById('reqText').innerText = '🙋‍♂️ Nayi Request (SMS) aayi hai!';
                     document.getElementById('requestPopup').style.display = 'block';
 
                     if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("Nayi Sawari Request!", {
-                            body: "Aapke paas ek nayi SMS ride request aayi hai.",
+                        new Notification("Nayi Connection Request!", {
+                            body: "Aapke paas ek nayi SMS request aayi hai.",
                             icon: "https://cdn-icons-png.flaticon.com/512/854/854878.png"
                         });
                     }
@@ -405,8 +404,7 @@
                     document.getElementById('requestPopup').style.display = 'none';
                     document.getElementById('chatOverlay').style.display = 'block';
                     
-                    let partnerLabel = (myId === data.riderId) ? 'Passenger (Sawari)' : 'Rider';
-                    document.getElementById('chatHeaderTitle').innerText = '💬 Connected with ' + partnerLabel;
+                    document.getElementById('chatHeaderTitle').innerText = '💬 Live Connected';
 
                     document.getElementById('statusDot').className = 'badge badge-green';
                     document.getElementById('statusText').innerText = 'Connected Live';
@@ -416,7 +414,7 @@
 
             socket.on('request_rejected', (data) => {
                 if (myId === data.passengerId) {
-                    alert('❌ Rider ne aapki SMS request reject kar di hai.');
+                    alert('❌ Samne wale ne aapki SMS request reject kar di hai.');
                     requestedRiders[data.riderId] = false; 
                     if (activeMarkers[data.riderId]) {
                         processIncomingUserMarkerRefresh(data.riderId);
@@ -471,7 +469,6 @@
         }
 
         function syncPosition() {
-            // Agar passenger hai aur background mein chala gaya hai, tabhi position rokna hai. Rider ke liye hamesha chalu rahega!
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
 
             if (socket && socket.connected && myLat !== null && myLng !== null) {
@@ -494,9 +491,14 @@
             let showPopupBtn = false;
             let canSee = false;
 
+            // NEW FEATURE: Auto Rider dusre Auto Rider (<= 10km) aur Sawaris (<= 25km) ko dekh w connect kar sakta hai
             if (myRole === 'rider') {
                 if ((user.role === 'rider' || user.role === 'sawari') && distance <= 25) {
                     canSee = true; maxRadius = 25;
+                    // Dusre Auto Rider ko 10km ke andar SMS Request bhejne ka button dikhayenge
+                    if (user.role === 'rider' && distance <= 10) {
+                        showPopupBtn = true;
+                    }
                 }
             } 
             else if (myRole === 'sawari') {
