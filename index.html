@@ -73,63 +73,63 @@
 
     <div class="modal-overlay" id="roleModal" style="display: none;">
         <div class="modal-box">
-            <h2>Select Your Mode</h2>
-            <p>Aap kis rup me kaam karna chahte hain?</p>
+            <h2>मोड चुनें (Select Mode)</h2>
+            <p>आप किस रूप में काम करना चाहते हैं?</p>
             <div class="btn-group">
-                <button class="role-btn btn-rider" onclick="selectRole('rider')">Auto / E-Rickshaw Rider</button>
-                <button class="role-btn btn-sawari" onclick="selectRole('sawari')">Auto Passenger (Sawari)</button>
-                <button class="role-btn btn-bike-rider" onclick="selectRole('bike_rider')">🏍️ Bike Rider (6 AM - 7 PM)</button>
-                <button class="role-btn btn-bike-sawari" onclick="selectRole('bike_sawari')">🙋‍♂️ Bike Passenger (6 AM - 7 PM)</button>
+                <button class="role-btn btn-rider" onclick="selectRole('rider')">ऑटो / ई-रिक्शा चालक</button>
+                <button class="role-btn btn-sawari" onclick="selectRole('sawari')">ऑटो यात्री (सवारी)</button>
+                <button class="role-btn btn-bike-rider" onclick="selectRole('bike_rider')">🏍️ बाइक चालक (सुबह 6 से शाम 7)</button>
+                <button class="role-btn btn-bike-sawari" onclick="selectRole('bike_sawari')">🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="otpModal" style="display: none;">
         <div class="modal-box">
-            <h2>Mobile Verification</h2>
-            <p>Kripya apna mobile number aur OTP (Code: 7317) darj karein.</p>
-            <input type="tel" id="mobileInput" class="otp-input" placeholder="Mobile Number (10 digits)" maxlength="10">
-            <input type="password" id="otpInput" class="otp-input" placeholder="Enter OTP (7317)" maxlength="4">
-            <button class="otp-btn" onclick="verifyOtpAndStart()">Verify & Continue</button>
+            <h2>मोबाइल सत्यापन</h2>
+            <p>कृपया अपना 10 अंकों का मोबाइल नंबर और OTP (कोड: 7317) दर्ज करें।</p>
+            <input type="tel" id="mobileInput" class="otp-input" placeholder="मोबाइल नंबर (10 अंक)" maxlength="10">
+            <input type="password" id="otpInput" class="otp-input" placeholder="OTP दर्ज करें (7317)" maxlength="4">
+            <button class="otp-btn" onclick="verifyOtpAndStart()">सत्यापित करें और आगे बढ़ें</button>
         </div>
     </div>
 
     <div class="status-card" id="statusBar">
         <div id="statusDot" class="badge"></div>
-        <span id="statusText">Live Network Active</span>
+        <span id="statusText">लाइव नेटवर्क सक्रिय है</span>
     </div>
 
     <div class="traffic-counter" id="trafficCounter">
-        🌍 Riders: <span id="totalRiders">0</span> | Sawari: <span id="totalSawaris">0</span>
+        🌍 चालक: <span id="totalRiders">0</span> | सवारी: <span id="totalSawaris">0</span>
     </div>
 
     <div class="request-popup" id="requestPopup">
         <p id="reqText" style="font-size: 12px; font-weight: bold; color: #111;"></p>
         <div class="req-btn-group">
-            <button class="btn-accept" onclick="acceptRequest()">Accept SMS</button>
-            <button class="btn-reject" onclick="rejectRequest()">Reject</button>
+            <button class="btn-accept" onclick="acceptRequest()">स्वीकार करें</button>
+            <button class="btn-reject" onclick="rejectRequest()">अस्वीकार करें</button>
         </div>
     </div>
 
     <div class="chat-overlay" id="chatOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span id="chatHeaderTitle" style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 Private Chat & Live Tracking</span>
-            <button onclick="closeChat()" style="background:none; border:none; font-weight:bold; cursor:pointer; color:#666;">✕ Close</button>
+            <span id="chatHeaderTitle" style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 प्राइवेट चैट और लाइव ट्रैकिंग</span>
+            <button onclick="closeChat()" style="background:none; border:none; font-weight:bold; cursor:pointer; color:#666;">✕ बंद करें</button>
         </div>
         <div class="chat-box" id="chatMessages"></div>
         <div class="chat-input-row">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Message likhein...">
-            <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
+            <input type="text" id="chatInput" class="chat-input" placeholder="संदेश लिखें...">
+            <button class="chat-send-btn" onclick="sendChatMessage()">भेजें</button>
         </div>
         <div class="chat-extra-row">
-            <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 Voice Record</button>
-            <button class="extra-btn" style="background:#059669;" onclick="shareGoogleLocation()">📍 Share Location</button>
+            <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 वॉइस रिकॉर्ड</button>
+            <button class="extra-btn" style="background:#059669;" onclick="shareGoogleLocation()">📍 लोकेशन शेयर</button>
         </div>
     </div>
 
     <div class="dest-card" id="destCard">
-        <span id="destStatus">Map par tap karke destination set karein</span>
-        <button class="btn-reset" onclick="resetDestination()">Reset Route</button>
+        <span id="destStatus">मैप पर टैप करके अपनी मंजिल (Destination) सेट करें</span>
+        <button class="btn-reset" onclick="resetDestination()">रूट रीसेट</button>
     </div>
 
     <div id="map"></div>
@@ -166,7 +166,7 @@
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
                 if (currentHour < 6 || currentHour >= 19) {
-                    alert('⚠️ Bike Mode sirf Subah 6 AM se Shaam 7 PM tak hi active rehta hai!');
+                    alert('⚠️ बाइक मोड सिर्फ सुबह 6 AM से शाम 7 PM तक ही सक्रिय रहता है!');
                     return;
                 }
             }
@@ -180,7 +180,7 @@
             const enteredOtp = document.getElementById('otpInput').value.trim();
 
             if (mobileNumber.length < 10) {
-                alert('Kripya sahi 10 ankon ka mobile number daalein.');
+                alert('कृपया सही 10 अंकों का मोबाइल नंबर डालें।');
                 return;
             }
 
@@ -200,7 +200,7 @@
                     alert(result.message);
                 }
             } catch (err) {
-                alert('Server connection error!');
+                alert('सर्वर कनेक्शन त्रुटि!');
             }
         }
 
@@ -233,7 +233,7 @@
                     myHeading = pos.coords.heading || 0;
                     initMapAndSystem();
                 }, (err) => {
-                    alert('Location access zaroori hai! Default location set ki ja rahi hai.');
+                    alert('लोकेशन एक्सेस जरूरी है! डिफ़ॉल्ट लोकेशन सेट की जा रही है।');
                     myLat = 20.5937; myLng = 78.9629;
                     initMapAndSystem();
                 }, { enableHighAccuracy: true, timeout: 10000 });
@@ -264,7 +264,7 @@
 
             if (isGlowing) bgClass += ' pin-glow';
 
-            return L.divIcon({ className: '', html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>', iconSize: [34, 34], iconAnchor: [17, 17] });
+            return L.divIcon({ className: '', html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>', iconSize: [22, 22], iconAnchor: [11, 11] });
         }
 
         function initMapAndSystem() {
@@ -287,7 +287,7 @@
             }
             map.invalidateSize();
 
-            selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>Aapki Location (Aap)</b>');
+            selfMarker = L.marker([myLat, myLng], { icon: getIcon(myRole, myHeading, true) }).addTo(map).bindPopup('<b>आपकी लोकेशन</b>');
 
             connectSocketServer();
             startLiveGPS();
@@ -303,10 +303,10 @@
             if (destMarker) map.removeLayer(destMarker);
             if (destLine) map.removeLayer(destLine);
 
-            destMarker = L.marker([myDestination.lat, myDestination.lng]).addTo(map).bindPopup('<b>Aapki Manzil</b>').openPopup();
+            destMarker = L.marker([myDestination.lat, myDestination.lng]).addTo(map).bindPopup('<b>आपकी मंजिल</b>').openPopup();
             destLine = L.polyline([[myLat, myLng], [myDestination.lat, myDestination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
 
-            document.getElementById('destStatus').innerText = 'Destination Set!';
+            document.getElementById('destStatus').innerText = 'मंजिल सेट हो गई है!';
             syncPosition();
         }
 
@@ -314,8 +314,8 @@
             myDestination = null;
             if (destMarker) map.removeLayer(destMarker);
             if (destLine) map.removeLayer(destLine);
-            document.getElementById('destStatus').innerText = 'Map par tap karke destination set karein';
-            syncPosition();
+            document.getElementById('destStatus').innerText = 'मैप पर टैप करके अपनी मंजिल सेट करें';
+            syncPosition(); // Server par null destination bhejega jisse rider ki screen se bhi route hat jayega
         }
 
         function startLiveGPS() {
@@ -383,12 +383,12 @@
             socket.on('receive_sms_request', (data) => {
                 if (myRole === 'bike_rider' || myRole === 'rider') {
                     incomingReqData = data;
-                    document.getElementById('reqText').innerText = '🙋‍♂️ Nayi Request (SMS) aayi hai!';
+                    document.getElementById('reqText').innerText = '🙋‍♂️ नई सवारी रिक्वेस्ट आई है!';
                     document.getElementById('requestPopup').style.display = 'block';
 
                     if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("Nayi Connection Request!", {
-                            body: "Aapke paas ek nayi SMS request aayi hai.",
+                        new Notification("नयी सवारी रिक्वेस्ट!", {
+                            body: "आपके पास एक नयी राइड रिक्वेस्ट आई है।",
                             icon: "https://cdn-icons-png.flaticon.com/512/854/854878.png"
                         });
                     }
@@ -404,17 +404,17 @@
                     document.getElementById('requestPopup').style.display = 'none';
                     document.getElementById('chatOverlay').style.display = 'block';
                     
-                    document.getElementById('chatHeaderTitle').innerText = '💬 Live Connected';
+                    document.getElementById('chatHeaderTitle').innerText = '💬 लाइव कनेक्टेड';
 
                     document.getElementById('statusDot').className = 'badge badge-green';
-                    document.getElementById('statusText').innerText = 'Connected Live';
-                    appendChatMessage('System', 'Aapas mein connect ho gaye hain.');
+                    document.getElementById('statusText').innerText = 'लाइव जुड़े हुए हैं';
+                    appendChatMessage('सिस्टम', 'आप आपस में कनेक्ट हो गए हैं।');
                 }
             });
 
             socket.on('request_rejected', (data) => {
                 if (myId === data.passengerId) {
-                    alert('❌ Samne wale ne aapki SMS request reject kar di hai.');
+                    alert('❌ सामने वाले ने आपकी रिक्वेस्ट अस्वीकार कर दी है।');
                     requestedRiders[data.riderId] = false; 
                     if (activeMarkers[data.riderId]) {
                         processIncomingUserMarkerRefresh(data.riderId);
@@ -424,7 +424,7 @@
 
             socket.on('chat_message', (msg) => {
                 if (activeChatRoom === msg.room) {
-                    let senderLabel = (msg.senderId === myId) ? 'Aap' : msg.senderRole.toUpperCase();
+                    let senderLabel = (msg.senderId === myId) ? 'आप' : msg.senderRole.toUpperCase();
                     if (msg.type === 'audio') {
                         appendAudioMessage(senderLabel, msg.audioData);
                     } else if (msg.type === 'location') {
@@ -437,14 +437,18 @@
 
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
+                    // 1. Sirf 2 second ke liye Hindi mein disconnect notification dikhayein
                     document.getElementById('statusDot').className = 'badge badge-red';
-                    document.getElementById('statusText').innerText = 'Disconnected';
-                    appendChatMessage('System', 'Samne wale ne conversation band kar di hai.');
+                    document.getElementById('statusText').innerText = 'सम्पर्क टूट गया है (Disconnected)';
+                    appendChatMessage('सिस्टम', 'कन्वर्सेशन बंद कर दी गई है।');
                     
                     setTimeout(() => {
+                        // 2 second baad wapas normal "Live Network Active" status par laayein
+                        document.getElementById('statusDot').className = 'badge badge-green';
+                        document.getElementById('statusText').innerText = 'लाइव नेटवर्क सक्रिय है';
                         document.getElementById('chatMessages').innerHTML = '';
                         document.getElementById('chatOverlay').style.display = 'none';
-                    }, 1500);
+                    }, 2000);
 
                     connectedPartnerId = null;
                     activeChatRoom = null;
@@ -491,11 +495,9 @@
             let showPopupBtn = false;
             let canSee = false;
 
-            // NEW FEATURE: Auto Rider dusre Auto Rider (<= 10km) aur Sawaris (<= 25km) ko dekh w connect kar sakta hai
             if (myRole === 'rider') {
                 if ((user.role === 'rider' || user.role === 'sawari') && distance <= 25) {
                     canSee = true; maxRadius = 25;
-                    // Dusre Auto Rider ko 10km ke andar SMS Request bhejne ka button dikhayenge
                     if (user.role === 'rider' && distance <= 10) {
                         showPopupBtn = true;
                     }
@@ -531,30 +533,38 @@
                 activeMarkers[user.id].setLatLng([user.lat, user.lng]);
                 activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0, false, isGlowing));
             } else {
-                let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>Doori: ' + distance.toFixed(1) + ' KM';
+                let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>दूरी: ' + distance.toFixed(1) + ' किमी';
                 if (showPopupBtn) {
                     if (requestedRiders[user.id]) {
-                        popupHtml += '<br><button style="background:#6b7280; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px;" disabled>⏳ Request Sent...</button>';
+                        popupHtml += '<br><button style="background:#6b7280; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px;" disabled>⏳ अनुरोध भेजा गया...</button>';
                     } else {
-                        popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
+                        popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 रिक्वेस्ट भेजें</button>';
                     }
                 }
                 activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map)
                     .bindPopup(popupHtml);
             }
 
-            if ((myRole === 'rider' || myRole === 'bike_rider') && (user.role === 'sawari' || user.role === 'bike_sawari') && user.destination) {
-                if (activeRoutes[user.id]) {
-                    activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
+            // Agar passenger ne destination reset kiya hai (null), toh rider ke map se route line hata dein
+            if ((myRole === 'rider' || myRole === 'bike_rider') && (user.role === 'sawari' || user.role === 'bike_sawari')) {
+                if (user.destination) {
+                    if (activeRoutes[user.id]) {
+                        activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
+                    } else {
+                        activeRoutes[user.id] = L.polyline([[user.lat, user.lng], [user.destination.lat, user.destination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
+                    }
                 } else {
-                    activeRoutes[user.id] = L.polyline([[user.lat, user.lng], [user.destination.lat, user.destination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
+                    if (activeRoutes[user.id]) {
+                        map.removeLayer(activeRoutes[user.id]);
+                        delete activeRoutes[user.id];
+                    }
                 }
             }
         }
 
         function processIncomingUserMarkerRefresh(riderId) {
             if (activeMarkers[riderId]) {
-                let popupHtml = '<b>RIDER</b><br><button onclick="sendSmsRequest(\'' + riderId + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 SMS Request Bhejein</button>';
+                let popupHtml = '<b>चालक (RIDER)</b><br><button onclick="sendSmsRequest(\'' + riderId + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">📲 रिक्वेस्ट भेजें</button>';
                 activeMarkers[riderId].bindPopup(popupHtml).openPopup();
             }
         }
@@ -562,7 +572,7 @@
         function sendSmsRequest(riderId) {
             requestedRiders[riderId] = true;
             socket.emit('send_sms_request', { passengerId: myId, riderId: riderId });
-            alert('SMS Request bhej di gayi hai!');
+            alert('रिक्वेस्ट सफलतापूर्वक भेज दी गई है!');
             processIncomingUserMarkerRefresh(riderId);
         }
 
@@ -590,8 +600,8 @@
             else if (recordedAudioBase64 && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'audio', audioData: recordedAudioBase64 });
                 recordedAudioBase64 = null;
-                document.getElementById('voiceBtn').innerText = '🎤 Voice Record';
-                alert('Voice recording bhej di gayi hai!');
+                document.getElementById('voiceBtn').innerText = '🎤 वॉइस रिकॉर्ड';
+                alert('वॉइस रिकॉर्डिंग भेज दी गई है!');
             }
         }
 
@@ -610,13 +620,13 @@
         function appendLocationMessage(sender, lat, lng) {
             const box = document.getElementById('chatMessages');
             let mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-            box.innerHTML += '<div><b>' + sender + ':</b> <a href="' + mapsUrl + '" target="_blank" style="color:#2563eb; font-weight:bold;">📍 Google Map Location View</a></div>';
+            box.innerHTML += '<div><b>' + sender + ':</b> <a href="' + mapsUrl + '" target="_blank" style="color:#2563eb; font-weight:bold;">📍 गूगल मैप्स लोकेशन देखें</a></div>';
             box.scrollTop = box.scrollHeight;
         }
 
         function shareGoogleLocation() {
             if (!myLat || !myLng || !activeChatRoom) {
-                alert('Location ya chat active nahi hai!');
+                alert('लोकेशन या चैट सक्रिय नहीं है!');
                 return;
             }
             socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
@@ -636,15 +646,15 @@
                         reader.readAsDataURL(audioBlob);
                         reader.onloadend = function() {
                             recordedAudioBase64 = reader.result;
-                            btn.innerText = '✅ Recorded (Send dabaein)';
+                            btn.innerText = '✅ रिकॉर्ड हो गया (भेजें)';
                         };
                     };
 
                     mediaRecorder.start();
                     isRecording = true;
-                    btn.innerText = '🔴 Recording... (Stop)';
+                    btn.innerText = '🔴 रिकॉर्डिंग जारी... (रोकें)';
                     btn.classList.add('recording');
-                }).catch(err => alert('Microphone permission denied!'));
+                }).catch(err => alert('माइक्रोफोन की अनुमति नहीं मिली!'));
             } else {
                 if (mediaRecorder) mediaRecorder.stop();
                 isRecording = false;
@@ -657,9 +667,16 @@
                 socket.emit('close_chat', { room: activeChatRoom });
             }
             document.getElementById('chatOverlay').style.display = 'none';
+            
+            // 2 second ke liye Hindi mein disconnect notification dikhayein
             document.getElementById('statusDot').className = 'badge badge-red';
-            document.getElementById('statusText').innerText = 'Disconnected';
-            document.getElementById('chatMessages').innerHTML = '';
+            document.getElementById('statusText').innerText = 'सम्पर्क टूट गया है (Disconnected)';
+            
+            setTimeout(() => {
+                document.getElementById('statusDot').className = 'badge badge-green';
+                document.getElementById('statusText').innerText = 'लाइव नेटवर्क सक्रिय है';
+                document.getElementById('chatMessages').innerHTML = '';
+            }, 2000);
             
             activeChatRoom = null;
             incomingReqData = null;
