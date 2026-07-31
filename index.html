@@ -23,12 +23,12 @@
         .otp-input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; text-align: center; }
         .otp-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
-        .status-card { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: none; align-items: center; gap: 10px; }
-        .badge { width: 12px; height: 12px; border-radius: 50%; display: none; }
+        .status-card { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 10px 20px; border-radius: 30px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: none; align-items: center; gap: 10px; max-width: 90%; text-align: center; }
+        .badge { width: 12px; height: 12px; border-radius: 50%; display: none; flex-shrink: 0; }
         .badge-green { background: #16a34a; display: inline-block; }
         .badge-red { background: #dc2626; display: inline-block; }
 
-        .traffic-counter { position: fixed; top: 14px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; }
+        .traffic-counter { position: fixed; top: 55px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; }
 
         .dest-card { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 12px 18px; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 13px; font-weight: 600; color: #222; display: none; align-items: center; gap: 12px; width: 90%; max-width: 360px; justify-content: space-between; }
         .btn-reset { background: #e63946; color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; }
@@ -99,7 +99,7 @@
 
     <div class="status-card" id="statusBar">
         <div id="statusDot" class="badge"></div>
-        <span id="statusText">लाइव नेटवर्क सक्रिय है</span>
+        <span id="statusText">लोड हो رہا है...</span>
     </div>
 
     <div class="traffic-counter" id="trafficCounter">
@@ -187,6 +187,19 @@
             }
             myRole = role;
             document.getElementById('roleModal').style.display = 'none';
+            
+            // Set customized top status bar message based on role
+            const statusTextEl = document.getElementById('statusText');
+            const statusDotEl = document.getElementById('statusDot');
+            document.getElementById('statusBar').style.display = 'flex';
+            statusDotEl.className = 'badge badge-green';
+
+            if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                statusTextEl.innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें';
+            } else {
+                statusTextEl.innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें';
+            }
+
             initializeAppAfterLogin();
         }
 
@@ -283,8 +296,6 @@
         }
 
         function initMapAndSystem() {
-            const statusBar = document.getElementById('statusBar');
-            statusBar.style.display = 'flex';
             document.getElementById('trafficCounter').style.display = 'block';
 
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
@@ -422,7 +433,11 @@
                     document.getElementById('chatHeaderTitle').innerText = '💬 लाइव कनेक्टेड';
 
                     document.getElementById('statusDot').className = 'badge badge-green';
-                    document.getElementById('statusText').innerText = 'लाइव जुड़े हुए हैं';
+                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                        document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें';
+                    } else {
+                        document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें';
+                    }
                     appendChatMessage('सिस्टम', 'आप आपस में कनेक्ट हो गए हैं।');
                 }
             });
@@ -453,11 +468,19 @@
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
                     document.getElementById('statusDot').className = 'badge badge-red';
-                    document.getElementById('statusText').innerText = 'सम्पर्क टूट गया है (Disconnected)';
+                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                        document.getElementById('statusText').innerText = 'सम्पर्क टूटा - फोन उत्तर दिशा में रखें और टच करें';
+                    } else {
+                        document.getElementById('statusText').innerText = 'सम्पर्क टूटा - फोन उत्तर दिशा में रखें';
+                    }
                     
                     setTimeout(() => {
                         document.getElementById('statusDot').className = 'badge badge-green';
-                        document.getElementById('statusText').innerText = 'लाइव नेटवर्क सक्रिय है';
+                        if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                            document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें';
+                        } else {
+                            document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें';
+                        }
                         document.getElementById('chatMessages').innerHTML = '';
                         document.getElementById('chatOverlay').style.display = 'none';
                     }, 2000);
@@ -580,7 +603,6 @@
             }
         }
 
-        // 1st Correction: Auto-hide notification in 2 seconds without requiring OK click
         function sendSmsRequest(riderId) {
             requestedRiders[riderId] = true;
             socket.emit('send_sms_request', { passengerId: myId, riderId: riderId });
@@ -603,7 +625,6 @@
             }
         }
 
-        // 2nd Correction: No alert/notification popups during voice recording send
         function sendChatMessage() {
             const text = document.getElementById('chatInput').value;
             if (text && activeChatRoom) {
@@ -614,7 +635,6 @@
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'audio', audioData: recordedAudioBase64 });
                 recordedAudioBase64 = null;
                 document.getElementById('voiceBtn').innerText = '🎤 वॉइस रिकॉर्ड';
-                // Removed alert popup here so audio sends directly without requiring OK click
             }
         }
 
@@ -660,7 +680,6 @@
                         reader.onloadend = function() {
                             recordedAudioBase64 = reader.result;
                             btn.innerText = '✅ रिकॉर्ड हो गया (भेजें)';
-                            // Automatically trigger send right after recording stops smoothly
                             sendChatMessage();
                         };
                     };
@@ -677,7 +696,6 @@
             }
         }
 
-        // 3rd Correction: Clean disconnect cleanup handled seamlessly on close/offline
         function closeChat() {
             if (activeChatRoom) {
                 socket.emit('close_chat', { room: activeChatRoom });
@@ -685,11 +703,19 @@
             document.getElementById('chatOverlay').style.display = 'none';
             
             document.getElementById('statusDot').className = 'badge badge-red';
-            document.getElementById('statusText').innerText = 'सम्पर्क टूट गया है (Disconnected)';
+            if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                document.getElementById('statusText').innerText = 'सम्पर्क टूटा - फोन उत्तर दिशा में रखें और टच करें';
+            } else {
+                document.getElementById('statusText').innerText = 'सम्पर्क टूटा - फोन उत्तर दिशा में रखें';
+            }
             
             setTimeout(() => {
                 document.getElementById('statusDot').className = 'badge badge-green';
-                document.getElementById('statusText').innerText = 'लाइव नेटवर्क सक्रिय है';
+                if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                    document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें';
+                } else {
+                    document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें';
+                }
                 document.getElementById('chatMessages').innerHTML = '';
             }, 2000);
             
