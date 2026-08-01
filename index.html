@@ -31,11 +31,15 @@
         .badge-green { background: #16a34a; display: inline-block; }
         .badge-red { background: #dc2626; display: inline-block; }
 
-        /* Live Compass styling next to status card */
-        .live-compass { background: #ffffff; width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex-shrink: 0; border: 2px solid #2563eb; cursor: pointer; }
+        /* Live Compass styling with Needle and Bold Text */
+        .live-compass { background: #ffffff; width: 46px; height: 46px; border-radius: 50%; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; border: 2px solid #2563eb; cursor: pointer; }
         .compass-dial { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; transition: transform 0.1s ease-out; }
-        .compass-n { position: absolute; top: 2px; font-size: 9px; font-weight: 900; color: #dc2626; line-height: 1; }
-        .compass-s { position: absolute; bottom: 2px; font-size: 9px; font-weight: 900; color: #333; line-height: 1; }
+        .compass-n { position: absolute; top: 2px; font-size: 10px; font-weight: 900; color: #dc2626; line-height: 1; }
+        .compass-s { position: absolute; bottom: 2px; font-size: 10px; font-weight: 900; color: #111; line-height: 1; }
+        /* Compass Needle Design */
+        .compass-needle { position: absolute; width: 2px; height: 28px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .needle-top { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 14px solid #dc2626; position: absolute; top: 0; }
+        .needle-bottom { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 14px solid #333; position: absolute; bottom: 0; }
 
         .traffic-counter { position: fixed; top: 68px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; }
 
@@ -113,8 +117,12 @@
         </div>
         <div class="live-compass" id="liveCompass" onclick="requestCompassPermission()" title="उत्तर-दक्षिण कंपास">
             <div class="compass-dial" id="compassDial">
-                <span class="compass-n">उ</span>
-                <span class="compass-s">द</span>
+                <strong class="compass-n">उत्तर</strong>
+                <div class="compass-needle">
+                    <div class="needle-top"></div>
+                    <div class="needle-bottom"></div>
+                </div>
+                <strong class="compass-s">दक्षिण</strong>
             </div>
         </div>
     </div>
@@ -219,7 +227,7 @@
             initLiveCompass();
         }
 
-        // Live Compass Sensor Integration for North Direction
+        // Live Compass Sensor Integration with Needle Rotation
         function initLiveCompass() {
             if (window.DeviceOrientationEvent) {
                 window.addEventListener('deviceorientation', (event) => {
@@ -230,7 +238,6 @@
                     if (compassHeading !== null && compassHeading !== undefined) {
                         const dial = document.getElementById('compassDial');
                         if (dial) {
-                            // Rotate compass dial in opposite direction of phone heading so 'उ' (North) always points North
                             dial.style.transform = `rotate(${-compassHeading}deg)`;
                         }
                     }
