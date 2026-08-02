@@ -94,7 +94,7 @@
 
     <div class="modal-overlay" id="roleModal" style="display: flex;">
         <div class="modal-box">
-            <!-- Select Language Section Added Here -->
+            <!-- Select Language Section -->
             <div class="lang-select-container">
                 <label for="languageSelect">Select your language</label>
                 <select id="languageSelect" class="lang-dropdown" onchange="changeAppLanguage(this.value)">
@@ -150,14 +150,14 @@
             <div id="statusDot" class="badge"></div>
             <span id="statusText">लोड हो रहा है...</span>
         </div>
-        <div class="live-compass" id="liveCompass" onclick="requestCompassPermission()" title="उत्तर-दक्षिण कंपास">
+        <div class="live-compass" id="liveCompass" onclick="requestCompassPermission()" title="Compass">
             <div class="compass-dial" id="compassDial">
-                <strong class="compass-n">उत्तर</strong>
+                <strong class="compass-n" id="compassNorth">उत्तर</strong>
                 <div class="compass-needle">
                     <div class="needle-top"></div>
                     <div class="needle-bottom"></div>
                 </div>
-                <strong class="compass-s">दक्षिण</strong>
+                <strong class="compass-s" id="compassSouth">दक्षिण</strong>
             </div>
         </div>
     </div>
@@ -203,7 +203,7 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
-        // Multi-Language Dictionary Support (Default Hindi, Supports all 22 requested languages)
+        // Comprehensive Multi-Language Dictionary (Supports all requested 22 languages fully including chat, voice, compass, distance)
         const translations = {
             hi: {
                 modalTitle: "मोड चुनें (Select Mode)", modalDesc: "आप किस रूप में काम करना चाहते हैं?",
@@ -220,7 +220,10 @@
                 chatConnected: "आप आपस में कनेक्ट हो गए हैं।", chatBroken: "सम्पर्क टूटा - फोन उत्तर दिशा में रखें",
                 chatBrokenSawari: "सम्पर्क टूटा - फोन उत्तर दिशा में रखें और टच करें", reqSentText: "⏳ अनुरोध भेजा गया...",
                 reqBtnText: "📲 रिक्वेस्ट भेजें", myLocText: "<b>आपकी लोकेशन</b>", myDestText: "<b>आपकी मंजिल</b>",
-                destSetText: "मंजिल सेट हो गई है!", reqToast: "रिक्वेस्ट सफलतापूर्वक भेज दी गई है!"
+                destSetText: "मंजिल सेट हो गई है!", reqToast: "रिक्वेस्ट सफलतापूर्वक भेज दी गई है!",
+                northWord: "उत्तर", southWord: "दक्षिण", distText: "दूरी", kmText: "किमी",
+                chatPlaceholder: "संदेश लिखें...", voiceBtnText: "🎤 वॉइस रिकॉर्ड", voiceRecording: "🔴 रिकॉर्डिंग जारी... (रोकें)",
+                voiceRecorded: "✅ रिकॉर्ड हो गया (भेजें)"
             },
             en: {
                 modalTitle: "Select Mode", modalDesc: "How would you like to work?",
@@ -237,7 +240,10 @@
                 chatConnected: "You are now connected with each other.", chatBroken: "Connection Lost - Keep phone pointing North",
                 chatBrokenSawari: "Connection Lost - Keep phone pointing North and tap", reqSentText: "⏳ Request Sent...",
                 reqBtnText: "📲 Send Request", myLocText: "<b>Your Location</b>", myDestText: "<b>Your Destination</b>",
-                destSetText: "Destination set!", reqToast: "Request sent successfully!"
+                destSetText: "Destination set!", reqToast: "Request sent successfully!",
+                northWord: "North", southWord: "South", distText: "Distance", kmText: "km",
+                chatPlaceholder: "Type a message...", voiceBtnText: "🎤 Voice Record", voiceRecording: "🔴 Recording... (Stop)",
+                voiceRecorded: "✅ Recorded (Send)"
             },
             ta: {
                 modalTitle: "முறையைத் தேர்ந்தெடுக்கவும்", modalDesc: "நீங்கள் எப்படி வேலை செய்ய விரும்புகிறீர்கள்?",
@@ -254,7 +260,10 @@
                 chatConnected: "நீங்கள் இருவரும் இணைக்கப்பட்டுள்ளீர்கள்.", chatBroken: "இணைப்பு துண்டிக்கப்பட்டது - போனை வடக்கே வைக்கவும்",
                 chatBrokenSawari: "இணைப்பு துண்டிக்கப்பட்டது - போனை வடக்கே வைத்து தொடவும்", reqSentText: "⏳ கோரிக்கை அனுப்பப்பட்டது...",
                 reqBtnText: "📲 கோரிக்கை அனுப்பு", myLocText: "<b>உங்கள் இருப்பிடம்</b>", myDestText: "<b>உங்கள் சேருமிடம்</b>",
-                destSetText: "சேருமிடம் அமைக்கப்பட்டது!", reqToast: "கோரிக்கை வெற்றிகரமாக அனுப்பப்பட்டது!"
+                destSetText: "சேருமிடம் அமைக்கப்பட்டது!", reqToast: "கோரிக்கை வெற்றிகரமாக அனுப்பப்பட்டது!",
+                northWord: "வடக்கே", southWord: "தெற்கே", distText: "தூரம்", kmText: "கி.மீ",
+                chatPlaceholder: "செய்தியை உள்ளிடவும்...", voiceBtnText: "🎤 குரல் பதிவு", voiceRecording: "🔴 பதிவு செய்கிறது...",
+                voiceRecorded: "✅ பதிவு செய்யப்பட்டது"
             },
             te: {
                 modalTitle: "మోడ్‌ను ఎంచుకోండి", modalDesc: "మీరు ఏ విధంగా పని చేయాలనుకుంటున్నారు?",
@@ -271,7 +280,10 @@
                 chatConnected: "మీరు ఒకరితో ఒకరు కనెక్ట్ అయ్యారు.", chatBroken: "కనెక్షన్ పోయింది - ఫోన్‌ను ఉత్తరం వైపు ఉంచండి",
                 chatBrokenSawari: "కనెక్షన్ పోయింది - ఫోన్‌ను ఉత్తరం వైపు ఉంచి తాకండి", reqSentText: "⏳ అభ్యర్థన పంపబడింది...",
                 reqBtnText: "📲 అభ్యర్థన పంపు", myLocText: "<b>మీ స్థానం</b>", myDestText: "<b>మీ గమ్యస్థానం</b>",
-                destSetText: "గమ్యస్థానం సెట్ చేయబడింది!", reqToast: "అభ్యర్థన విజయవంతంగా పంపబడింది!"
+                destSetText: "గమ్యస్థానం సెట్ చేయబడింది!", reqToast: "అభ్యర్థన విజయవంతంగా పంపబడింది!",
+                northWord: "ఉత్తరం", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
+                chatPlaceholder: "సందేశాన్ని టైప్ చేయండి...", voiceBtnText: "🎤 వాయిస్ రికార్డ్", voiceRecording: "🔴 రికార్డింగ్...",
+                voiceRecorded: "✅ రికార్డ్ చేయబడింది"
             },
             mr: {
                 modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
@@ -288,7 +300,10 @@
                 chatConnected: "तुम्ही एकमेकांशी जोडले गेला आहात.", chatBroken: "संपर्क तुटला - फोन उत्तर दिशेला ठेवा",
                 chatBrokenSawari: "संपर्क तुटला - फोन उत्तर दिशेला ठेवा आणि स्पर्श करा", reqSentText: "⏳ विनंती पाठवली...",
                 reqBtnText: "📲 विनंती पाठवा", myLocText: "<b>तुमचे स्थान</b>", myDestText: "<b>तुमचे गंतव्यस्थान</b>",
-                destSetText: "गंतव्यस्थान सेट केले!", reqToast: "विनंती यशस्वीरित्या पाठवली!"
+                destSetText: "गंतव्यस्थान सेट केले!", reqToast: "विनंती यशस्वीरित्या पाठवली!",
+                northWord: "उत्तर", southWord: "दक्षिण", distText: "अंतर", kmText: "किमी",
+                chatPlaceholder: "संदेश टाईप करा...", voiceBtnText: "🎤 आवाज रेकॉर्ड", voiceRecording: "🔴 रेकॉर्डिंग सुरू आहे...",
+                voiceRecorded: "✅ रेकॉर्ड झाले"
             },
             bn: {
                 modalTitle: "মোড নির্বাচন করুন", modalDesc: "আপনি কোন হিসেবে কাজ করতে চান?",
@@ -305,7 +320,10 @@
                 chatConnected: "আপনারা একে অপরের সাথে সংযুক্ত হয়েছেন।", chatBroken: "সংযোগ বিচ্ছিন্ন - ফোন উত্তর দিকে রাখুন",
                 chatBrokenSawari: "সংযোগ বিচ্ছিন্ন - ফোন উত্তর দিকে রাখুন এবং স্পর্শ করুন", reqSentText: "⏳ অনুরোধ পাঠানো হয়েছে...",
                 reqBtnText: "📲 অনুরোধ পাঠান", myLocText: "<b>আপনার অবস্থান</b>", myDestText: "<b>আপনার গন্তব্য</b>",
-                destSetText: "গন্তব্য সেট করা হয়েছে!", reqToast: "অনুরোধ সফলভাবে পাঠানো হয়েছে!"
+                destSetText: "গন্তব্য সেট করা হয়েছে!", reqToast: "অনুরোধ সফলভাবে পাঠানো হয়েছে!",
+                northWord: "উত্তর", southWord: "দক্ষিণ", distText: "দূরত্ব", kmText: "কিমি",
+                chatPlaceholder: "একটি বার্তা লিখুন...", voiceBtnText: "🎤 ভয়েস রেকর্ড", voiceRecording: "🔴 রেকর্ডিং হচ্ছে...",
+                voiceRecorded: "✅ রেকর্ড সম্পন্ন"
             },
             kn: {
                 modalTitle: "ಮೋಡ್ ಆಯ್ಕೆಮಾಡಿ", modalDesc: "ನೀವು ಯಾವ ರೂಪದಲ್ಲಿ ಕೆಲಸ ಮಾಡಲು ಬಯಸುತ್ತೀರಿ?",
@@ -322,7 +340,10 @@
                 chatConnected: "ನೀವು ಪರಸ್ಪರ ಸಂಪರ್ಕಗೊಂಡಿದ್ದೀರಿ.", chatBroken: "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ - ಫೋನ್ ಉತ್ತರಕ್ಕೆ ಇರಿಸಿ",
                 chatBrokenSawari: "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ - ಫೋನ್ ಉತ್ತರಕ್ಕೆ ಇರಿಸಿ ಸ್ಪರ್ಶಿಸಿ", reqSentText: "⏳ ವಿನಂತಿ ಕಳುಹಿಸಲಾಗಿದೆ...",
                 reqBtnText: "📲 ವಿನಂತಿ ಕಳುಹಿಸಿ", myLocText: "<b>ನಿಮ್ಮ ಸ್ಥಳ</b>", myDestText: "<b>ನಿಮ್ಮ ಗಮ್ಯಸ್ಥಾನ</b>",
-                destSetText: "ಗಮ್ಯಸ್ಥಾನ ಹೊಂದಿಸಲಾಗಿದೆ!", reqToast: "ವಿನಂತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ!"
+                destSetText: "ಗಮ್ಯಸ್ಥಾನ ಹೊಂದಿಸಲಾಗಿದೆ!", reqToast: "ವಿನಂತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ!",
+                northWord: "ಉತ್ತರ", southWord: "ದಕ್ಷಿಣ", distText: "ದೂರ", kmText: "ಕಿ.ಮೀ",
+                chatPlaceholder: "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ...", voiceBtnText: "🎤 ಧ್ವನಿ ರೆಕಾರ್ಡ್", voiceRecording: "🔴 ರೆಕಾರ್ಡಿಂಗ್...",
+                voiceRecorded: "✅ ರೆಕಾರ್ಡ್ ಆಗಿದೆ"
             },
             gu: {
                 modalTitle: "મોડ પસંદ કરો", modalDesc: "તમે કયા રૂપે કામ કરવા માંગો છો?",
@@ -339,7 +360,10 @@
                 chatConnected: "તમે એકબીજા સાથે જોડાઈ ગયા છો.", chatBroken: "સંપર્ક તૂટ્યો - ફોન ઉત્તર દિશામાં રાખો",
                 chatBrokenSawari: "સંપર્ક તૂટ્યો - ફોન ઉત્તર દિશામાં રાખી સ્પર્શ કરો", reqSentText: "⏳ વિનંતી મોકલાઈ...",
                 reqBtnText: "📲 વિનંતી મોકલો", myLocText: "<b>તમારું લોકેશન</b>", myDestText: "<b>તમારી મંઝિલ</b>",
-                destSetText: "મંઝિલ નક્કી થઈ ગઈ!", reqToast: "વિનંતી સફળતાપૂર્વક મોકલી દેવાઈ છે!"
+                destSetText: "મંઝિલ નક્કી થઈ ગઈ!", reqToast: "વિનંતી સફળતાપૂર્વક મોકલી દેવાઈ છે!",
+                northWord: "ઉત્તર", southWord: "દક્ષિણ", distText: "અંતર", kmText: "કિમી",
+                chatPlaceholder: "સંદેશ લખો...", voiceBtnText: "🎤 વોઇસ રેકોર્ડ", voiceRecording: "🔴 રેકોર્ડિંગ ચાલુ છે...",
+                voiceRecorded: "✅ રેકોર્ડ થઈ ગયું"
             },
             ml: {
                 modalTitle: "മോഡ് തിരഞ്ഞെടുക്കുക", modalDesc: "നിങ്ങൾക്ക് എങ്ങനെ ജോലി ചെയ്യണം?",
@@ -356,7 +380,10 @@
                 chatConnected: "നിങ്ങൾ പരസ്പരം ബന്ധിപ്പിക്കപ്പെട്ടു.", chatBroken: "ബന്ധം നഷ്ടമായി - ഫോൺ വടക്കോട്ട് പിടിക്കുക",
                 chatBrokenSawari: "ബന്ധം നഷ്ടമായി - ഫോൺ വടക്കോട്ട് പിടിച്ച് തൊടുക", reqSentText: "⏳ അഭ്യർത്ഥന അയച്ചു...",
                 reqBtnText: "📲 അഭ്യർത്ഥന അയക്കുക", myLocText: "<b>നിങ്ങളുടെ സ്ഥാനം</b>", myDestText: "<b>നിങ്ങളുടെ ലക്ഷ്യസ്ഥാനം</b>",
-                destSetText: "ലക്ഷ്യസ്ഥാനം സജ്ജീകരിച്ചു!", reqToast: "അഭ്യർത്ഥന വിജയകരമായി അയച്ചു!"
+                destSetText: "ലക്ഷ്യസ്ഥാനം സജ്ജീകരിച്ചു!", reqToast: "അഭ്യർത്ഥന വിജയകരമായി അയച്ചു!",
+                northWord: "വടക്ക്", southWord: "തെക്ക്", distText: "ദൂരം", kmText: "കി.മീ",
+                chatPlaceholder: "സന്ദേശം ടൈപ്പ് ചെയ്യുക...", voiceBtnText: "🎤 വോイス് റെക്കോർഡ്", voiceRecording: "🔴 റെക്കോർഡിംഗ്...",
+                voiceRecorded: "✅ റെക്കോർഡ് ചെയ്തു"
             },
             or: {
                 modalTitle: "ମୋଡ୍ ଚୟନ କରନ୍ତୁ", modalDesc: "ଆପଣ କିପରି କାମ କରିବାକୁ ଚାହାଁନ୍ତି?",
@@ -373,7 +400,10 @@
                 chatConnected: "ଆପଣମାନେ ପରସ୍ପର ସହିତ ସଂଯୁକ୍ତ ହୋଇଛନ୍ତି।", chatBroken: "ସଂଯୋଗ ବିଚ୍ଛିନ୍ନ - ଫୋନ୍ ଉତ୍ତର ଦିଗରେ ରଖନ୍ତୁ",
                 chatBrokenSawari: "ସଂଯୋଗ ବିଚ୍ଛିନ୍ନ - ଫୋନ୍ ଉତ୍ତର ଦିଗରେ ରଖି ଟଚ୍ କରନ୍ତୁ", reqSentText: "⏳ ଅନୁରୋଧ ପଠାଗଲା...",
                 reqBtnText: "📲 ଅନୁରୋଧ ପଠାନ୍ତୁ", myLocText: "<b>ଆପଣଙ୍କର ସ୍ଥାନ</b>", myDestText: "<b>ଆପଣଙ୍କର ଗନ୍ତବ୍ୟସ୍ଥଳ</b>",
-                destSetText: "ଗନ୍ତବ୍ୟସ୍ଥଳ ସେଟ୍ ହୋଇଗଲା!", reqToast: "ଅନୁରୋଧ ସଫଳତାର ସହିତ ପଠାଗଲା!"
+                destSetText: "ଗନ୍ତବ୍ୟସ୍ଥଳ ସେଟ୍ ହୋଇଗଲା!", reqToast: "ଅନୁରୋଧ ସଫଳତାର ସହିତ ପଠାଗଲା!",
+                northWord: "ଉତ୍ତର", southWord: "ଦକ୍ଷିଣ", distText: "ଦୂରତା", kmText: "କି.ମି.",
+                chatPlaceholder: "ଏକ ବାର୍ତ୍ତା ଟାଇପ୍ କରନ୍ତୁ...", voiceBtnText: "🎤 ଭଏସ୍ ରେକର୍ଡ", voiceRecording: "🔴 ରେକର୍ଡିଂ ହେଉଛି...",
+                voiceRecorded: "✅ ରେକର୍ଡ ହୋଇଗଲା"
             },
             pa: {
                 modalTitle: "ਮੋਡ ਚੁਣੋ", modalDesc: "ਤੁਸੀਂ ਕਿਸ ਰੂਪ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
@@ -388,9 +418,12 @@
                 chatTitle: "💬 ਪ੍ਰਾਈਵੇਟ ਚੈਟ ਅਤੇ ਲਾਈਵ ਟਰੈਕਿੰਗ", closeChat: "✕ ਬੰਦ ਕਰੋ", sendBtn: "ਭੇਜੋ",
                 locationBtn: "📍 ਸਥਾਨ ਸਾਂਝਾ ਕਰੋ", destText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਕਰਨ ਲਈ ਮੈਪ 'ਤੇ ਟੈਪ ਕਰੋ", resetBtn: "ਰੀਸੈਟ ਕਰੋ",
                 chatConnected: "ਤੁਸੀਂ ਆਪਸ ਵਿੱਚ ਜੁੜ ਗਏ ਹੋ।", chatBroken: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖੋ",
-                chatBrokenSawari: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖ ਕੇ ਛੋਹਵੋ", reqSentText: "⏳ ਬੇਨਤੀ ਭੇਜੀ ਗਈ...",
+                chatBrokenSawari: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖ ਕੇ ਛੋਹਵੋ", reqSentText: "⏳ ਬੇਨਤੀ ਭੇਜੀ गई...",
                 reqBtnText: "📲 ਬੇਨਤੀ ਭੇਜੋ", myLocText: "<b>ਤੁਹਾਡਾ ਸਥਾਨ</b>", myDestText: "<b>ਤੁਹਾਡੀ ਮੰਜ਼ਿਲ</b>",
-                destSetText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਹੋ گئی ہے!", reqToast: "ਬੇਨਤੀ ਸਫਲਤਾਪૂર્વਕ ਭ भेजी ਗਈ ਹੈ!"
+                destSetText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਹੋ گئی ہے!", reqToast: "ਬੇਨਤੀ ਸਫਲਤਾਪૂર્વਕ ਭ भेजी ਗਈ ਹੈ!",
+                northWord: "ਉੱਤਰ", southWord: "ਦੱਖਣ", distText: "ਦੂਰੀ", kmText: "ਕિਮੀ",
+                chatPlaceholder: " ਸੁਨੇਹਾ ਲਿਖੋ...", voiceBtnText: "🎤 ਵాయిਸ ਰਿਕਾਰਡ", voiceRecording: "🔴 ਰਿਕਾਰਡਿੰਗ...",
+                voiceRecorded: "✅ ਰਿਕਾਰਡ ਹੋ ਗਿਆ"
             },
             as: {
                 modalTitle: "মড নিৰ্বাচন কৰক", modalDesc: "আপুনি কোন ৰূপত কাম কৰিব বিচাৰে?",
@@ -401,13 +434,16 @@
                 statusRider: "আপোনাৰ ফোনটো সদায় উত্তৰ দিশলৈ ৰাখি মেপখন চাওক",
                 statusSawari: "ফোনটো উত্তৰ দিশলৈ ৰাখি মেপ চাওক আৰু ক'লৈ যাব লাগিব স্পৰ্শ কৰক",
                 counterRider: "চালক", counterSawari: "যাত্ৰী",
-                reqMsg: "🙋‍♂️ নতুন যাত্ৰীৰ অনুৰোধ আহিছে!", acceptBtn: "গ্ৰহণ কৰক", rejectBtn: "প্ৰত্যাখ্যাত কৰক",
+                reqMsg: "🙋‍♂️ নতুন যাত্ৰীৰ অনুৰোধ আহিছে!", acceptBtn: "গ্ৰহଣ কৰক", rejectBtn: "প্ৰত্যাখ্যাত কৰক",
                 chatTitle: "💬 প্ৰাইভেট চাট আৰু লাইভ ট্ৰেকিং", closeChat: "✕ বন্ধ কৰক", sendBtn: "প্ৰেবণ কৰক",
                 locationBtn: "📍 অৱস্থান শ্বেয়াৰ কৰক", destText: "গন্তব্যস্থান নিৰ্ধাৰণ কৰিবলৈ মেপত টেপ কৰক", resetBtn: "ৰীছেট",
                 chatConnected: "আপুনি পৰস্পৰ সংযুক্ত হৈছে।", chatBroken: "সংযোগ বিচ্ছিন্ন - ফোন উত্তৰ দিশত ৰাখক",
                 chatBrokenSawari: "সংযোগ বিচ্ছিন্ন - ফোন উত্তৰত ৰাখি স্পৰ্শ কৰক", reqSentText: "⏳ অনুৰোধ প্ৰেসন কৰা হ'ল...",
                 reqBtnText: "📲 অনুৰোধ প্ৰেৰণ কৰক", myLocText: "<b>আপোনাৰ অৱস্থান</b>", myDestText: "<b>আপোনাৰ গন্তব্যস্থান</b>",
-                destSetText: "গন্তব্যস্থান নিৰ্ধাৰণ কৰা হ'ল!", reqToast: "অনুৰোধ সফলভাৱে প্ৰেৰণ কৰা হ'ল!"
+                destSetText: "গন্তব্যস্থান নিৰ্ধাৰଣ কৰা হ'ল!", reqToast: "অনুৰোধ সফলভাৱে প্ৰেৰଣ কৰা হ'ল!",
+                northWord: "উত্তৰ", southWord: "দক্ষিণ", distText: "দূৰত্ব", kmText: "কি.মি.",
+                chatPlaceholder: "বাৰ্তা টাইপ কৰক...", voiceBtnText: "🎤 ভয়েচ ৰেকৰ্ড", voiceRecording: "🔴 ৰেকৰ্ডিং চলি আছে...",
+                voiceRecorded: "✅ ৰেকৰ্ড হ'ল"
             },
             rj: {
                 modalTitle: "मोड चुणो", modalDesc: "आप कै रूप में काम करणा चाहो हो?",
@@ -424,7 +460,10 @@
                 chatConnected: "थाणे आपस में जुड़ गया हां।", chatBroken: "संपर्क टूट्यो - फोन उत्तर दिशा में राखो",
                 chatBrokenSawari: "संपर्क टूट्यो - फोन उत्तर दिशा में राख टच करो", reqSentText: "⏳ रिक्वेस्ट भेज दी है...",
                 reqBtnText: "📲 रिक्वेस्ट भेजो", myLocText: "<b>थारी लोकेशन</b>", myDestText: "<b>थारी मंजिल</b>",
-                destSetText: "मंजिल सेट हो गई है!", reqToast: "रिक्वेस्ट सफलतापर्वक भेज दी गई है!"
+                destSetText: "मंजिल सेट हो गई है!", reqToast: "रिक्वेस्ट सफलतापर्वक भेज दी गई है!",
+                northWord: "उत्तर", southWord: "दक्षिण", distText: "अंतर", kmText: "किमी",
+                chatPlaceholder: "संदेश लिखो...", voiceBtnText: "🎤 आवाज रिकॉर्ड", voiceRecording: "🔴 रिकॉर्डिंग चालू है...",
+                voiceRecorded: "✅ रिकॉर्ड हो ग्यो"
             },
             es: {
                 modalTitle: "Seleccionar Modo", modalDesc: "¿Cómo te gustaría trabajar?",
@@ -441,7 +480,10 @@
                 chatConnected: "Ahora están conectados.", chatBroken: "Conexión perdida - Mantenga el teléfono hacia el Norte",
                 chatBrokenSawari: "Conexión perdida - Mantenga el teléfono hacia el Norte y toque", reqSentText: "⏳ Solicitud enviada...",
                 reqBtnText: "📲 Enviar Solicitud", myLocText: "<b>Tu Ubicación</b>", myDestText: "<b>Tu Destino</b>",
-                destSetText: "¡Destino establecido!", reqToast: "¡Solicitud enviada con éxito!"
+                destSetText: "¡Destino establecido!", reqToast: "¡Solicitud enviada con éxito!",
+                northWord: "N", southWord: "S", distText: "Dist", kmText: "km",
+                chatPlaceholder: "Type a message...", voiceBtnText: "🎤 Voice Record", voiceRecording: "🔴 Recording...",
+                voiceRecorded: "✅ Recorded"
             },
             zh: {
                 modalTitle: "选择模式", modalDesc: "您希望以什么身份工作？",
@@ -458,7 +500,10 @@
                 chatConnected: "你们现在已连接。", chatBroken: "连接断开 - 请将手机保持朝向北方",
                 chatBrokenSawari: "连接断开 - 请将手机保持朝向北方并点击", reqSentText: "⏳ 请求已发送...",
                 reqBtnText: "📲 发送请求", myLocText: "<b>您的位置</b>", myDestText: "<b>您的目的地</b>",
-                destSetText: "目的地已设置！", reqToast: "请求发送成功！"
+                destSetText: "目的地已设置！", reqToast: "请求发送成功！",
+                northWord: "北", southWord: "南", distText: "距离", kmText: "公里",
+                chatPlaceholder: "输入消息...", voiceBtnText: "🎤 语音录制", voiceRecording: "🔴 录音中...",
+                voiceRecorded: "✅ 已录制"
             },
             ar: {
                 modalTitle: "اختر الوضع", modalDesc: "كيفودك أن تعمل؟",
@@ -475,7 +520,10 @@
                 chatConnected: "أنتما متصلان ببعضهما البعض.", chatBroken: "انقطع الاتصال - اجعل الهاتف باتجاه الشمال",
                 chatBrokenSawari: "انقطع الاتصال - اجعل الهاتف باتجاه الشمال والمس", reqSentText: "⏳ تم إرسال الطلب...",
                 reqBtnText: "📲 إرسال الطلب", myLocText: "<b>موقعك</b>", myDestText: "<b>وجهتك</b>",
-                destSetText: "تم تحديد الوجهة!", reqToast: "تم إرسال الطلب بنجاح!"
+                destSetText: "تم تحديد الوجهة!", reqToast: "تم إرسال الطلب بنجاح!",
+                northWord: "شمال", southWord: "جنوب", distText: "المسافة", kmText: "كم",
+                chatPlaceholder: "اكتب رسالة...", voiceBtnText: "🎤 تسجيل صوتي", voiceRecording: "🔴 جاري التسجيل...",
+                voiceRecorded: "✅ تم التسجيل"
             },
             pt: {
                 modalTitle: "Selecionar Modo", modalDesc: "Como você gostaria de trabalhar?",
@@ -492,7 +540,10 @@
                 chatConnected: "Vocês estão conectados um ao outro.", chatBroken: "Conexão perdida - Mantenha o telefone para o Norte",
                 chatBrokenSawari: "Conexão perdida - Mantenha o telefone para o Norte e toque", reqSentText: "⏳ Solicitação enviada...",
                 reqBtnText: "📲 Enviar Solicitação", myLocText: "<b>Sua Localização</b>", myDestText: "<b>Seu Destino</b>",
-                destSetText: "Destino definido!", reqToast: "Solicitação enviada com sucesso!"
+                destSetText: "Destino definido!", reqToast: "Solicitação enviada com sucesso!",
+                northWord: "N", southWord: "S", distText: "Distância", kmText: "km",
+                chatPlaceholder: "Digite uma mensagem...", voiceBtnText: "🎤 Gravar áudio", voiceRecording: "...",
+                voiceRecorded: "✅ Gravado"
             },
             fr: {
                 modalTitle: "Sélectionner le Mode", modalDesc: "Comment souhaitez-vous travailler ?",
@@ -503,13 +554,16 @@
                 statusRider: "Gardez votre téléphone pointé vers le Nord et regardez la carte",
                 statusSawari: "Gardez votre téléphone vers le Nord et touchez l'écran où vous souhaitez aller",
                 counterRider: "Conducteurs", counterSawari: "Passagers",
-                reqMsg: "🙋‍♂️ Nouvelle demande de passager reçue !", acceptBtn: "Accepter", rejectBtn: "Rejeter",
+                reqMsg: "🙋‍♂️ Nouvelle demande de passager reçue !", acceptBtn: "Acceptar", rejectBtn: "Rejeter",
                 chatTitle: "💬 Chat Privé & Suivi en direct", closeChat: "✕ Fermer", sendBtn: "Envoyer",
                 locationBtn: "📍 Partager la position", destText: "Appuyez sur la carte pour définir votre destination", resetBtn: "Réinitialiser",
                 chatConnected: "Vous êtes connectés ensemble.", chatBroken: "Connexion perdue - Gardez le téléphone vers le Nord",
                 chatBrokenSawari: "Connexion perdue - Gardez le téléphone vers le Nord et touchez", reqSentText: "⏳ Demande envoyée...",
                 reqBtnText: "📲 Envoyer la demande", myLocText: "<b>Votre position</b>", myDestText: "<b>Votre destination</b>",
-                destSetText: "Destination définie !", reqToast: "Demande envoyée avec succès !"
+                destSetText: "Destination définie !", reqToast: "Demande envoyée avec succès !",
+                northWord: "N", southWord: "S", distText: "Distance", kmText: "km",
+                chatPlaceholder: "Tapez un message...", voiceBtnText: "🎤 Enregistrement", voiceRecording: "🔴 Enregistrement...",
+                voiceRecorded: "✅ Enregistré"
             },
             de: {
                 modalTitle: "Modus wählen", modalDesc: "Wie möchten Sie arbeiten?",
@@ -526,7 +580,10 @@
                 chatConnected: "Sie sind jetzt miteinander verbunden.", chatBroken: "Verbindung unterbrochen - Handy nach Norden halten",
                 chatBrokenSawari: "Verbindung unterbrochen - Handy nach Norden halten und tippen", reqSentText: "⏳ Anfrage gesendet...",
                 reqBtnText: "📲 Anfrage senden", myLocText: "<b>Ihr Standort</b>", myDestText: "<b>Ihr Ziel</b>",
-                destSetText: "Ziel festgelegt!", reqToast: "Anfrage erfolgreich gesendet!"
+                destSetText: "Ziel festgelegt!", reqToast: "Anfrage erfolgreich gesendet!",
+                northWord: "N", southWord: "S", distText: "Entfernung", kmText: "km",
+                chatPlaceholder: "Nachricht eingeben...", voiceBtnText: "🎤 Sprachaufnahme", voiceRecording: "🔴 Aufnahme...",
+                voiceRecorded: "✅ Aufgenommen"
             },
             ja: {
                 modalTitle: "モード選択", modalDesc: "どのように働きますか？",
@@ -543,7 +600,10 @@
                 chatConnected: "お互いに接続されました。", chatBroken: "接続が切れました - スマホを北に向けてください",
                 chatBrokenSawari: "接続が切れました - スマホを北に向けてタップしてください", reqSentText: "⏳ リクエスト送信済み...",
                 reqBtnText: "📲 リクエスト送信", myLocText: "<b>現在地</b>", myDestText: "<b>目的地</b>",
-                destSetText: "目的地が設定されました！", reqToast: "リクエストが正常に送信されました！"
+                destSetText: "目的地が設定されました！", reqToast: "リクエストが正常に送信されました！",
+                northWord: "北", southWord: "南", distText: "距離", kmText: "km",
+                chatPlaceholder: "メッセージを入力...", voiceBtnText: "🎤 音声録音", voiceRecording: "🔴 録音中...",
+                voiceRecorded: "✅ 録音完了"
             },
             ru: {
                 modalTitle: "Выберите режим", modalDesc: "Как вы хотите работать?",
@@ -560,7 +620,10 @@
                 chatConnected: "Вы подключены друг к другу.", chatBroken: "Связь потеряна - держите телефон на Север",
                 chatBrokenSawari: "Связь потеряна - держите телефон на Север и коснитесь", reqSentText: "⏳ Запрос отправлен...",
                 reqBtnText: "📲 Отправить запрос", myLocText: "<b>Ваше местоположение</b>", myDestText: "<b>Ваш пункт назначения</b>",
-                destSetText: "Пункт назначения установлен!", reqToast: "Запрос успешно отправлен!"
+                destSetText: "Пункт назначения установлен!", reqToast: "Запрос успешно отправлен!",
+                northWord: "С", southWord: "Ю", distText: "Расстояние", kmText: "км",
+                chatPlaceholder: "Введите сообщение...", voiceBtnText: "🎤 Запись голоса", voiceRecording: "🔴 Запись...",
+                voiceRecorded: "✅ Записано"
             },
             tr: {
                 modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmak istersiniz?",
@@ -569,7 +632,7 @@
                 otpTitle: "Mobil Doğrulama", otpDesc: "Lütfen 10 haneli cep telefonu numaranızı ve OTP'yi (Kod: 7317) girin.",
                 otpBtn: "Doğrula ve İlerle", loading: "Yükleniyor...",
                 statusRider: "Telefonunuzu her zaman kuzey yönüne tutarak haritayı görüntüleyin",
-                statusSawari: "Telefonunuzu kuzey yönüne tutun, haritaya bakın ve gitmek istediğiniz yere dokunun",
+                statusSawari: "Telefonunuzu kuzey yönüne tutun, haritaya bakın و gitmek istediğiniz yere dokunun",
                 counterRider: "Sürücüler", counterSawari: "Yolcular",
                 reqMsg: "🙋‍♂️ Yeni yolcu talebi geldi!", acceptBtn: "Kabul Et", rejectBtn: "Reddet",
                 chatTitle: "💬 Özel Sohbet ve Canlı Takip", closeChat: "✕ Kapat", sendBtn: "Gönder",
@@ -577,7 +640,10 @@
                 chatConnected: "Artık birbirinizle bağlantı kurdunuz.", chatBroken: "Bağlantı Kesildi - Telefonu kuzeye doğru tutun",
                 chatBrokenSawari: "Bağlantı Kesildi - Telefonu kuzeye doğru tutup dokunun", reqSentText: "⏳ İstek Gönderildi...",
                 reqBtnText: "📲 İstek Gönder", myLocText: "<b>Konumunuz</b>", myDestText: "<b>Varış Noktanız</b>",
-                destSetText: "Varış noktası belirlendi!", reqToast: "İstek başarıyla gönderildi!"
+                destSetText: "Varış noktası belirlendi!", reqToast: "İstek başarıyla gönderildi!",
+                northWord: "K", southWord: "G", distText: "Mesafe", kmText: "km",
+                chatPlaceholder: "Bir mesaj yazın...", voiceBtnText: "🎤 Ses Kaydı", voiceRecording: "🔴 Kayıt yapılıyor...",
+                voiceRecorded: "✅ Kaydedildi"
             }
         };
 
@@ -619,6 +685,12 @@
 
             if(document.getElementById('destStatus') && !myDestination) document.getElementById('destStatus').innerText = t.destText;
             if(document.getElementById('resetBtnText')) document.getElementById('resetBtnText').innerText = t.resetBtn;
+
+            // Updated for Compass & Chat Input & Voice Recorder
+            if(document.getElementById('compassNorth')) document.getElementById('compassNorth').innerText = t.northWord;
+            if(document.getElementById('compassSouth')) document.getElementById('compassSouth').innerText = t.southWord;
+            if(document.getElementById('chatInput')) document.getElementById('chatInput').placeholder = t.chatPlaceholder;
+            if(document.getElementById('voiceBtn') && !isRecording) document.getElementById('voiceBtn').innerText = t.voiceBtnText;
         }
 
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
@@ -933,8 +1005,8 @@
                     document.getElementById('requestPopup').style.display = 'block';
 
                     if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("नयी सवारी रिक्वेस्ट!", {
-                            body: "आपके पास एक नयी राइड रिक्वेस्ट आई है।",
+                        new Notification("New Request!", {
+                            body: "You have a new ride request.",
                             icon: "https://cdn-icons-png.flaticon.com/512/854/854878.png"
                         });
                     }
@@ -959,13 +1031,13 @@
                     } else {
                         document.getElementById('statusText').innerText = t.statusRider;
                     }
-                    appendChatMessage('सिस्टम', t.chatConnected);
+                    appendChatMessage('System', t.chatConnected);
                 }
             });
 
             socket.on('request_rejected', (data) => {
                 if (myId === data.passengerId) {
-                    showToast('❌ सामने वाले ने रिक्वेस्ट अस्वीकार कर दी है।');
+                    showToast('❌ Request rejected by partner.');
                     requestedRiders[data.riderId] = false; 
                     if (activeMarkers[data.riderId]) {
                         processIncomingUserMarkerRefresh(data.riderId);
@@ -975,7 +1047,7 @@
 
             socket.on('chat_message', (msg) => {
                 if (activeChatRoom === msg.room) {
-                    let senderLabel = (msg.senderId === myId) ? 'आप' : msg.senderRole.toUpperCase();
+                    let senderLabel = (msg.senderId === myId) ? 'You' : msg.senderRole.toUpperCase();
                     if (msg.type === 'audio') {
                         appendAudioMessage(senderLabel, msg.audioData);
                     } else if (msg.type === 'location') {
@@ -1091,7 +1163,7 @@
                 activeMarkers[user.id].setLatLng([user.lat, user.lng]);
                 activeMarkers[user.id].setIcon(getIcon(user.role, user.heading || 0, false, isGlowing));
             } else {
-                let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>दूरी: ' + distance.toFixed(1) + ' किमी';
+                let popupHtml = '<b>' + user.role.toUpperCase() + '</b><br>' + t.distText + ': ' + distance.toFixed(1) + ' ' + t.kmText;
                 if (showPopupBtn) {
                     if (requestedRiders[user.id]) {
                         popupHtml += '<br><button style="background:#6b7280; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px;" disabled>' + t.reqSentText + '</button>';
@@ -1122,7 +1194,7 @@
         function processIncomingUserMarkerRefresh(riderId) {
             if (activeMarkers[riderId]) {
                 const t = translations[currentLang] || translations['hi'];
-                let popupHtml = '<b>चालक (RIDER)</b><br><button onclick="sendSmsRequest(\'' + riderId + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">' + t.reqBtnText + '</button>';
+                let popupHtml = '<b>DRIVER</b><br><button onclick="sendSmsRequest(\'' + riderId + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">' + t.reqBtnText + '</button>';
                 activeMarkers[riderId].bindPopup(popupHtml).openPopup();
             }
         }
@@ -1152,6 +1224,7 @@
 
         function sendChatMessage() {
             const text = document.getElementById('chatInput').value;
+            const t = translations[currentLang] || translations['hi'];
             if (text && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'text', text: text });
                 document.getElementById('chatInput').value = '';
@@ -1159,7 +1232,7 @@
             else if (recordedAudioBase64 && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'audio', audioData: recordedAudioBase64 });
                 recordedAudioBase64 = null;
-                document.getElementById('voiceBtn').innerText = '🎤 वॉइस रिकॉर्ड';
+                document.getElementById('voiceBtn').innerText = t.voiceBtnText;
             }
         }
 
@@ -1178,13 +1251,13 @@
         function appendLocationMessage(sender, lat, lng) {
             const box = document.getElementById('chatMessages');
             let mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-            box.innerHTML += '<div><b>' + sender + ':</b> <a href="' + mapsUrl + '" target="_blank" style="color:#2563eb; font-weight:bold;">📍 गूगल मैप्स लोकेशन देखें</a></div>';
+            box.innerHTML += '<div><b>' + sender + ':</b> <a href="' + mapsUrl + '" target="_blank" style="color:#2563eb; font-weight:bold;">📍 View Location</a></div>';
             box.scrollTop = box.scrollHeight;
         }
 
         function shareGoogleLocation() {
             if (!myLat || !myLng || !activeChatRoom) {
-                showToast('लोकेशन या चैट सक्रिय नहीं है!');
+                showToast('Location or Chat not active!');
                 return;
             }
             socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
@@ -1192,6 +1265,7 @@
 
         function toggleVoiceRecording() {
             const btn = document.getElementById('voiceBtn');
+            const t = translations[currentLang] || translations['hi'];
             if (!isRecording) {
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                     mediaRecorder = new MediaRecorder(stream);
@@ -1204,16 +1278,16 @@
                         reader.readAsDataURL(audioBlob);
                         reader.onloadend = function() {
                             recordedAudioBase64 = reader.result;
-                            btn.innerText = '✅ रिकॉर्ड हो गया (भेजें)';
+                            btn.innerText = t.voiceRecorded;
                             sendChatMessage();
                         };
                     };
 
                     mediaRecorder.start();
                     isRecording = true;
-                    btn.innerText = '🔴 रिकॉर्डिंग जारी... (रोकें)';
+                    btn.innerText = t.voiceRecording;
                     btn.classList.add('recording');
-                }).catch(err => alert('माइक्रोफोन की अनुमति नहीं मिली!'));
+                }).catch(err => alert('Microphone permission denied!'));
             } else {
                 if (mediaRecorder) mediaRecorder.stop();
                 isRecording = false;
