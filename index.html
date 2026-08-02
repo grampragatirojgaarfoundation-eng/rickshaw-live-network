@@ -13,6 +13,12 @@
         .modal-box { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; width: 90%; max-width: 360px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
         .modal-box h2 { font-size: 20px; color: #111; margin-bottom: 6px; font-weight: 800; }
         .modal-box p { font-size: 12px; color: #666; margin-bottom: 18px; line-height: 1.4; }
+        
+        /* Language Selector Dropdown Style */
+        .lang-select-container { margin-bottom: 14px; text-align: left; }
+        .lang-select-container label { display: block; font-size: 11px; font-weight: 700; color: #2563eb; margin-bottom: 4px; }
+        .lang-dropdown { width: 100%; padding: 10px; border: 1px solid #2563eb; border-radius: 8px; font-size: 13px; font-weight: bold; background: #f8fafc; color: #111; cursor: pointer; }
+
         .btn-group { display: flex; flex-direction: column; gap: 10px; }
         .role-btn { padding: 14px; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-rider { background: #e63946; }
@@ -88,24 +94,53 @@
 
     <div class="modal-overlay" id="roleModal" style="display: none;">
         <div class="modal-box">
-            <h2>मोड चुनें (Select Mode)</h2>
-            <p>आप किस रूप में काम करना चाहते हैं?</p>
+            <!-- Select Language Section Added Here -->
+            <div class="lang-select-container">
+                <label for="languageSelect">Select your language</label>
+                <select id="languageSelect" class="lang-dropdown" onchange="changeAppLanguage(this.value)">
+                    <option value="hi">Hindi (हिन्दी)</option>
+                    <option value="en">English</option>
+                    <option value="ta">Tamil (தமிழ்)</option>
+                    <option value="te">Telugu (తెలుగు)</option>
+                    <option value="mr">Marathi (मराठी)</option>
+                    <option value="bn">Bengali (বাংলা)</option>
+                    <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                    <option value="gu">Gujarati (ગુજરાતી)</option>
+                    <option value="ml">Malayalam (മലയാളം)</option>
+                    <option value="or">Odia (ଓଡ଼ିଆ)</option>
+                    <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+                    <option value="as">Assamese (অসমীয়া)</option>
+                    <option value="rj">Rajasthani (राजस्थानी)</option>
+                    <option value="es">Spanish (Español)</option>
+                    <option value="zh">Mandarin Chinese (中文)</option>
+                    <option value="ar">Arabic (العربية)</option>
+                    <option value="pt">Portuguese (Português)</option>
+                    <option value="fr">French (Français)</option>
+                    <option value="de">German (Deutsch)</option>
+                    <option value="ja">Japanese (日本語)</option>
+                    <option value="ru">Russian (Русский)</option>
+                    <option value="tr">Turkish (Türkçe)</option>
+                </select>
+            </div>
+
+            <h2 id="modalTitleText">मोड चुनें (Select Mode)</h2>
+            <p id="modalDescText">आप किस रूप में काम करना चाहते हैं?</p>
             <div class="btn-group">
-                <button class="role-btn btn-rider" onclick="selectRole('rider')">ऑटो / ई-रिक्शा चालक</button>
-                <button class="role-btn btn-sawari" onclick="selectRole('sawari')">ऑटो यात्री (सवारी)</button>
-                <button class="role-btn btn-bike-rider" onclick="selectRole('bike_rider')">🏍️ बाइक चालक (सुबह 6 से शाम 7)</button>
-                <button class="role-btn btn-bike-sawari" onclick="selectRole('bike_sawari')">🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)</button>
+                <button class="role-btn btn-rider" id="btnRiderText" onclick="selectRole('rider')">ऑटो / ई-रिक्शा चालक</button>
+                <button class="role-btn btn-sawari" id="btnSawariText" onclick="selectRole('sawari')">ऑटो यात्री (सवारी)</button>
+                <button class="role-btn btn-bike-rider" id="btnBikeRiderText" onclick="selectRole('bike_rider')">🏍️ बाइक चालक (सुबह 6 से शाम 7)</button>
+                <button class="role-btn btn-bike-sawari" id="btnBikeSawariText" onclick="selectRole('bike_sawari')">🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="otpModal" style="display: none;">
         <div class="modal-box">
-            <h2>मोबाइल सत्यापन</h2>
-            <p>कृपया अपना 10 अंकों का मोबाइल नंबर और OTP (कोड: 7317) दर्ज करें।</p>
+            <h2 id="otpTitleText">मोबाइल सत्यापन</h2>
+            <p id="otpDescText">कृपया अपना 10 अंकों का मोबाइल नंबर और OTP (कोड: 7317) दर्ज करें।</p>
             <input type="tel" id="mobileInput" class="otp-input" placeholder="मोबाइल नंबर (10 अंक)" maxlength="10">
             <input type="password" id="otpInput" class="otp-input" placeholder="OTP दर्ज करें (7317)" maxlength="4">
-            <button class="otp-btn" onclick="verifyOtpAndStart()">सत्यापित करें और आगे बढ़ें</button>
+            <button class="otp-btn" id="otpBtnText" onclick="verifyOtpAndStart()">सत्यापित करें और आगे बढ़ें</button>
         </div>
     </div>
 
@@ -128,14 +163,14 @@
     </div>
 
     <div class="traffic-counter" id="trafficCounter">
-        🌍 चालक: <span id="totalRiders">0</span> | सवारी: <span id="totalSawaris">0</span>
+        🌍 <span id="counterRiderLabel">चालक</span>: <span id="totalRiders">0</span> | <span id="counterSawariLabel">सवारी</span>: <span id="totalSawaris">0</span>
     </div>
 
     <div class="request-popup" id="requestPopup">
         <p id="reqText" style="font-size: 12px; font-weight: bold; color: #111;"></p>
         <div class="req-btn-group">
-            <button class="btn-accept" onclick="acceptRequest()">स्वीकार करें</button>
-            <button class="btn-reject" onclick="rejectRequest()">अस्वीकार करें</button>
+            <button class="btn-accept" id="acceptBtnText" onclick="acceptRequest()">स्वीकार करें</button>
+            <button class="btn-reject" id="rejectBtnText" onclick="rejectRequest()">अस्वीकार करें</button>
         </div>
     </div>
 
@@ -144,22 +179,22 @@
     <div class="chat-overlay" id="chatOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
             <span id="chatHeaderTitle" style="font-size: 11px; font-weight: bold; color: #7c3aed;">💬 प्राइवेट चैट और लाइव ट्रैकिंग</span>
-            <button onclick="closeChat()" style="background:none; border:none; font-weight:bold; cursor:pointer; color:#666;">✕ बंद करें</button>
+            <button onclick="closeChat()" id="closeChatText" style="background:none; border:none; font-weight:bold; cursor:pointer; color:#666;">✕ बंद करें</button>
         </div>
         <div class="chat-box" id="chatMessages"></div>
         <div class="chat-input-row">
             <input type="text" id="chatInput" class="chat-input" placeholder="संदेश लिखें...">
-            <button class="chat-send-btn" onclick="sendChatMessage()">भेजें</button>
+            <button class="chat-send-btn" id="sendBtnText" onclick="sendChatMessage()">भेजें</button>
         </div>
         <div class="chat-extra-row">
             <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 वॉइस रिकॉर्ड</button>
-            <button class="extra-btn" style="background:#059669;" onclick="shareGoogleLocation()">📍 लोकेशन शेयर</button>
+            <button class="extra-btn" id="locationBtnText" style="background:#059669;" onclick="shareGoogleLocation()">📍 लोकेशन शेयर</button>
         </div>
     </div>
 
     <div class="dest-card" id="destCard">
         <span id="destStatus">मैप पर टैप करके अपनी मंजिल (Destination) सेट करें</span>
-        <button class="btn-reset" onclick="resetDestination()">रूट रीसेट</button>
+        <button class="btn-reset" id="resetBtnText" onclick="resetDestination()">रूट रीसेट</button>
     </div>
 
     <div id="map"></div>
@@ -168,6 +203,338 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
+        // Multi-Language Dictionary Support (Default Hindi, Supports all 22 requested languages)
+        const translations = {
+            hi: {
+                modalTitle: "मोड चुनें (Select Mode)", modalDesc: "आप किस रूप में काम करना चाहते हैं?",
+                riderBtn: "ऑटो / ई-रिक्शा चालक", sawariBtn: "ऑटो यात्री (सवारी)",
+                bikeRiderBtn: "🏍️ बाइक चालक (सुबह 6 से शाम 7)", bikeSawariBtn: "🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)",
+                otpTitle: "मोबाइल सत्यापन", otpDesc: "कृपया अपना 10 अंकों का मोबाइल नंबर और OTP (कोड: 7317) दर्ज करें।",
+                otpBtn: "सत्यापित करें और आगे बढ़ें", loading: "लोड हो रहा है...",
+                statusRider: "फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें",
+                statusSawari: "फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें",
+                counterRider: "चालक", counterSawari: "सवारी",
+                reqMsg: "🙋‍♂️ नई सवारी रिक्वेस्ट आई है!", acceptBtn: "स्वीकार करें", rejectBtn: "अस्वीकार करें",
+                chatTitle: "💬 प्राइवेट चैट और लाइव ट्रैकिंग", closeChat: "✕ बंद करें", sendBtn: "भेजें",
+                locationBtn: "📍 लोकेशन शेयर", destText: "मैप पर टैप करके अपनी मंजिल (Destination) सेट करें", resetBtn: "रूट रीसेट"
+            },
+            en: {
+                modalTitle: "Select Mode", modalDesc: "How would you like to work?",
+                riderBtn: "Auto / E-Rickshaw Driver", sawariBtn: "Auto Passenger",
+                bikeRiderBtn: "🏍️ Bike Rider (6 AM to 7 PM)", bikeSawariBtn: "🙋‍♂️ Bike Passenger (6 AM to 7 PM)",
+                otpTitle: "Mobile Verification", otpDesc: "Please enter your 10-digit mobile number and OTP (Code: 7317).",
+                otpBtn: "Verify and Proceed", loading: "Loading...",
+                statusRider: "Keep your phone pointing towards North and view the map",
+                statusSawari: "Keep your phone pointing towards North, view the map and tap where you want to go",
+                counterRider: "Drivers", counterSawari: "Passengers",
+                reqMsg: "🙋‍♂️ New passenger request received!", acceptBtn: "Accept", rejectBtn: "Reject",
+                chatTitle: "💬 Private Chat & Live Tracking", closeChat: "✕ Close", sendBtn: "Send",
+                locationBtn: "📍 Share Location", destText: "Tap on the map to set your destination", resetBtn: "Reset Route"
+            },
+            ta: {
+                modalTitle: "முறையைத் தேர்ந்தெடுக்கவும்", modalDesc: "நீங்கள் எப்படி வேலை செய்ய விரும்புகிறீர்கள்?",
+                riderBtn: "ஆட்டோ / இ-ரிக்‌ஷா ஓட்டுநர்", sawariBtn: "பய பயணி",
+                bikeRiderBtn: "🏍️ பைக் ஓட்டுநர் (காலை 6 மணி முதல் மாலை 7 மணி வரை)", bikeSawariBtn: "🙋‍♂️ பைக் பயணி (காலை 6 மணி முதல் மாலை 7 மணி வரை)",
+                otpTitle: "மொபைல் சரிபார்ப்பு", otpDesc: "உங்கள் 10 இலக்க மொபைல் எண் மற்றும் OTP (குறியீடு: 7317) உள்ளிடவும்.",
+                otpBtn: "சரிபார்த்து தொடரவும்", loading: "ஏற்றுகிறது...",
+                statusRider: "உங்கள் தொலைபேசியை வட திசையை நோக்கி வைத்து வரைபடத்தைப் பார்க்கவும்",
+                statusSawari: "உங்கள் தொலைபேசியை வட திசையை நோக்கி வைத்து, வரைபடத்தைப் பார்த்து செல்ல வேண்டிய இடத்தைத் தொடவும்",
+                counterRider: "ஓட்டுநர்கள்", counterSawari: "பயணிகள்",
+                reqMsg: "🙋‍♂️ புதிய பயணியின் கோரிக்கை பெறப்பட்டது!", acceptBtn: "ஏற்றுக்கொள்", rejectBtn: "நாகரிகமாக மறு",
+                chatTitle: "💬 தனிப்பட்ட அரட்டை & நேரலை கண்காணிப்பு", closeChat: "✕ மூடு", sendBtn: "அனுப்பு",
+                locationBtn: "📍 இருப்பிடத்தைப் பகிர்", destText: "சேருமிடத்தை அமைக்க வரைபடத்தைத் தட்டவும்", resetBtn: "மீட்டமை"
+            },
+            te: {
+                modalTitle: "మోడ్‌ను ఎంచుకోండి", modalDesc: "మీరు ఏ విధంగా పని చేయాలనుకుంటున్నారు?",
+                riderBtn: "ఆటో / ఇ-రిక్షా డ్రైవర్", sawariBtn: "ఆటో ప్రయాణీకుడు",
+                bikeRiderBtn: "🏍️ బైక్ డ్రైవర్ (ఉదయం 6 నుండి సాయంత్రం 7 వరకు)", bikeSawariBtn: "🙋‍♂️ బైక్ ప్రయాణీకుడు (ఉదయం 6 నుండి సాయంత్రం 7 వరకు)",
+                otpTitle: "మొబైల్ ధృవీకరణ", otpDesc: "దయచేసి మీ 10 అంకెల మొబైల్ నంబర్ మరియు OTP (కోడ్: 7317) నమోదు చేయండి.",
+                otpBtn: "ధృవీకరించి కొనసాగించు", loading: "లోడ్ అవుతోంది...",
+                statusRider: "మీ ఫోన్‌ను ఉత్తర దిశ వైపు ఉంచి మ్యాప్‌ను చూడండి",
+                statusSawari: "మీ ఫోన్‌ను ఉత్తర దిశ వైపు ఉంచి, మ్యాప్‌ను చూసి వెళ్లాల్సిన ప్రదేశాన్ని నొక్కండి",
+                counterRider: "డ్రైవర్లు", counterSawari: "ప్రయాణీకులు",
+                reqMsg: "🙋‍♂️ కొత్త ప్రయాణీకుల అభ్యర్థన వచ్చింది!", acceptBtn: "అంగీకరించు", rejectBtn: "తిరస్కరించు",
+                chatTitle: "💬 ప్రైవేట్ చాట్ & లైవ్ ట్రాకింగ్", closeChat: "✕ మూసివేయి", sendBtn: "పంపు",
+                locationBtn: "📍 లొకేషన్ పంచుకోండి", destText: "గమ్యస్థానాన్ని సెట్ చేయడానికి మ్యాప్‌పై నొక్కండి", resetBtn: "రీసెట్"
+            },
+            mr: {
+                modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
+                riderBtn: "ऑटो / ई-रिक्षा चालक", sawariBtn: "ऑटो प्रवासी",
+                bikeRiderBtn: "🏍️ बाईक चालक (सकाळी 6 ते संध्याकाळी 7)", bikeSawariBtn: "🙋‍♂️ बाईक प्रवासी (सकाळी 6 ते संध्याकाळी 7)",
+                otpTitle: "मोबाईल सत्यापण", otpDesc: "कृपया तुमचा 10 अंकी मोबाईल नंबर आणि OTP (कोड: 7317) प्रविष्ट करा.",
+                otpBtn: "तपासा आणि पुढे जा", loading: "लोड होत आहे...",
+                statusRider: "तुमचा फोन नेहमी उत्तर दिशेला ठेवून नकाशा पहा",
+                statusSawari: "तुमचा फोन उत्तर दिशेला ठेवून नकाशा पहा आणि तुम्हाला कुठे जायचे आहे तिथे स्पर्श करा",
+                counterRider: "चालक", counterSawari: "प्रवासी",
+                reqMsg: "🙋‍♂️ नवीन प्रवाशाची विनंती आली आहे!", acceptBtn: "स्वीकारा", rejectBtn: "नाकारा",
+                chatTitle: "💬 खाजगी चॅट आणि थेट ट्रॅकिंग", closeChat: "✕ बंद करा", sendBtn: "पाठवा",
+                locationBtn: "📍 स्थान शेअर करा", destText: "गंतव्यस्थान सेट करण्यासाठी नकाशावर टॅप करा", resetBtn: "रीसेट"
+            },
+            bn: {
+                modalTitle: "মোড নির্বাচন করুন", modalDesc: "আপনি কোন হিসেবে কাজ করতে চান?",
+                riderBtn: "অটো / ই-রিকশা চালক", sawariBtn: "যাত্রী",
+                bikeRiderBtn: "🏍️ বাইক চালক (সকাল ৬টা থেকে সন্ধ্যা ৭টা)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্রী (সকাল ৬টা থেকে সন্ধ্যা ৭টা)",
+                otpTitle: "মোবাইল যাচাইকরণ", otpDesc: "দয়া করে আপনার ১০ অঙ্কের মোবাইল নম্বর এবং ওটিপি (কোড: ৭৩১৭) দিন।",
+                otpBtn: "যাচাই করুন এবং এগিয়ে যান", loading: "লোড হচ্ছে...",
+                statusRider: "আপনার ফোনটি সর্বদা উত্তর দিকে রেখে মানচিত্র দেখুন",
+                statusSawari: "ফোনটি উত্তর দিকে রেখে মানচিত্র দেখুন এবং কোথায় যেতে চান তা স্পর্শ করুন",
+                counterRider: "চালক", counterSawari: "যাত্রী",
+                reqMsg: "🙋‍♂️ নতুন যাত্রীর অনুরোধ এসেছে!", acceptBtn: "গ্রহণ করুন", rejectBtn: "প্রত্যাখ্যান করুন",
+                chatTitle: "💬 ব্যক্তিগত চ্যাট এবং লাইভ ট্র্যাকিং", closeChat: "✕ বন্ধ করুন", sendBtn: "পাঠান",
+                locationBtn: "📍 অবস্থান শেয়ার করুন", destText: "গন্তব্য সেট করতে মানচিত্রে ট্যাপ করুন", resetBtn: "রুট রিসেট"
+            },
+            kn: {
+                modalTitle: "ಮೋಡ್ ಆಯ್ಕೆಮಾಡಿ", modalDesc: "ನೀವು ಯಾವ ರೂಪದಲ್ಲಿ ಕೆಲಸ ಮಾಡಲು ಬಯಸುತ್ತೀರಿ?",
+                riderBtn: "ಆಟೋ / ಇ-ರಿಕ್ಷಾ ಚಾಲಕ", sawariBtn: "ಪ್ರಯಾಣಿಕ",
+                bikeRiderBtn: "🏍️ ಬೈಕ್ ಚಾಲಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)", bikeSawariBtn: "🙋‍♂️ ಬೈಕ್ ಪ್ರಯಾಣಿಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)",
+                otpTitle: "ಮೊಬೈಲ್ ಪರಿಶೀಲನೆ", otpDesc: "ದಯವಿಟ್ಟು ನಿಮ್ಮ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಮತ್ತು OTP (ಕೋಡ್: 7317) ನಮೂದಿಸಿ.",
+                otpBtn: "ಪರಿಶೀಲಿಸಿ ಮುಂದುವರಿಸಿ", loading: ಆಗುತ್ತಿದೆ...,
+                statusRider: "ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ಉತ್ತರ ದಿಕ್ಕಿಗೆ ಇಟ್ಟುಕೊಂಡು ನಕ್ಷೆಯನ್ನು ನೋಡಿ",
+                statusSawari: "ಫೋನ್ ಅನ್ನು ಉತ್ತರ ದಿಕ್ಕಿಗೆ ಇಟ್ಟುಕೊಂಡು ನಕ್ಷೆಯನ್ನು ನೋಡಿ ಮತ್ತು ಎಲ್ಲಿಗೆ ಹೋಗಬೇಕೋ ಅಲ್ಲಿ ಸ್ಪರ್ಶಿಸಿ",
+                counterRider: "ಚಾಲಕರು", counterSawari: "ಪ್ರಯಾಣಿಕರು",
+                reqMsg: "🙋‍♂️ ಹೊಸ ಪ್ರಯಾಣಿಕರ ವಿನಂತಿ ಬಂದಿದೆ!", acceptBtn: "ಸ್ವೀಕರಿಸಿ", rejectBtn: "ತಿರಸ್ಕರಿಸಿ",
+                chatTitle: "💬 ಖಾಸಗಿ ಚಾಟ್ ಮತ್ತು ಲೈವ್ ಟ್ರ್ಯಾಕಿಂಗ್", closeChat: "✕ ಮುಚ್ಚಿ", sendBtn: "ಕಳುಹಿಸಿ",
+                locationBtn: "📍 ಸ್ಥಳ ಹಂಚಿಕೊಳ್ಳಿ", destText: "ಗಮ್ಯಸ್ಥಾನವನ್ನು ಹೊಂದಿಸಲು ನಕ್ಷೆಯ ಮೇಲೆ ಟ್ಯಾಪ್ ಮಾಡಿ", resetBtn: "ಮರುಹೊಂದಿಸಿ"
+            },
+            gu: {
+                modalTitle: "મોડ પસંદ કરો", modalDesc: "તમે કયા રૂપે કામ કરવા માંગો છો?",
+                riderBtn: "ઓટો / ઇ-રિક્ષા ડ્રાઇવર", sawariBtn: "પ્રવાસી",
+                bikeRiderBtn: "🏍️ બાઇક ડ્રાઇવર (સવારે 6 થી સાંજ 7)", bikeSawariBtn: "🙋‍♂️ બાઇક પ્રવાસી (સવારે 6 થી સાંજ 7)",
+                otpTitle: "મોબાઇલ ચકાસણી", otpDesc: "કૃપા કરીને તમારો 10 અંકનો મોબાઇલ નંબર અને OTP (કોડ: 7317) દાખલ કરો.",
+                otpBtn: "ચકાસો અને આગળ વધો", loading: "લોડ થઈ રહ્યું છે...",
+                statusRider: "તમારા ફોનને હંમેશા ઉત્તર દિશા તરફ રાખીને નકશો જુઓ",
+                statusSawari: "ફોનને ઉત્તર દિશામાં રાખી નકશો જુઓ અને તમારે ક્યાં જવું છે ત્યાં સ્પર્શ કરો",
+                counterRider: "ડ્રાઇવર", counterSawari: "પ્રવાસી",
+                reqMsg: "🙋‍♂️ નવી સવારીની વિનંતી આવી છે!", acceptBtn: "સ્વીકારો", rejectBtn: "અસ્વીકાર કરો",
+                chatTitle: "💬 ખાનગી ચેટ અને લાઇવ ટ્રેકિંગ", closeChat: "✕ બંધ કરો", sendBtn: "મોકલો",
+                locationBtn: "📍 લોકેશન શેર કરો", destText: "મંઝિલ નક્કી કરવા માટે નકશા પર ટેપ કરો", resetBtn: "રીસેટ કરો"
+            },
+            ml: {
+                modalTitle: "മോഡ് തിരഞ്ഞെടുക്കുക", modalDesc: "നിങ്ങൾക്ക് എങ്ങനെ ജോലി ചെയ്യണം?",
+                riderBtn: "ഓട്ടോ / ഇ-റിക്ഷ ഡ്രൈവർ", sawariBtn: "യാത്രികൻ",
+                bikeRiderBtn: "🏍️ ബൈക്ക് ഡ്രൈവർ (രാവിലെ 6 മുതൽ വൈകുന്നേരം 7 വരെ)", bikeSawariBtn: "🙋‍♂️ ബൈക്ക് യാത്രികൻ (രാവിലെ 6 മുതൽ വൈകുന്നേരം 7 വരെ)",
+                otpTitle: "മൊബൈൽ സ്ഥിരീകരണം", otpDesc: "നിങ്ങളുടെ 10 അക്ക മൊബൈൽ നമ്പറും OTP (കോഡ്: 7317) നൽകുക.",
+                otpBtn: "സ്ഥിരീകരിച്ച് മുന്നോട്ട് പോവുക", loading: "ലോഡ് ചെയ്യുന്നു...",
+                statusRider: "ഫോൺ എപ്പോഴും വടക്കോട്ട് പിടിച്ച് മാപ്പ് കാണുക",
+                statusSawari: "ഫോൺ വടക്കോട്ട് പിടിച്ച് മാപ്പ് നോക്കി പോകേണ്ട സ്ഥലം തൊടുക",
+                counterRider: "ഡ്രൈവർമാർ", counterSawari: "യാത്രക്കാർ",
+                reqMsg: "🙋‍♂️ പുതിയ യാത്രക്കാരന്റെ അഭ്യർത്ഥന എത്തി!", acceptBtn: "സ്വീകരിക്കുക", rejectBtn: "നിരസിക്കുക",
+                chatTitle: "💬 പ്രൈവറ്റ് ചാറ്റ് & ലൈവ് ട്രാക്കിംഗ്", closeChat: "✕ അടയ്ക്കുക", sendBtn: "അയക്കുക",
+                locationBtn: "📍 ലൊക്കേഷൻ പങ്കിടുക", destText: "ലക്ഷ്യസ്ഥാനം സജ്ജീകരിക്കാൻ മാപ്പിൽ ടാപ്പ് ചെയ്യുക", resetBtn: "റീസെറ്റ് ചെയ്യുക"
+            },
+            or: {
+                modalTitle: "ମୋଡ୍ ଚୟନ କରନ୍ତୁ", modalDesc: "ଆପଣ କିପରି କାମ କରିବାକୁ ଚାହାଁନ୍ତି?",
+                riderBtn: "ଅଟୋ / ଇ-ରକ୍ଷା ଚାଳକ", sawariBtn: "ଯାତ୍ରୀ",
+                bikeRiderBtn: "🏍️ ବାଇକ୍ ଚାଳକ (ସକାଳ 6 ରୁ ସନ୍ଧ୍ୟା 7)", bikeSawariBtn: "🙋‍♂️ ବାଇକ୍ ଯାତ୍ରୀ (ସକାଳ 6 ରୁ ସନ୍ଧ୍ୟା 7)",
+                otpTitle: "ମୋବାଇଲ୍ ଯାଞ୍ଚ", otpDesc: "ଦୟାକରି ଆପଣଙ୍କର 10 ଅଙ୍କ ବିଶିଷ୍ଟ ମୋବାଇଲ୍ ନମ୍ବର ଏବଂ OTP (କୋଡ୍: 7317) ଦିଅନ୍ତୁ।",
+                otpBtn: "ଯାଞ୍ଚ କରି ଆଗକୁ ବ଼୍ହନ୍ତୁ", loading: "ଲୋଡ୍ ହେଉଛି...",
+                statusRider: "ଆପଣଙ୍କର ଫୋନ୍ ସର୍ବଦା ଉତ୍ତର ଦିଗକୁ ରଖି ମ୍ୟାପ୍ ଦେଖନ୍ତୁ",
+                statusSawari: "ଫୋନ୍ ଉତ୍ତର ଦିଗକୁ ରଖି ମ୍ୟାପ୍ ଦେଖନ୍ତୁ ଏବଂ କୁଆଡ଼େ ଯିବେ ଟଚ୍ କରନ୍ତୁ",
+                counterRider: "ଚାଳକ", counterSawari: "ଯାତ୍ରୀ",
+                reqMsg: "🙋‍♂️ ନୂତନ ଯାତ୍ରୀ ଅନୁରୋଧ ଆସିଛି!", acceptBtn: "ଗ୍ରହଣ କରନ୍ତୁ", rejectBtn: "ପ୍ରତ୍ୟାଖ୍ୟାନ କରନ୍ତୁ",
+                chatTitle: "💬 ପ୍ରାଇଭେଟ୍ ଚାଟ୍ ଏବଂ ଲାଇଭ୍ ଟ୍ରାକିଂ", closeChat: "✕ ବନ୍ଦ କରନ୍ତୁ", sendBtn: "ପଠାନ୍ତୁ",
+                locationBtn: "📍 ଲୋକେସନ୍ ସେୟାର୍ କରନ୍ତୁ", destText: "ଗନ୍ତବ୍ୟସ୍ଥଳ ସେଟ୍ କରିବାକୁ ମ୍ୟାପ୍ ରେ ଟାପ୍ କରନ୍ତୁ", resetBtn: "ରୁଟ୍ ରିସେଟ୍"
+            },
+            pa: {
+                modalTitle: "ਮੋਡ ਚੁਣੋ", modalDesc: "ਤੁਸੀਂ ਕਿਸ ਰੂਪ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
+                riderBtn: "ਆਟੋ / ਈ-ਰਿਕਸ਼ਾ ਡਰਾਈਵਰ", sawariBtn: "ਸਵਾਰੀ",
+                bikeRiderBtn: "🏍️ ਬਾਈਕ ਡਰਾਈਵਰ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)", bikeSawariBtn: "🙋‍♂️ ਬਾਈਕ ਸਵਾਰੀ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)",
+                otpTitle: "ਮੋਬਾਈਲ ਤਸਦੀਕ", otpDesc: "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ 10 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਅਤੇ OTP (ਕੋਡ: 7317) ਦਰਜ ਕਰੋ।",
+                otpBtn: "तਸਦੀਕ ਕਰੋ ਅਤੇ ਅੱਗੇ ਵਧੋ", loading: "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+                statusRider: "ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਹਮੇਸ਼ਾ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ",
+                statusSawari: "ਫ਼ੋਨ ਨੂੰ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ ਅਤੇ ਜਿੱਥੇ ਜਾਣਾ ਹੈ ਉੱਥੇ ਛੋਹਵੋ",
+                counterRider: "ਡਰਾਈਵਰ", counterSawari: "ਸਵਾਰੀ",
+                reqMsg: "🙋‍♂️ ਨਵੀਂ ਸਵਾਰੀ ਦੀ ਬੇਨਤੀ ਆਈ ਹੈ!", acceptBtn: "ਸਵੀਕਾਰ ਕਰੋ", rejectBtn: "ਅਸਵੀਕਾਰ ਕਰੋ",
+                chatTitle: "💬 ਪ੍ਰਾਈਵੇਟ ਚੈਟ ਅਤੇ ਲਾਈਵ ਟਰੈਕਿੰਗ", closeChat: "✕ ਬੰਦ ਕਰੋ", sendBtn: "ਭੇਜੋ",
+                locationBtn: "📍 ਸਥਾਨ ਸਾਂਝਾ ਕਰੋ", destText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਕਰਨ ਲਈ ਮੈਪ 'ਤੇ ਟੈਪ ਕਰੋ", resetBtn: "ਰੀਸੈਟ ਕਰੋ"
+            },
+            as: {
+                modalTitle: "মড নিৰ্বাচন কৰক", modalDesc: "আপুনি কোন ৰূপত কাম কৰিব বিচাৰে?",
+                riderBtn: "অটো / ই-ৰিক্সা চালক", sawariBtn: "যাত্ৰী",
+                bikeRider_Btn: "🏍️ বাইক চালক (পুৱা ৬ বজাৰ পৰা সন্ধ্যা ৭ বজা)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্ৰী (পুৱা ৬ বজাৰ পৰা সন্ধ্যা ৭ বজা)",
+                otpTitle: "মবাইল প্ৰমাণীকৰণ", otpDesc: "অনুগ্রহ কৰি আপোনাৰ ১০ টা অংকৰ মবাইল নম্বৰ আৰু OTP (কোড: ৭৩১৭) দিয়ক।",
+                otpBtn: "প্ৰমাণীকৰণ কৰি আগবাঢ়ক", loading: "লোড হৈ আছে...",
+                statusRider: "আপোনাৰ ফোনটো সদায় উত্তৰ দিশলৈ ৰাখি মেপখন চাওক",
+                statusSawari: "ফোনটো উত্তৰ দিশলৈ ৰাখি মেপ চাওক আৰু ক'লৈ যাব লাগিব স্পৰ্শ কৰক",
+                counterRider: "চালক", counterSawari: "যাত্ৰী",
+                reqMsg: "🙋‍♂️ নতুন যাত্ৰীৰ অনুৰোধ আহিছে!", acceptBtn: "গ্ৰহণ কৰক", rejectBtn: "প্ৰত্যাখ্যাত কৰক",
+                chatTitle: "💬 প্ৰাইভেট চাট আৰু লাইভ ট্ৰেকিং", closeChat: "✕ বন্ধ কৰক", sendBtn: "প্ৰেবণ কৰক",
+                locationBtn: "📍 অৱস্থান শ্বেয়াৰ কৰক", destText: "গন্তব্যস্থান নিৰ্ধাৰণ কৰিবলৈ মেপত টেপ কৰক", resetBtn: "ৰীছেট"
+            },
+            rj: {
+                modalTitle: "मोड चुणो", modalDesc: "आप कै रूप में काम करणा चाहो हो?",
+                riderBtn: "ऑटो / ई-रिक्शा चालक", sawariBtn: "यात्री (सवारी)",
+                bikeRiderBtn: "🏍️ बाइक चालक (सुब ७ रू शाम ७)", bikeSawariBtn: "🙋‍♂️ बाइक सवारी",
+                otpTitle: "मोबाइल सत्यापन", otpDesc: "कृपया आप को 10 अंको को मोबाइल नंबर अर OTP (कोड: 7317) लगावड़ो।",
+                otpBtn: "सत्यापित करो अर आगे बढ़ो", loading: "लोड हो रह्यो है...",
+                statusRider: "फोन ने हमेशा उत्तर दिशा की तरफ राख्न ने मेप देखनो",
+                statusSawari: "फोन ने उत्तर दिशा में राख्न मेप देखनो अर कटे जाणो है थामे टच करो",
+                counterRider: "चालक", counterSawari: "सवारी",
+                reqMsg: "🙋‍♂️ नई सवारी की रिक्वेस्ट आई है!", acceptBtn: "स्वीकार करो", rejectBtn: "मना करो",
+                chatTitle: "💬 प्राइवेट चैट अर लाइव ट्रैकिंग", closeChat: "✕ बंद करो", sendBtn: "भेजो",
+                locationBtn: "📍 लोकेशन शेयर करो", destText: "मंजिल सेट करण खातिर मेप पर टैप करो", resetBtn: "रूट रीसेट"
+            },
+            es: {
+                modalTitle: "Seleccionar Modo", modalDesc: "¿Cómo te gustaría trabajar?",
+                riderBtn: "Conductor de Auto / E-Rickshaw", sawariBtn: "Pasajero",
+                bikeRiderBtn: "🏍️ Conductor de Moto (6 AM a 7 PM)", bikeSawariBtn: "🙋‍♂️ Pasajero de Moto (6 AM a 7 PM)",
+                otpTitle: "Verificación Móvil", otpDesc: "Por favor ingresa tu número móvil de 10 dígitos y OTP (Código: 7317).",
+                otpBtn: "Verificar y Continuar", loading: "Cargando...",
+                statusRider: "Mantén tu teléfono apuntando hacia el Norte y mira el mapa",
+                statusSawari: "Mantén tu teléfono apuntando hacia el Norte y toca a dónde quieres ir",
+                counterRider: "Conductores", counterSawari: "Pasajeros",
+                reqMsg: "🙋‍♂️ ¡Nueva solicitud de pasajero recibida!", acceptBtn: "Aceptar", rejectBtn: "Rechazar",
+                chatTitle: "💬 Chat Privado y Rastreo en Vivo", closeChat: "✕ Cerrar", sendBtn: "Enviar",
+                locationBtn: "📍 Compartir Ubicación", destText: "Toca en el mapa para establecer tu destino", resetBtn: "Restablecer Ruta"
+            },
+            zh: {
+                modalTitle: "选择模式", modalDesc: "您希望以什么身份工作？",
+                riderBtn: "自动三轮车/电动三轮车司机", sawariBtn: "乘客",
+                bikeRiderBtn: "🏍️ 摩托车手（上午 6 点至晚上 7 点）", bikeSawariBtn: "🙋‍♂️ 摩托车乘客（上午 6 点至晚上 7 点）",
+                otpTitle: "手机验证", otpDesc: "请输入您的 10 位手机号码和验证码（代码：7317）。",
+                otpBtn: "验证并继续", loading: "加载中...",
+                statusRider: "请将手机朝向正北方查看地图",
+                statusSawari: "请将手机朝向正北方查看地图并点击目的地",
+                counterRider: "司机", counterSawari: "乘客",
+                reqMsg: "🙋‍♂️ 收到新的乘客请求！", acceptBtn: "接受", rejectBtn: "拒绝",
+                chatTitle: "💬 私人聊天与实时追踪", closeChat: "✕ 关闭", sendBtn: "发送",
+                locationBtn: "📍 分享位置", destText: "点击地图设置您的目的地", resetBtn: "重置路线"
+            },
+            ar: {
+                modalTitle: "اختر الوضع", modalDesc: "كيفودك أن تعمل؟",
+                riderBtn: "سائق توك توك / ركشة", sawariBtn: "راكب",
+                bikeRiderBtn: "🏍️ سائق دراجة نارية (6 صباحاً إلى 7 مساءً)", bikeSawariBtn: "🙋‍♂️ راكب دراجة نارية (6 صباحاً إلى 7 مساءً)",
+                otpTitle: "التحقق من الهاتف المحمول", otpDesc: "الرجاء إدخال رقم هاتفك المحمول المكون من 10 أرقام ورمز التحقق (الرمز: 7317).",
+                otpBtn: "تحقق والمتابعة", loading: "جاري التحميل...",
+                statusRider: "اجعل هاتفك يشير دائماً نحو الشمال وانظر إلى الخريطة",
+                statusSawari: "اجعل هاتفك يشير نحو الشمال وانظر إلى الخريطة ثم المس الوجهة التي تريدها",
+                counterRider: "السائقين", counterSawari: "الركاب",
+                reqMsg: "🙋‍♂️ تم استلام طلب راكب جديد!", acceptBtn: "قبول", rejectBtn: "رفض",
+                chatTitle: "💬 دردشة خاصة وتتبع مباشر", closeChat: "✕ إغلاق", sendBtn: "إرسال",
+                locationBtn: "📍 مشاركة الموقع", destText: "انقر على الخريطة لتحديد وجهتك", resetBtn: "إعادة تعيين المسار"
+            },
+            pt: {
+                modalTitle: "Selecionar Modo", modalDesc: "Como você gostaria de trabalhar?",
+                riderBtn: "Motorista de Auto / E-Rickshaw", sawariBtn: "Passageiro",
+                bikeRiderBtn: "🏍️ Motociclista (6h às 19h)", bikeSawariBtn: "🙋‍♂️ Passageiro de Moto (6h às 19h)",
+                otpTitle: "Verificação Móvel", otpDesc: "Por favor, insira seu número de celular de 10 dígitos e o OTP (Código: 7317).",
+                otpBtn: "Verificar e Prosseguir", loading: "Carregando...",
+                statusRider: "Mantenha seu telefone apontado para o Norte e veja o mapa",
+                statusSawari: "Mantenha seu telefone apontado para o Norte e toque para onde deseja ir",
+                counterRider: "Motoristas", counterSawari: "Passageiros",
+                reqMsg: "🙋‍♂️ Nova solicitação de passageiro recebida!", acceptBtn: "Aceitar", rejectBtn: "Rejeitar",
+                chatTitle: "💬 Chat Privado e Rastreamento ao Vivo", closeChat: "✕ Fechar", sendBtn: "Enviar",
+                locationBtn: "📍 Compartilhar Localização", destText: "Toque no mapa para definir seu destino", resetBtn: "Redefinir Rota"
+            },
+            fr: {
+                modalTitle: "Sélectionner le Mode", modalDesc: "Comment souhaitez-vous travailler ?",
+                riderBtn: "Conducteur Auto / E-Rickshaw", sawariBtn: "Passager",
+                bikeRiderBtn: "🏍️ Motard (6h00 à 19h00)", bikeSawariBtn: "🙋‍♂️ Passager moto (6h00 à 19h00)",
+                otpTitle: "Vérification Mobile", otpDesc: "Veuillez entrer votre numéro de mobile à 10 chiffres et l'OTP (Code : 7317).",
+                otpBtn: "Vérifier et continuer", loading: "Chargement...",
+                statusRider: "Gardez votre téléphone pointé vers le Nord et regardez la carte",
+                statusSawari: "Gardez votre téléphone vers le Nord et touchez l'écran où vous souhaitez aller",
+                counterRider: "Conducteurs", counterSawari: "Passagers",
+                reqMsg: "🙋‍♂️ Nouvelle demande de passager reçue !", acceptBtn: "Accepter", rejectBtn: "Rejeter",
+                chatTitle: "💬 Chat Privé & Suivi en direct", closeChat: "✕ Fermer", sendBtn: "Envoyer",
+                locationBtn: "📍 Partager la position", destText: "Appuyez sur la carte pour définir votre destination", resetBtn: "Réinitialiser"
+            },
+            de: {
+                modalTitle: "Modus wählen", modalDesc: "Wie möchten Sie arbeiten?",
+                riderBtn: "Auto / E-Rikscha Fahrer", sawariBtn: "Fahrgast",
+                bikeRiderBtn: "🏍️ Motorradfahrer (6:00 bis 19:00 Uhr)", bikeSawariBtn: "🙋‍♂️ Motorrad-Fahrgast (6:00 bis 19:00 Uhr)",
+                otpTitle: "Handy-Verifizierung", otpDesc: "Bitte geben Sie Ihre 10-stellige Handynummer und den OTP ein (Code: 7317).",
+                otpBtn: "Bestätigen und fortfahren", loading: "Wird geladen...",
+                statusRider: "Halten Sie Ihr Handy nach Norden ausgerichtet und betrachten Sie die Karte",
+                statusSawari: "Halten Sie das Handy nach Norden, betrachten Sie die Karte und tippen Sie auf Ihr Ziel",
+                counterRider: "Fahrer", counterSawari: "Fahrgäste",
+                reqMsg: "🙋‍♂️ Neue Fahrgastanfrage eingegangen!", acceptBtn: "Annehmen", rejectBtn: "Ablehnen",
+                chatTitle: "💬 Privater Chat & Live-Tracking", closeChat: "✕ Schließen", sendBtn: "Senden",
+                locationBtn: "📍 Standort teilen", destText: "Tippen Sie auf die Karte, um Ihr Ziel festzulegen", resetBtn: "Route zurücksetzen"
+            },
+            ja: {
+                modalTitle: "モード選択", modalDesc: "どのように働きますか？",
+                riderBtn: "オート / Eリキシャ運転手", sawariBtn: "乗客",
+                bikeRiderBtn: "🏍️ バイクライダー (午前6時〜午後7時)", bikeSawariBtn: "🙋‍♂️ バイク乗客 (午前6時〜午後7時)",
+                otpTitle: "携帯電話認証", otpDesc: "10桁の携帯電話番号とOTP（コード: 7317）を入力してください。",
+                otpBtn: "確認して進む", loading: "読み込み中...",
+                statusRider: "スマホを常に北に向けた状態でマップを確認してください",
+                statusSawari: "スマホを常に北に向けた状態でマップを確認し、行きたい場所をタップしてください",
+                counterRider: "運転手", counterSawari: "乗客",
+                reqMsg: "🙋‍♂️ 新しい乗客のリクエストが届きました！", acceptBtn: "承認", rejectBtn: "拒否",
+                chatTitle: "💬 プライベートチャットとライブ追跡", closeChat: "✕ 閉じる", sendBtn: "送信",
+                locationBtn: "📍 位置情報を共有", destText: "マップをタップして目的地を設定してください", resetBtn: "ルートリセット"
+            },
+            ru: {
+                modalTitle: "Выберите режим", modalDesc: "Как вы хотите работать?",
+                riderBtn: "Водитель авто / рикши", sawariBtn: "Пассажир",
+                bikeRiderBtn: "🏍️ Мотоциклист (с 6:00 до 19:00)", bikeSawariBtn: "🙋‍♂️ Пассажир мотоцикла (с 6:00 до 19:00)",
+                otpTitle: "Проверка номера", otpDesc: "Введите свой 10-значный номер телефона и OTP (Код: 7317).",
+                otpBtn: "Подтвердить и продолжить", loading: "Загрузка...",
+                statusRider: "Держите телефон лицом на Север и смотрите на карту",
+                statusSawari: "Держите телефон лицом на Север, смотрите на карту и коснитесь места назначения",
+                counterRider: "Водители", counterSawari: "Пассажиры",
+                reqMsg: "🙋‍♂️ Получен новый запрос от пассажира!", acceptBtn: "Принять", rejectBtn: "Отклонить",
+                chatTitle: "💬 Чат и живое отслеживание", closeChat: "✕ Закрыть", sendBtn: "Отправить",
+                locationBtn: "📍 Поделиться местоположением", destText: "Нажмите на карту, чтобы установить пункт назначения", resetBtn: "Сбросить маршрут"
+            },
+            tr: {
+                modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmakfersiniz?",
+                riderBtn: "Oto / E-Rickshaw Sürücüsü", sawariBtn: "Yolcu",
+                bikeRiderBtn: "🏍️ Motosiklet Sürücüsü (06:00 - 19:00)", bikeSawariBtn: "🙋‍♂️ Motosiklet Yolcusu (06:00 - 19:00)",
+                otpTitle: "Mobil Doğrulama", otpDesc: "Lütfen 10 haneli cep telefonu numaranızı ve OTP'yi (Kod: 7317) girin.",
+                otpBtn: "Doğrula ve İlerle", loading: "Yükleniyor...",
+                statusRider: "Telefonunuzu her zaman kuzey yönüne tutarak haritayı görüntüleyin",
+                statusSawari: "Telefonunuzu kuzey yönüne tutun, haritaya bakın ve gitmek istediğiniz yere dokunun",
+                counterRider: "Sürücüler", counterSawari: "Yolcular",
+                reqMsg: "🙋‍♂️ Yeni yolcu talebi geldi!", acceptBtn: "Kabul Et", rejectBtn: "Reddet",
+                chatTitle: "💬 Özel Sohbet ve Canlı Takip", closeChat: "✕ Kapat", sendBtn: "Gönder",
+                locationBtn: "📍 Konum Paylaş", destText: "Hedefinizi belirlemek için haritaya dokunun", resetBtn: "Rotayı Sıfırla"
+            }
+        };
+
+        let currentLang = localStorage.getItem('app_lang') || 'hi';
+
+        function changeAppLanguage(langCode) {
+            currentLang = langCode;
+            localStorage.setItem('app_lang', langCode);
+            applyTranslations();
+        }
+
+        function applyTranslations() {
+            const t = translations[currentLang] || translations['hi'];
+            
+            // Set dropdown value back to saved/selected
+            const dropdown = document.getElementById('languageSelect');
+            if(dropdown) dropdown.value = currentLang;
+
+            // Update UI elements text safely
+            if(document.getElementById('modalTitleText')) document.getElementById('modalTitleText').innerText = t.modalTitle;
+            if(document.getElementById('modalDescText')) document.getElementById('modalDescText').innerText = t.modalDesc;
+            if(document.getElementById('btnRiderText')) document.getElementById('btnRiderText').innerText = t.riderBtn;
+            if(document.getElementById('btnSawariText')) document.getElementById('btnSawariText').innerText = t.sawariBtn;
+            if(document.getElementById('btnBikeRiderText')) document.getElementById('btnBikeRiderText').innerText = t.bikeRiderBtn;
+            if(document.getElementById('btnBikeSawariText')) document.getElementById('btnBikeSawariText').innerText = t.bikeSawariBtn;
+
+            if(document.getElementById('otpTitleText')) document.getElementById('otpTitleText').innerText = t.otpTitle;
+            if(document.getElementById('otpDescText')) document.getElementById('otpDescText').innerText = t.otpDesc;
+            if(document.getElementById('otpBtnText')) document.getElementById('otpBtnText').innerText = t.otpBtn;
+
+            if(document.getElementById('counterRiderLabel')) document.getElementById('counterRiderLabel').innerText = t.counterRider;
+            if(document.getElementById('counterSawariLabel')) document.getElementById('counterSawariLabel').innerText = t.counterSawari;
+
+            if(document.getElementById('acceptBtnText')) document.getElementById('acceptBtnText').innerText = t.acceptBtn;
+            if(document.getElementById('rejectBtnText')) document.getElementById('rejectBtnText').innerText = t.rejectBtn;
+
+            if(document.getElementById('chatHeaderTitle')) document.getElementById('chatHeaderTitle').innerText = t.chatTitle;
+            if(document.getElementById('closeChatText')) document.getElementById('closeChatText').innerText = t.closeChat;
+            if(document.getElementById('sendBtnText')) document.getElementById('sendBtnText').innerText = t.sendBtn;
+            if(document.getElementById('locationBtnText')) document.getElementById('locationBtnText').innerText = t.locationBtn;
+
+            if(document.getElementById('destStatus') && !myDestination) document.getElementById('destStatus').innerText = t.destText;
+            if(document.getElementById('resetBtnText')) document.getElementById('resetBtnText').innerText = t.resetBtn;
+        }
+
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
@@ -181,6 +548,9 @@
             if ("Notification" in window && Notification.permission !== "granted") {
                 Notification.requestPermission();
             }
+
+            // Apply saved language on load
+            applyTranslations();
 
             const savedMobile = localStorage.getItem('rickshaw_user_mobile');
             if (savedMobile) {
@@ -217,10 +587,11 @@
             document.getElementById('topContainer').style.display = 'flex';
             statusDotEl.className = 'badge badge-green';
 
+            const t = translations[currentLang] || translations['hi'];
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                statusTextEl.innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें';
+                statusTextEl.innerText = t.statusSawari;
             } else {
-                statusTextEl.innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें';
+                statusTextEl.innerText = t.statusRider;
             }
 
             initializeAppAfterLogin();
@@ -401,7 +772,8 @@
             myDestination = null;
             if (destMarker) map.removeLayer(destMarker);
             if (destLine) map.removeLayer(destLine);
-            document.getElementById('destStatus').innerText = 'मैप पर टैप करके अपनी मंजिल सेट करें';
+            const t = translations[currentLang] || translations['hi'];
+            document.getElementById('destStatus').innerText = t.destText;
             syncPosition();
         }
 
@@ -470,7 +842,8 @@
             socket.on('receive_sms_request', (data) => {
                 if (myRole === 'bike_rider' || myRole === 'rider') {
                     incomingReqData = data;
-                    document.getElementById('reqText').innerText = '🙋‍♂️ नई सवारी रिक्वेस्ट आई है!';
+                    const t = translations[currentLang] || translations['hi'];
+                    document.getElementById('reqText').innerText = t.reqMsg;
                     document.getElementById('requestPopup').style.display = 'block';
 
                     if ("Notification" in window && Notification.permission === "granted") {
@@ -491,13 +864,14 @@
                     document.getElementById('requestPopup').style.display = 'none';
                     document.getElementById('chatOverlay').style.display = 'block';
                     
-                    document.getElementById('chatHeaderTitle').innerText = '💬 लाइव कनेक्टेड';
+                    const t = translations[currentLang] || translations['hi'];
+                    document.getElementById('chatHeaderTitle').innerText = t.chatTitle;
 
                     document.getElementById('statusDot').className = 'badge badge-green';
                     if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                        document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें';
+                        document.getElementById('statusText').innerText = t.statusSawari;
                     } else {
-                        document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें';
+                        document.getElementById('statusText').innerText = t.statusRider;
                     }
                     appendChatMessage('सिस्टम', 'आप आपस में कनेक्ट हो गए हैं।');
                 }
@@ -529,6 +903,7 @@
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
                     document.getElementById('statusDot').className = 'badge badge-red';
+                    const t = translations[currentLang] || translations['hi'];
                     if (myRole === 'sawari' || myRole === 'bike_sawari') {
                         document.getElementById('statusText').innerText = 'सम्पर्क टूटा - फोन उत्तर दिशा में रखें और टच करें';
                     } else {
@@ -538,9 +913,9 @@
                     setTimeout(() => {
                         document.getElementById('statusDot').className = 'badge badge-green';
                         if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                            document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें';
+                            document.getElementById('statusText').innerText = t.statusSawari;
                         } else {
-                            document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें';
+                            document.getElementById('statusText').innerText = t.statusRider;
                         }
                         document.getElementById('chatMessages').innerHTML = '';
                         document.getElementById('chatOverlay').style.display = 'none';
@@ -764,6 +1139,7 @@
             document.getElementById('chatOverlay').style.display = 'none';
             
             document.getElementById('statusDot').className = 'badge badge-red';
+            const t = translations[currentLang] || translations['hi'];
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 document.getElementById('statusText').innerText = 'सम्पर्क टूटा - फोन उत्तर दिशा में रखें और टच करें';
             } else {
@@ -773,9 +1149,9 @@
             setTimeout(() => {
                 document.getElementById('statusDot').className = 'badge badge-green';
                 if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                    document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें';
+                    document.getElementById('statusText').innerText = t.statusSawari;
                 } else {
-                    document.getElementById('statusText').innerText = 'फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें';
+                    document.getElementById('statusText').innerText = t.statusRider;
                 }
                 document.getElementById('chatMessages').innerHTML = '';
             }, 2000);
