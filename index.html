@@ -92,7 +92,7 @@
 </head>
 <body>
 
-    <div class="modal-overlay" id="roleModal" style="display: none;">
+    <div class="modal-overlay" id="roleModal" style="display: flex;">
         <div class="modal-box">
             <!-- Select Language Section Added Here -->
             <div class="lang-select-container">
@@ -288,7 +288,7 @@
                 riderBtn: "ಆಟೋ / ಇ-ರಿಕ್ಷಾ ಚಾಲಕ", sawariBtn: "ಪ್ರಯಾಣಿಕ",
                 bikeRiderBtn: "🏍️ ಬೈಕ್ ಚಾಲಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)", bikeSawariBtn: "🙋‍♂️ ಬೈಕ್ ಪ್ರಯಾಣಿಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)",
                 otpTitle: "ಮೊಬೈಲ್ ಪರಿಶೀಲನೆ", otpDesc: "ದಯವಿಟ್ಟು ನಿಮ್ಮ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಮತ್ತು OTP (ಕೋಡ್: 7317) ನಮೂದಿಸಿ.",
-                otpBtn: "ಪರಿಶೀಲಿಸಿ ಮುಂದುವರಿಸಿ", loading: ಆಗುತ್ತಿದೆ...,
+                otpBtn: "ಪರಿಶೀಲಿಸಿ ಮುಂದುವರಿಸಿ", loading: "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
                 statusRider: "ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ಉತ್ತರ ದಿಕ್ಕಿಗೆ ಇಟ್ಟುಕೊಂಡು ನಕ್ಷೆಯನ್ನು ನೋಡಿ",
                 statusSawari: "ಫೋನ್ ಅನ್ನು ಉತ್ತರ ದಿಕ್ಕಿಗೆ ಇಟ್ಟುಕೊಂಡು ನಕ್ಷೆಯನ್ನು ನೋಡಿ ಮತ್ತು ಎಲ್ಲಿಗೆ ಹೋಗಬೇಕೋ ಅಲ್ಲಿ ಸ್ಪರ್ಶಿಸಿ",
                 counterRider: "ಚಾಲಕರು", counterSawari: "ಪ್ರಯಾಣಿಕರು",
@@ -351,7 +351,7 @@
             as: {
                 modalTitle: "মড নিৰ্বাচন কৰক", modalDesc: "আপুনি কোন ৰূপত কাম কৰিব বিচাৰে?",
                 riderBtn: "অটো / ই-ৰিক্সা চালক", sawariBtn: "যাত্ৰী",
-                bikeRider_Btn: "🏍️ বাইক চালক (পুৱা ৬ বজাৰ পৰা সন্ধ্যা ৭ বজা)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্ৰী (পুৱা ৬ বজাৰ পৰা সন্ধ্যা ৭ বজা)",
+                bikeRiderBtn: "🏍️ বাইক চালক (পুৱা ৬ বজাৰ পৰা সন্ধ্যা ৭ বজা)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্ৰী (পুৱা ৬ বজাৰ পৰা সন্ধ্যা ৭ বজা)",
                 otpTitle: "মবাইল প্ৰমাণীকৰণ", otpDesc: "অনুগ্রহ কৰি আপোনাৰ ১০ টা অংকৰ মবাইল নম্বৰ আৰু OTP (কোড: ৭৩১৭) দিয়ক।",
                 otpBtn: "প্ৰমাণীকৰণ কৰি আগবাঢ়ক", loading: "লোড হৈ আছে...",
                 statusRider: "আপোনাৰ ফোনটো সদায় উত্তৰ দিশলৈ ৰাখি মেপখন চাওক",
@@ -479,7 +479,7 @@
                 locationBtn: "📍 Поделиться местоположением", destText: "Нажмите на карту, чтобы установить пункт назначения", resetBtn: "Сбросить маршрут"
             },
             tr: {
-                modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmakfersiniz?",
+                modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmak istersiniz?",
                 riderBtn: "Oto / E-Rickshaw Sürücüsü", sawariBtn: "Yolcu",
                 bikeRiderBtn: "🏍️ Motosiklet Sürücüsü (06:00 - 19:00)", bikeSawariBtn: "🙋‍♂️ Motosiklet Yolcusu (06:00 - 19:00)",
                 otpTitle: "Mobil Doğrulama", otpDesc: "Lütfen 10 haneli cep telefonu numaranızı ve OTP'yi (Kod: 7317) girin.",
@@ -504,11 +504,9 @@
         function applyTranslations() {
             const t = translations[currentLang] || translations['hi'];
             
-            // Set dropdown value back to saved/selected
             const dropdown = document.getElementById('languageSelect');
             if(dropdown) dropdown.value = currentLang;
 
-            // Update UI elements text safely
             if(document.getElementById('modalTitleText')) document.getElementById('modalTitleText').innerText = t.modalTitle;
             if(document.getElementById('modalDescText')) document.getElementById('modalDescText').innerText = t.modalDesc;
             if(document.getElementById('btnRiderText')) document.getElementById('btnRiderText').innerText = t.riderBtn;
@@ -549,7 +547,6 @@
                 Notification.requestPermission();
             }
 
-            // Apply saved language on load
             applyTranslations();
 
             const savedMobile = localStorage.getItem('rickshaw_user_mobile');
@@ -557,8 +554,9 @@
                 document.getElementById('otpModal').style.display = 'none';
                 document.getElementById('roleModal').style.display = 'flex';
             } else {
-                document.getElementById('otpModal').style.display = 'flex';
-                document.getElementById('roleModal').style.display = 'none';
+                // Force show role/language modal immediately to prevent white screen
+                document.getElementById('otpModal').style.display = 'none';
+                document.getElementById('roleModal').style.display = 'flex';
             }
         };
 
@@ -598,13 +596,12 @@
             initLiveCompass();
         }
 
-        // Live Compass Sensor Integration with Needle Rotation
         function initLiveCompass() {
             if (window.DeviceOrientationEvent) {
                 window.addEventListener('deviceorientation', (event) => {
-                    let compassHeading = event.alpha; // Compass heading in degrees
+                    let compassHeading = event.alpha;
                     if (event.webkitCompassHeading) {
-                        compassHeading = event.webkitCompassHeading; // For iOS devices
+                        compassHeading = event.webkitCompassHeading;
                     }
                     if (compassHeading !== null && compassHeading !== undefined) {
                         const dial = document.getElementById('compassDial');
