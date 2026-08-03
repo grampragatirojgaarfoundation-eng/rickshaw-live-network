@@ -63,7 +63,6 @@ let activeUsers = {};
 
 // ==========================================
 // SPATIAL GRID INDEXING LOGIC (50,000+ TRAFFIC ENGINE)
-// Grid Cell Size: 0.05 degrees (~5.5 km x 5.5 km)
 // ==========================================
 const GRID_SIZE = 0.05; 
 let spatialGrid = {};
@@ -78,8 +77,6 @@ function getNeighborCellKeys(lat, lng) {
     const gridLat = Math.floor(lat / GRID_SIZE);
     const gridLng = Math.floor(lng / GRID_SIZE);
     const keys = [];
-    
-    // 5x5 grid cells around user (~25km radius coverage)
     for (let dLat = -2; dLat <= 2; dLat++) {
         for (let dLng = -2; dLng <= 2; dLng++) {
             keys.push(`${gridLat + dLat}_${gridLng + dLng}`);
@@ -90,20 +87,14 @@ function getNeighborCellKeys(lat, lng) {
 
 function updateUserInGrid(user) {
     const newCellKey = getCellKey(user.lat, user.lng);
-    
     if (user.currentGridKey && user.currentGridKey !== newCellKey) {
         if (spatialGrid[user.currentGridKey]) {
             delete spatialGrid[user.currentGridKey][user.id];
-            if (Object.keys(spatialGrid[user.currentGridKey]).length === 0) {
-                delete spatialGrid[user.currentGridKey];
-            }
+            if (Object.keys(spatialGrid[user.currentGridKey]).length === 0) delete spatialGrid[user.currentGridKey];
         }
     }
-    
     user.currentGridKey = newCellKey;
-    if (!spatialGrid[newCellKey]) {
-        spatialGrid[newCellKey] = {};
-    }
+    if (!spatialGrid[newCellKey]) spatialGrid[newCellKey] = {};
     spatialGrid[newCellKey][user.id] = user;
 }
 
@@ -111,9 +102,7 @@ function removeUserFromGrid(userId) {
     const user = activeUsers[userId];
     if (user && user.currentGridKey && spatialGrid[user.currentGridKey]) {
         delete spatialGrid[user.currentGridKey][userId];
-        if (Object.keys(spatialGrid[user.currentGridKey]).length === 0) {
-            delete spatialGrid[user.currentGridKey];
-        }
+        if (Object.keys(spatialGrid[user.currentGridKey]).length === 0) delete spatialGrid[user.currentGridKey];
     }
 }
 
@@ -129,8 +118,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 function getGlobalCounts() {
-    let riders = 0;
-    let sawaris = 0;
+    let riders = 0, sawaris = 0;
     for (let id in activeUsers) {
         if (activeUsers[id].role === 'rider' || activeUsers[id].role === 'bike_rider') riders++;
         if (activeUsers[id].role === 'sawari' || activeUsers[id].role === 'bike_sawari') sawaris++;
@@ -140,35 +128,27 @@ function getGlobalCounts() {
 
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
-
     socket.emit('init_users', activeUsers);
 
     socket.on('update_location', (data) => {
         if (data && data.id && data.lat !== undefined && data.lng !== undefined) {
             const userData = { ...data, socketId: socket.id };
             activeUsers[data.id] = userData;
-            
-            // Grid Bucket अपडेट करें
             updateUserInGrid(userData);
 
             const globalCounts = getGlobalCounts();
             const neighborKeys = getNeighborCellKeys(data.lat, data.lng);
             const notifiedSockets = new Set();
             
-            // केवल 25 KM के आसपास के ग्रिड डिब्बों में लाइव ब्रॉडकास्ट भेजें
             for (let key of neighborKeys) {
                 if (spatialGrid[key]) {
                     for (let targetId in spatialGrid[key]) {
                         const targetUser = spatialGrid[key][targetId];
                         if (targetUser && targetUser.socketId && !notifiedSockets.has(targetUser.socketId)) {
                             notifiedSockets.add(targetUser.socketId);
-                            
                             const dist = calculateDistance(data.lat, data.lng, targetUser.lat, targetUser.lng);
                             if (dist <= 25 || targetId === data.id) {
-                                io.to(targetUser.socketId).emit('live_broadcast', {
-                                    user: userData,
-                                    counts: globalCounts
-                                });
+                                io.to(targetUser.socketId).emit('live_broadcast', { user: userData, counts: globalCounts });
                             }
                         }
                     }
@@ -194,12 +174,10 @@ io.on('connection', (socket) => {
     socket.on('accept_sms_request', (data) => {
         const roomName = 'room_' + data.passengerId + '_' + data.riderId;
         socket.join(roomName);
-
         if (activeUsers[data.passengerId]) {
             const passengerSocket = io.sockets.sockets.get(activeUsers[data.passengerId].socketId);
             if (passengerSocket) passengerSocket.join(roomName);
         }
-
         if (activeUsers[data.passengerId] && activeUsers[data.riderId]) {
             io.to(roomName).emit('request_accepted', { ...data, room: roomName });
         }
@@ -211,6 +189,7 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Zero Disk I/O: Transient relay for messages, audio, and ephemeral photos without saving on server
     socket.on('chat_message', (msg) => {
         if (msg && msg.room) {
             io.to(msg.room).emit('chat_message', msg);

@@ -14,7 +14,6 @@
         .modal-box h2 { font-size: 20px; color: #111; margin-bottom: 6px; font-weight: 800; }
         .modal-box p { font-size: 12px; color: #666; margin-bottom: 18px; line-height: 1.4; }
         
-        /* Language Selector Dropdown Style */
         .lang-select-container { margin-bottom: 14px; text-align: left; }
         .lang-select-container label { display: block; font-size: 11px; font-weight: 700; color: #2563eb; margin-bottom: 4px; }
         .lang-dropdown { width: 100%; padding: 10px; border: 1px solid #2563eb; border-radius: 8px; font-size: 13px; font-weight: bold; background: #f8fafc; color: #111; cursor: pointer; }
@@ -29,23 +28,23 @@
         .otp-input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; text-align: center; }
         .otp-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
-        /* Top bar container holding status card and live compass side by side */
         .top-container { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; display: none; align-items: center; gap: 8px; width: 94%; max-width: 420px; justify-content: center; }
-
         .status-card { background: #ffffff; padding: 10px 16px; border-radius: 30px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; align-items: center; gap: 8px; flex: 1; text-align: left; }
         .badge { width: 10px; height: 10px; border-radius: 50%; display: none; flex-shrink: 0; }
         .badge-green { background: #16a34a; display: inline-block; }
         .badge-red { background: #dc2626; display: inline-block; }
 
-        /* Live Compass styling with Needle and Bold Text */
         .live-compass { background: #ffffff; width: 46px; height: 46px; border-radius: 50%; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; border: 2px solid #2563eb; cursor: pointer; }
         .compass-dial { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; transition: transform 0.1s ease-out; }
         .compass-n { position: absolute; top: 2px; font-size: 10px; font-weight: 900; color: #dc2626; line-height: 1; }
         .compass-s { position: absolute; bottom: 2px; font-size: 10px; font-weight: 900; color: #111; line-height: 1; }
-        /* Compass Needle Design */
         .compass-needle { position: absolute; width: 2px; height: 28px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .needle-top { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 14px solid #dc2626; position: absolute; top: 0; }
         .needle-bottom { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 14px solid #333; position: absolute; bottom: 0; }
+
+        /* SOS Top Button Style */
+        .sos-top-btn { background: #dc2626; color: white; border: none; padding: 10px 14px; border-radius: 30px; font-size: 11px; font-weight: 900; box-shadow: 0 4px 18px rgba(220,38,38,0.4); cursor: pointer; display: flex; align-items: center; gap: 4px; animation: sos-pulse 1.5s infinite; }
+        @keyframes sos-pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         .traffic-counter { position: fixed; top: 68px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; }
 
@@ -57,8 +56,8 @@
         .chat-input-row { display: flex; gap: 4px; margin-bottom: 6px; }
         .chat-input { flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 11px; }
         .chat-send-btn { background: #7c3aed; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; }
-        .chat-extra-row { display: flex; gap: 6px; justify-content: space-between; }
-        .extra-btn { flex: 1; background: #2563eb; color: white; border: none; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
+        .chat-extra-row { display: flex; gap: 4px; justify-content: space-between; }
+        .extra-btn { flex: 1; background: #2563eb; color: white; border: none; padding: 6px 4px; border-radius: 6px; font-size: 9px; font-weight: bold; cursor: pointer; text-align: center; }
         .extra-btn.recording { background: #dc2626; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
@@ -88,13 +87,24 @@
         .sawari-inner { width: 3px; height: 3px; background: #ffffff; border-radius: 50%; }
 
         .toast-msg { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 3000; background: #111; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: none; }
+        
+        /* Terms and Footer styling */
+        .terms-footer { margin-top: 10px; font-size: 9px; color: #777; line-height: 1.3; text-align: justify; }
+        .sos-config-box { margin-top: 10px; text-align: left; }
+        .sos-config-box label { display: block; font-size: 10px; font-weight: bold; color: #dc2626; margin-bottom: 2px; }
+        .sos-input { width: 100%; padding: 8px; border: 1px solid #dc2626; border-radius: 6px; font-size: 11px; }
+
+        /* Flash Red Screen for SOS alarm */
+        @keyframes flash-red { 0% { background-color: rgba(220, 38, 38, 0.6); } 50% { background-color: rgba(255, 255, 255, 0); } 100% { background-color: rgba(220, 38, 38, 0.6); } }
+        .sos-active-flash { animation: flash-red 0.5s infinite; position: fixed; top:0; left:0; width:100%; height:100%; z-index:999999; pointer-events:none; }
     </style>
 </head>
 <body>
 
+    <div id="sosFlashOverlay"></div>
+
     <div class="modal-overlay" id="roleModal" style="display: flex;">
         <div class="modal-box">
-            <!-- Select Language Section -->
             <div class="lang-select-container">
                 <label for="languageSelect">Select your language</label>
                 <select id="languageSelect" class="lang-dropdown" onchange="changeAppLanguage(this.value)">
@@ -123,13 +133,24 @@
                 </select>
             </div>
 
-            <h2 id="modalTitleText">मोड चुनें (Select Mode)</h2>
+            <!-- Feature 3: Trusted WhatsApp/Phone Number Input for SOS -->
+            <div class="sos-config-box">
+                <label id="sosConfigLabel" for="trustedSosNumber">🚨 SOS Trusted Contact (Phone/WhatsApp)</label>
+                <input type="tel" id="trustedSosNumber" class="sos-input" placeholder="Enter 10-digit emergency number" maxlength="10">
+            </div>
+
+            <h2 id="modalTitleText" style="margin-top: 10px;">मोड चुनें (Select Mode)</h2>
             <p id="modalDescText">आप किस रूप में काम करना चाहते हैं?</p>
             <div class="btn-group">
                 <button class="role-btn btn-rider" id="btnRiderText" onclick="selectRole('rider')">ऑटो / ई-रिक्शा चालक</button>
                 <button class="role-btn btn-sawari" id="btnSawariText" onclick="selectRole('sawari')">ऑटो यात्री (सवारी)</button>
                 <button class="role-btn btn-bike-rider" id="btnBikeRiderText" onclick="selectRole('bike_rider')">🏍️ बाइक चालक (सुबह 6 से शाम 7)</button>
                 <button class="role-btn btn-bike-sawari" id="btnBikeSawariText" onclick="selectRole('bike_sawari')">🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)</button>
+            </div>
+
+            <!-- Feature 4: Terms & Conditions and Disclaimer based on selected language -->
+            <div class="terms-footer" id="termsFooterText">
+                Terms: This app is only a networking directory connecting independent users. No commission or ride booking fee is charged. Use at your own risk.
             </div>
         </div>
     </div>
@@ -144,8 +165,11 @@
         </div>
     </div>
 
-    <!-- Top Container with Status Card and Live Compass side by side -->
+    <!-- Top Container with Status Card, Compass and Feature 3 SOS Button -->
     <div class="top-container" id="topContainer">
+        <button class="sos-top-btn" id="sosTriggerBtn" onmousedown="startSosHold()" onmouseup="cancelSosHold()" onttouchstart="startSosHold()" ontouchend="cancelSosHold()">
+            🚨 SOS
+        </button>
         <div class="status-card" id="statusBar">
             <div id="statusDot" class="badge"></div>
             <span id="statusText">लोड हो रहा है...</span>
@@ -187,8 +211,9 @@
             <button class="chat-send-btn" id="sendBtnText" onclick="sendChatMessage()">भेजें</button>
         </div>
         <div class="chat-extra-row">
-            <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 वॉइस रिकॉर्ड</button>
-            <button class="extra-btn" id="locationBtnText" style="background:#059669;" onclick="shareGoogleLocation()">📍 लोकेशन शेयर</button>
+            <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 15s वॉइस</button>
+            <button class="extra-btn" id="photoBtnText" style="background:#d97706;" onclick="captureAndSendLivePhoto()">📷 लाइव फोटो</button>
+            <button class="extra-btn" id="locationBtnText" style="background:#059669;" onclick="shareGoogleLocation()">📍 लोकेशन</button>
         </div>
     </div>
 
@@ -199,11 +224,13 @@
 
     <div id="map"></div>
 
+    <!-- Hidden file input for strict live camera capture only -->
+    <input type="file" id="liveCameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleLivePhotoCaptured(event)">
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
-        // Comprehensive Multi-Language Dictionary (Supports all requested 22 languages fully including chat, voice, compass, distance)
         const translations = {
             hi: {
                 modalTitle: "मोड चुनें (Select Mode)", modalDesc: "आप किस रूप में काम करना चाहते हैं?",
@@ -216,14 +243,17 @@
                 counterRider: "चालक", counterSawari: "सवारी",
                 reqMsg: "🙋‍♂️ नई सवारी रिक्वेस्ट आई है!", acceptBtn: "स्वीकार करें", rejectBtn: "अस्वीकार करें",
                 chatTitle: "💬 प्राइवेट चैट और लाइव ट्रैकिंग", closeChat: "✕ बंद करें", sendBtn: "भेजें",
-                locationBtn: "📍 लोकेशन शेयर", destText: "मैप पर टैप करके अपनी मंजिल (Destination) सेट करें", resetBtn: "रूट रीसेट",
+                locationBtn: "📍 लोकेशन", photoBtn: "📷 लाइव फोटो", voiceBtnText: "🎤 15s वॉइस",
+                destText: "मैप पर टैप करके अपनी मंजिल (Destination) सेट करें", resetBtn: "रूट रीसेट",
                 chatConnected: "आप आपस में कनेक्ट हो गए हैं।", chatBroken: "सम्पर्क टूटा - फोन उत्तर दिशा में रखें",
                 chatBrokenSawari: "सम्पर्क टूटा - फोन उत्तर दिशा में रखें और टच करें", reqSentText: "⏳ अनुरोध भेजा गया...",
                 reqBtnText: "📲 रिक्वेस्ट भेजें", myLocText: "<b>आपकी लोकेशन</b>", myDestText: "<b>आपकी मंजिल</b>",
                 destSetText: "मंजिल सेट हो गई है!", reqToast: "रिक्वेस्ट सफलतापूर्वक भेज दी गई है!",
                 northWord: "उत्तर", southWord: "दक्षिण", distText: "दूरी", kmText: "किमी",
-                chatPlaceholder: "संदेश लिखें...", voiceBtnText: "🎤 वॉइस रिकॉर्ड", voiceRecording: "🔴 रिकॉर्डिंग जारी... (रोकें)",
-                voiceRecorded: "✅ रिकॉर्ड हो गया (भेजें)"
+                chatPlaceholder: "संदेश लिखें...", voiceRecording: "🔴 15s रिकॉर्डिंग... (रोकें)",
+                voiceRecorded: "✅ रिकॉर्ड हो गया (भेजें)",
+                sosLabel: "🚨 SOS आपातकालीन संपर्क (फोन/व्हाट्सएप नंबर)",
+                termsText: "शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।"
             },
             en: {
                 modalTitle: "Select Mode", modalDesc: "How would you like to work?",
@@ -236,414 +266,17 @@
                 counterRider: "Drivers", counterSawari: "Passengers",
                 reqMsg: "🙋‍♂️ New passenger request received!", acceptBtn: "Accept", rejectBtn: "Reject",
                 chatTitle: "💬 Private Chat & Live Tracking", closeChat: "✕ Close", sendBtn: "Send",
-                locationBtn: "📍 Share Location", destText: "Tap on the map to set your destination", resetBtn: "Reset Route",
+                locationBtn: "📍 Location", photoBtn: "📷 Live Photo", voiceBtnText: "🎤 15s Voice",
+                destText: "Tap on the map to set your destination", resetBtn: "Reset Route",
                 chatConnected: "You are now connected with each other.", chatBroken: "Connection Lost - Keep phone pointing North",
                 chatBrokenSawari: "Connection Lost - Keep phone pointing North and tap", reqSentText: "⏳ Request Sent...",
                 reqBtnText: "📲 Send Request", myLocText: "<b>Your Location</b>", myDestText: "<b>Your Destination</b>",
                 destSetText: "Destination set!", reqToast: "Request sent successfully!",
                 northWord: "North", southWord: "South", distText: "Distance", kmText: "km",
-                chatPlaceholder: "Type a message...", voiceBtnText: "🎤 Voice Record", voiceRecording: "🔴 Recording... (Stop)",
-                voiceRecorded: "✅ Recorded (Send)"
-            },
-            ta: {
-                modalTitle: "முறையைத் தேர்ந்தெடுக்கவும்", modalDesc: "நீங்கள் எப்படி வேலை செய்ய விரும்புகிறீர்கள்?",
-                riderBtn: "ஆட்டோ / இ-ரிக்‌ஷா ஓட்டுநர்", sawariBtn: "பய பயணி",
-                bikeRiderBtn: "🏍️ பைக் ஓட்டுநர் (காலை 6 முதல் மாலை 7)", bikeSawariBtn: "🙋‍♂️ பைக் பயணி (காலை 6 முதல் மாலை 7)",
-                otpTitle: "மொபைல் சரிபார்ப்பு", otpDesc: "உங்கள் 10 இலக்க மொபைல் எண் மற்றும் OTP (குறியீடு: 7317) உள்ளிடவும்.",
-                otpBtn: "சரிபார்த்து தொடரவும்", loading: "ஏற்றுகிறது...",
-                statusRider: "உங்கள் தொலைபேசியை வட திசையை நோக்கி வைத்து வரைபடத்தைப் பார்க்கவும்",
-                statusSawari: "உங்கள் தொலைபேசியை வட திசையை நோக்கி வைத்து, வரைபடத்தைப் பார்த்து செல்ல வேண்டிய இடத்தைத் தொடவும்",
-                counterRider: "ஓட்டுநர்கள்", counterSawari: "பயணிகள்",
-                reqMsg: "🙋‍♂️ புதிய பயணியின் கோரிக்கை பெறப்பட்டது!", acceptBtn: "ஏற்றுக்கொள்", rejectBtn: "நாகரிகமாக மறு",
-                chatTitle: "💬 தனிப்பட்ட அரட்டை & நேரலை கண்காணிப்பு", closeChat: "✕ மூடு", sendBtn: "அனுப்பு",
-                locationBtn: "📍 இருப்பிடத்தைப் பகிர்", destText: "சேருமிடத்தை அமைக்க வரைபடத்தைத் தட்டவும்", resetBtn: "மீட்டமை",
-                chatConnected: "நீங்கள் இருவரும் இணைக்கப்பட்டுள்ளீர்கள்.", chatBroken: "இணைப்பு துண்டிக்கப்பட்டது - போனை வடக்கே வைக்கவும்",
-                chatBrokenSawari: "இணைப்பு துண்டிக்கப்பட்டது - போனை வடக்கே வைத்து தொடவும்", reqSentText: "⏳ கோரிக்கை அனுப்பப்பட்டது...",
-                reqBtnText: "📲 கோரிக்கை அனுப்பு", myLocText: "<b>உங்கள் இருப்பிடம்</b>", myDestText: "<b>உங்கள் சேருமிடம்</b>",
-                destSetText: "சேருமிடம் அமைக்கப்பட்டது!", reqToast: "கோரிக்கை வெற்றிகரமாக அனுப்பப்பட்டது!",
-                northWord: "வடக்கே", southWord: "தெற்கே", distText: "தூரம்", kmText: "கி.மீ",
-                chatPlaceholder: "செய்தியை உள்ளிடவும்...", voiceBtnText: "🎤 குரல் பதிவு", voiceRecording: "🔴 பதிவு செய்கிறது...",
-                voiceRecorded: "✅ பதிவு செய்யப்பட்டது"
-            },
-            te: {
-                modalTitle: "మోడ్‌ను ఎంచుకోండి", modalDesc: "మీరు ఏ విధంగా పని చేయాలనుకుంటున్నారు?",
-                riderBtn: "ఆటో / ఇ-రిక్షా డ్రైవర్", sawariBtn: "ఆటో ప్రయాణీకుడు",
-                bikeRiderBtn: "🏍️ బైక్ డ్రైవర్ (ఉదయం 6 నుండి సాయంత్రం 7)", bikeSawariBtn: "🙋‍♂️ బైక్ ప్రయాణీకుడు (ఉదయం 6 నుండి సాయంత్రం 7)",
-                otpTitle: "మొబైల్ ధృవీకరణ", otpDesc: "దయచేసి మీ 10 అంకెల మొబైల్ నంబర్ మరియు OTP (కోడ్: 7317) నమోదు చేయండి.",
-                otpBtn: "ధృవీకరించి కొనసాగించు", loading: "లోడ్ అవుతోంది...",
-                statusRider: "మీ ఫోన్‌ను ఉత్తర దిశ వైపు ఉంచి మ్యాప్‌ను చూడండి",
-                statusSawari: "మీ ఫోన్‌ను ఉత్తర దిశ వైపు ఉంచి, మ్యాప్‌ను చూసి వెళ్లాల్సిన ప్రదేశాన్ని నొక్కండి",
-                counterRider: "డ్రైవర్లు", counterSawari: "ప్రయాణీకులు",
-                reqMsg: "🙋‍♂️ కొత్త ప్రయాణీకుల అభ్యర్థన వచ్చింది!", acceptBtn: "అంగీకరించు", rejectBtn: "తిరస్కరించు",
-                chatTitle: "💬 ప్రైవేట్ చాట్ & లైవ్ ట్రాకింగ్", closeChat: "✕ మూసివేయి", sendBtn: "పంపు",
-                locationBtn: "📍 లొకేషన్ పంచుకోండి", destText: "గమ్యస్థానాన్ని సెట్ చేయడానికి మ్యాప్‌పై నొక్కండి", resetBtn: "రీసెట్",
-                chatConnected: "మీరు ఒకరితో ఒకరు కనెక్ట్ అయ్యారు.", chatBroken: "కనెక్షన్ పోయింది - ఫోన్‌ను ఉత్తరం వైపు ఉంచండి",
-                chatBrokenSawari: "కనెక్షన్ పోయింది - ఫోన్‌ను ఉత్తరం వైపు ఉంచి తాకండి", reqSentText: "⏳ అభ్యర్థన పంపబడింది...",
-                reqBtnText: "📲 అభ్యర్థన పంపు", myLocText: "<b>మీ స్థానం</b>", myDestText: "<b>మీ గమ్యస్థానం</b>",
-                destSetText: "గమ్యస్థానం సెట్ చేయబడింది!", reqToast: "అభ్యర్థన విజయవంతంగా పంపబడింది!",
-                northWord: "ఉత్తరం", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
-                chatPlaceholder: "సందేశాన్ని టైప్ చేయండి...", voiceBtnText: "🎤 వాయిస్ రికార్డ్", voiceRecording: "🔴 రికార్డింగ్...",
-                voiceRecorded: "✅ రికార్డ్ చేయబడింది"
-            },
-            mr: {
-                modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
-                riderBtn: "ऑटो / ई-रिक्षा चालक", sawariBtn: "ऑटो प्रवासी",
-                bikeRiderBtn: "🏍️ बाईक चालक (सकाळी 6 ते संध्याकाळी 7)", bikeSawariBtn: "🙋‍♂️ बाईक प्रवासी (सकाळी 6 ते संध्याकाळी 7)",
-                otpTitle: "मोबाईल सत्यापण", otpDesc: "कृपया तुमचा 10 अंकी मोबाईल नंबर आणि OTP (कोड: 7317) प्रविष्ट करा.",
-                otpBtn: "तपासा आणि पुढे जा", loading: "लोड होत आहे...",
-                statusRider: "तुमचा फोन नेहमी उत्तर दिशेला ठेवून नकाशा पहा",
-                statusSawari: "तुमचा फोन उत्तर दिशेला ठेवून नकाशा पहा आणि तुम्हाला कुठे जायचे आहे तिथे स्पर्श करा",
-                counterRider: "चालक", counterSawari: "प्रवासी",
-                reqMsg: "🙋‍♂️ नवीन प्रवाशाची विनंती आली आहे!", acceptBtn: "स्वीकारा", rejectBtn: "नाकारा",
-                chatTitle: "💬 खाजगी चॅट आणि थेट ट्रॅकिंग", closeChat: "✕ बंद करा", sendBtn: "पाठवा",
-                locationBtn: "📍 स्थान शेअर करा", destText: "गंतव्यस्थान सेट करण्यासाठी नकाशावर टॅप करा", resetBtn: "रीसेट",
-                chatConnected: "तुम्ही एकमेकांशी जोडले गेला आहात.", chatBroken: "संपर्क तुटला - फोन उत्तर दिशेला ठेवा",
-                chatBrokenSawari: "संपर्क तुटला - फोन उत्तर दिशेला ठेवा आणि स्पर्श करा", reqSentText: "⏳ विनंती पाठवली...",
-                reqBtnText: "📲 विनंती पाठवा", myLocText: "<b>तुमचे स्थान</b>", myDestText: "<b>तुमचे गंतव्यस्थान</b>",
-                destSetText: "गंतव्यस्थान सेट केले!", reqToast: "विनंती यशस्वीरित्या पाठवली!",
-                northWord: "उत्तर", southWord: "दक्षिण", distText: "अंतर", kmText: "किमी",
-                chatPlaceholder: "संदेश टाईप करा...", voiceBtnText: "🎤 आवाज रेकॉर्ड", voiceRecording: "🔴 रेकॉर्डिंग सुरू आहे...",
-                voiceRecorded: "✅ रेकॉर्ड झाले"
-            },
-            bn: {
-                modalTitle: "মোড নির্বাচন করুন", modalDesc: "আপনি কোন হিসেবে কাজ করতে চান?",
-                riderBtn: "অটো / ই-রিকশা চালক", sawariBtn: "যাত্রী",
-                bikeRiderBtn: "🏍️ বাইক চালক (সকাল ৬ থেকে সন্ধ্যা ৭)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্রী (সকাল ৬ থেকে সন্ধ্যা ৭)",
-                otpTitle: "মোবাইল যাচাইকরণ", otpDesc: "দয়া করে আপনার ১০ অঙ্কের মোবাইল নম্বর এবং ওটিপি (কোড: ৭৩১৭) দিন।",
-                otpBtn: "যাচাই করুন এবং এগিয়ে যান", loading: "লোড হচ্ছে...",
-                statusRider: "আপনার ফোনটি সর্বদা উত্তর দিকে রেখে মানচিত্র দেখুন",
-                statusSawari: "ফোনটি উত্তর দিকে রেখে মানচিত্র দেখুন এবং কোথায় যেতে চান তা স্পর্শ করুন",
-                counterRider: "চালক", counterSawari: "যাত্রী",
-                reqMsg: "🙋‍♂️ নতুন যাত্রীর অনুরোধ এসেছে!", acceptBtn: "গ্রহণ করুন", rejectBtn: "প্রত্যাখ্যান করুন",
-                chatTitle: "💬 ব্যক্তিগত চ্যাট এবং লাইভ ট্র্যাকিং", closeChat: "✕ বন্ধ করুন", sendBtn: "পাঠান",
-                locationBtn: "📍 অবস্থান শেয়ার করুন", destText: "গন্তব্য সেট করতে মানচিত্রে ট্যাপ করুন", resetBtn: "রুট রিসেট",
-                chatConnected: "আপনারা একে অপরের সাথে সংযুক্ত হয়েছেন।", chatBroken: "সংযোগ বিচ্ছিন্ন - ফোন উত্তর দিকে রাখুন",
-                chatBrokenSawari: "সংযোগ বিচ্ছিন্ন - ফোন উত্তর দিকে রাখুন এবং স্পর্শ করুন", reqSentText: "⏳ অনুরোধ পাঠানো হয়েছে...",
-                reqBtnText: "📲 অনুরোধ পাঠান", myLocText: "<b>আপনার অবস্থান</b>", myDestText: "<b>আপনার গন্তব্য</b>",
-                destSetText: "গন্তব্য সেট করা হয়েছে!", reqToast: "অনুরোধ সফলভাবে পাঠানো হয়েছে!",
-                northWord: "উত্তর", southWord: "দক্ষিণ", distText: "দূরত্ব", kmText: "কিমি",
-                chatPlaceholder: "একটি বার্তা লিখুন...", voiceBtnText: "🎤 ভয়েস রেকর্ড", voiceRecording: "🔴 রেকর্ডিং হচ্ছে...",
-                voiceRecorded: "✅ রেকর্ড সম্পন্ন"
-            },
-            kn: {
-                modalTitle: "ಮೋಡ್ ಆಯ್ಕೆಮಾಡಿ", modalDesc: "ನೀವು ಯಾವ ರೂಪದಲ್ಲಿ ಕೆಲಸ ಮಾಡಲು ಬಯಸುತ್ತೀರಿ?",
-                riderBtn: "ಆಟೋ / ಇ-ರಿಕ್ಷಾ ಚಾಲಕ", sawariBtn: "ಪ್ರಯಾಣಿಕ",
-                bikeRiderBtn: "🏍️ ಬೈಕ್ ಚಾಲಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)", bikeSawariBtn: "🙋‍♂️ ಬೈಕ್ ಪ್ರಯಾಣಿಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)",
-                otpTitle: "ಮೊಬೈಲ್ ಪರಿಶೀಲನೆ", otpDesc: "ದಯವಿಟ್ಟು ನಿಮ್ಮ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಮತ್ತು OTP (ಕೋಡ್: 7317) ನಮೂದಿಸಿ.",
-                otpBtn: "ಪರಿಶೀಲಿಸಿ ಮುಂದುವರಿಸಿ", loading: "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
-                statusRider: "ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ಉತ್ತರ ದಿಕ್ಕಿಗೆ ಇಟ್ಟುಕೊಂಡು ನಕ್ಷೆಯನ್ನು ನೋಡಿ",
-                statusSawari: "ಫೋನ್ ಅನ್ನು ಉತ್ತರ ದಿಕ್ಕಿಗೆ ಇಟ್ಟುಕೊಂಡು ನಕ್ಷೆಯನ್ನು ನೋಡಿ ಮತ್ತು ಎಲ್ಲಿಗೆ ಹೋಗಬೇಕೋ ಅಲ್ಲಿ ಸ್ಪರ್ಶಿಸಿ",
-                counterRider: "ಚಾಲಕರು", counterSawari: "ಪ್ರಯಾಣಿಕರು",
-                reqMsg: "🙋‍♂️ ಹೊಸ ಪ್ರಯಾಣಿಕರ ವಿನಂತಿ ಬಂದಿದೆ!", acceptBtn: "ಸ್ವೀಕರಿಸಿ", rejectBtn: "ತಿರಸ್ಕರಿಸಿ",
-                chatTitle: "💬 ಖಾಸಗಿ ಚಾಟ್ ಮತ್ತು ಲೈವ್ ಟ್ರ್ಯಾಕಿಂಗ್", closeChat: "✕ ಮುಚ್ಚಿ", sendBtn: "ಕಳುಹಿಸಿ",
-                locationBtn: "📍 ಸ್ಥಳ ಹಂಚಿಕೊಳ್ಳಿ", destText: "ಗಮ್ಯಸ್ಥಾನವನ್ನು ಹೊಂದಿಸಲು ನಕ್ಷೆಯ ಮೇಲೆ ಟ್ಯಾಪ್ ಮಾಡಿ", resetBtn: "ಮರುಹೊಂದಿಸಿ",
-                chatConnected: "ನೀವು ಪರಸ್ಪರ ಸಂಪರ್ಕಗೊಂಡಿದ್ದೀರಿ.", chatBroken: "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ - ಫೋನ್ ಉತ್ತರಕ್ಕೆ ಇರಿಸಿ",
-                chatBrokenSawari: "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ - ಫೋನ್ ಉತ್ತರಕ್ಕೆ ಇರಿಸಿ ಸ್ಪರ್ಶಿಸಿ", reqSentText: "⏳ ವಿನಂತಿ ಕಳುಹಿಸಲಾಗಿದೆ...",
-                reqBtnText: "📲 ವಿನಂತಿ ಕಳುಹಿಸಿ", myLocText: "<b>ನಿಮ್ಮ ಸ್ಥಳ</b>", myDestText: "<b>ನಿಮ್ಮ ಗಮ್ಯಸ್ಥಾನ</b>",
-                destSetText: "ಗಮ್ಯಸ್ಥಾನ ಹೊಂದಿಸಲಾಗಿದೆ!", reqToast: "ವಿನಂತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ!",
-                northWord: "ಉತ್ತರ", southWord: "ದಕ್ಷಿಣ", distText: "ದೂರ", kmText: "ಕಿ.ಮೀ",
-                chatPlaceholder: "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ...", voiceBtnText: "🎤 ಧ್ವನಿ ರೆಕಾರ್ಡ್", voiceRecording: "🔴 ರೆಕಾರ್ಡಿಂಗ್...",
-                voiceRecorded: "✅ ರೆಕಾರ್ಡ್ ಆಗಿದೆ"
-            },
-            gu: {
-                modalTitle: "મોડ પસંદ કરો", modalDesc: "તમે કયા રૂપે કામ કરવા માંગો છો?",
-                riderBtn: "ઓટો / ઇ-રિક્ષા ડ્રાઇવર", sawariBtn: "પ્રવાસી",
-                bikeRiderBtn: "🏍️ બાઇક ડ્રાઇવર (સવારે 6 થી સાંજ 7)", bikeSawariBtn: "🙋‍♂️ બાઇક પ્રવાસી (સવારે 6 થી સાંજ 7)",
-                otpTitle: "મોબાઇલ ચકાસણી", otpDesc: "કૃપા કરીને તમારો 10 અંકનો મોબાઇલ નંબર અને OTP (કોડ: 7317) દાખલ કરો.",
-                otpBtn: "ચકાસો અને આગળ વધો", loading: "લોડ થઈ રહ્યું છે...",
-                statusRider: "તમારા ફોનને હંમેશા ઉત્તર દિશા તરફ રાખીને નકશો જુઓ",
-                statusSawari: "ફોનને ઉત્તર દિશામાં રાખી નકશો જુઓ અને તમારે ક્યાં જવું છે ત્યાં સ્પર્શ કરો",
-                counterRider: "ડ્રાઇવર", counterSawari: "પ્રવાસી",
-                reqMsg: "🙋‍♂️ નવી સવારીની વિનંતી આવી છે!", acceptBtn: "સ્વીકારો", rejectBtn: "અસ્વીકાર કરો",
-                chatTitle: "💬 ખાનગી ચેટ અને લાઇવ ટ્રેકિંગ", closeChat: "✕ બંધ કરો", sendBtn: "મોકલો",
-                locationBtn: "📍 લોકેશન શેર કરો", destText: "મંઝિલ નક્કી કરવા માટે નકશા પર ટેપ કરો", resetBtn: "રીસેટ કરો",
-                chatConnected: "તમે એકબીજા સાથે જોડાઈ ગયા છો.", chatBroken: "સંપર્ક તૂટ્યો - ફોન ઉત્તર દિશામાં રાખો",
-                chatBrokenSawari: "સંપર્ક તૂટ્યો - ફોન ઉત્તર દિશામાં રાખી સ્પર્શ કરો", reqSentText: "⏳ વિનંતી મોકલાઈ...",
-                reqBtnText: "📲 વિનંતી મોકલો", myLocText: "<b>તમારું લોકેશન</b>", myDestText: "<b>તમારી મંઝિલ</b>",
-                destSetText: "મંઝિલ નક્કી થઈ ગઈ!", reqToast: "વિનંતી સફળતાપૂર્વક મોકલી દેવાઈ છે!",
-                northWord: "ઉત્તર", southWord: "દક્ષિણ", distText: "અંતર", kmText: "કિમી",
-                chatPlaceholder: "સંદેશ લખો...", voiceBtnText: "🎤 વોઇસ રેકોર્ડ", voiceRecording: "🔴 રેકોર્ડિંગ ચાલુ છે...",
-                voiceRecorded: "✅ રેકોર્ડ થઈ ગયું"
-            },
-            ml: {
-                modalTitle: "മോഡ് തിരഞ്ഞെടുക്കുക", modalDesc: "നിങ്ങൾക്ക് എങ്ങനെ ജോലി ചെയ്യണം?",
-                riderBtn: "ഓട്ടോ / ഇ-റിക്ഷ ഡ്രൈവർ", sawariBtn: "യാത്രികൻ",
-                bikeRiderBtn: "🏍️ ബൈക്ക് ഡ്രൈവർ (രാവിലെ 6 മുതൽ വൈകുന്നേരം 7 വരെ)", bikeSawariBtn: "🙋‍♂️ ബൈക്ക് യാത്രികൻ (രാവിലെ 6 മുതൽ വൈകുന്നേരം 7 വരെ)",
-                otpTitle: "മൊബൈൽ സ്ഥിരീകരണം", otpDesc: "നിങ്ങളുടെ 10 അക്ക മൊബൈൽ നമ്പറും OTP (കോഡ്: 7317) നൽകുക.",
-                otpBtn: "സ്ഥിരീകരിച്ച് മുന്നോട്ട് പോവുക", loading: "ലോഡ് ചെയ്യുന്നു...",
-                statusRider: "ഫോൺ എപ്പോഴും വടക്കോട്ട് പിടിച്ച് മാപ്പ് കാണുക",
-                statusSawari: "ഫോൺ വടക്കോട്ട് പിടിച്ച് മാപ്പ് നോക്കി പോകേണ്ട സ്ഥലം തൊടുക",
-                counterRider: "ഡ്രൈവർമാർ", counterSawari: "യാത്രക്കാർ",
-                reqMsg: "🙋‍♂️ പുതിയ യാത്രക്കാരന്റെ അഭ്യർത്ഥന എത്തി!", acceptBtn: "സ്വീകരിക്കുക", rejectBtn: "നിരസിക്കുക",
-                chatTitle: "💬 പ്രൈവറ്റ് ചാറ്റ് & ലൈവ് ട്രാക്കിംഗ്", closeChat: "✕ അടയ്ക്കുക", sendBtn: "അയക്കുക",
-                locationBtn: "📍 ലൊക്കേഷൻ പങ്കിടുക", destText: "ലക്ഷ്യസ്ഥാനം സജ്ജീകരിക്കാൻ മാപ്പിൽ ടാപ്പ് ചെയ്യുക", resetBtn: "റീസെറ്റ് ചെയ്യുക",
-                chatConnected: "നിങ്ങൾ പരസ്പരം ബന്ധിപ്പിക്കപ്പെട്ടു.", chatBroken: "ബന്ധം നഷ്ടമായി - ഫോൺ വടക്കോട്ട് പിടിക്കുക",
-                chatBrokenSawari: "ബന്ധം നഷ്ടമായി - ഫോൺ വടക്കോട്ട് പിടിച്ച് തൊടുക", reqSentText: "⏳ അഭ്യർത്ഥന അയച്ചു...",
-                reqBtnText: "📲 അഭ്യർത്ഥന അയക്കുക", myLocText: "<b>നിങ്ങളുടെ സ്ഥാനം</b>", myDestText: "<b>നിങ്ങളുടെ ലക്ഷ്യസ്ഥാനം</b>",
-                destSetText: "ലക്ഷ്യസ്ഥാനം സജ്ജീകരിച്ചു!", reqToast: "അഭ്യർത്ഥന വിജയകരമായി അയച്ചു!",
-                northWord: "വടക്ക്", southWord: "തെക്ക്", distText: "ദൂരം", kmText: "കി.മീ",
-                chatPlaceholder: "സന്ദേശം ടൈപ്പ് ചെയ്യുക...", voiceBtnText: "🎤 വോイス് റെക്കോർഡ്", voiceRecording: "🔴 റെക്കോർഡിംഗ്...",
-                voiceRecorded: "✅ റെക്കോർഡ് ചെയ്തു"
-            },
-            or: {
-                modalTitle: "ମୋଡ୍ ଚୟନ କରନ୍ତୁ", modalDesc: "ଆପଣ କିପରି କାମ କରିବାକୁ ଚାହାଁନ୍ତି?",
-                riderBtn: "ଅଟୋ / ଇ-ରକ୍ଷା ଚାଳକ", sawariBtn: "ଯାତ୍ରୀ",
-                bikeRiderBtn: "🏍️ ବାଇକ୍ ଚାଳକ (ସକାଳ 6 ରୁ ସନ୍ଧ୍ୟା 7)", bikeSawariBtn: "🙋‍♂️ ବାଇକ୍ ଯାତ୍ରୀ (ସକାଳ 6 ରୁ ସନ୍ଧ୍ୟା 7)",
-                otpTitle: "ମୋବାଇଲ୍ ଯାଞ୍ଚ", otpDesc: "ଦୟାକରି ଆପଣଙ୍କର 10 ଅଙ୍କ ବିଶିଷ୍ଟ ମୋବାଇଲ୍ ନମ୍ବର ଏବଂ OTP (କୋଡ୍: 7317) ଦିଅନ୍ତୁ।",
-                otpBtn: "ଯାଞ୍ଚ କରି ଆଗକୁ ବ଼୍ହନ୍ତୁ", loading: "ଲୋଡ୍ ହେଉଛି...",
-                statusRider: "ଆପଣଙ୍କର ଫୋନ୍ ସର୍ବଦା ଉତ୍ତର ଦିଗକୁ ରଖି ମ୍ୟାପ୍ ଦେଖନ୍ତୁ",
-                statusSawari: "ଫୋନ୍ ଉତ୍ତର ଦିଗକୁ ରଖି ମ୍ୟାପ୍ ଦେଖନ୍ତୁ ଏବଂ କୁଆଡ଼େ ଯିବେ ଟଚ୍ କରନ୍ତୁ",
-                counterRider: "ଚାଳକ", counterSawari: "ଯାତ୍ରୀ",
-                reqMsg: "🙋‍♂️ ନୂତନ ଯାତ୍ରୀ ଅନୁରୋଧ ଆସିଛି!", acceptBtn: "ଗ୍ରହଣ କରନ୍ତୁ", rejectBtn: "ପ୍ରତ୍ୟାଖ୍ୟାନ କରନ୍ତୁ",
-                chatTitle: "💬 ପ୍ରାଇଭେଟ୍ ଚାଟ୍ ଏବଂ ଲାଇଭ୍ ଟ୍ରାକିଂ", closeChat: "✕ ବନ୍ଦ କରନ୍ତୁ", sendBtn: "ପଠାନ୍ତୁ",
-                locationBtn: "📍 ଲୋକେସନ୍ ସେୟାର୍ କରନ୍ତୁ", destText: "ଗନ୍ତବ୍ୟସ୍ଥଳ ସେଟ୍ କରିବାକୁ ମ୍ୟାପ୍ ରେ ଟାପ୍ କରନ୍ତୁ", resetBtn: "ରୁଟ୍ ରିସେଟ୍",
-                chatConnected: "ଆପଣମାନେ ପରସ୍ପର ସହିତ ସଂଯୁକ୍ତ ହୋଇଛନ୍ତି।", chatBroken: "ସଂଯୋଗ ବିଚ୍ଛିନ୍ନ - ଫୋନ୍ ଉତ୍ତର ଦିଗରେ ରଖନ୍ତୁ",
-                chatBrokenSawari: "ସଂଯୋଗ ବିଚ୍ଛିନ୍ନ - ଫୋନ୍ ଉତ୍ତର ଦିଗରେ ରଖି ଟଚ୍ କରନ୍ତୁ", reqSentText: "⏳ ଅନୁରୋଧ ପଠାଗଲା...",
-                reqBtnText: "📲 ଅନୁରୋଧ ପଠାନ୍ତୁ", myLocText: "<b>ଆପଣଙ୍କର ସ୍ଥାନ</b>", myDestText: "<b>ଆପଣଙ୍କର ଗନ୍ତବ୍ୟସ୍ଥଳ</b>",
-                destSetText: "ଗନ୍ତବ୍ୟସ୍ଥଳ ସେଟ୍ ହୋଇଗଲା!", reqToast: "ଅନୁରୋଧ ସଫଳତାର ସହିତ ପଠାଗଲା!",
-                northWord: "ଉତ୍ତର", southWord: "ଦକ୍ଷିଣ", distText: "ଦୂରତା", kmText: "କି.ମି.",
-                chatPlaceholder: "ଏକ ବାର୍ତ୍ତା ଟାଇପ୍ କରନ୍ତୁ...", voiceBtnText: "🎤 ଭଏସ୍ ରେକର୍ଡ", voiceRecording: "🔴 ରେକର୍ଡିଂ ହେଉଛି...",
-                voiceRecorded: "✅ ରେକର୍ଡ ହୋଇଗଲା"
-            },
-            pa: {
-                modalTitle: "ਮੋਡ ਚੁਣੋ", modalDesc: "ਤੁਸੀਂ ਕਿਸ ਰੂਪ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
-                riderBtn: "ਆਟੋ / ਈ-ਰਿਕਸ਼ਾ ਡਰਾਈਵਰ", sawariBtn: "ਸਵਾਰੀ",
-                bikeRiderBtn: "🏍️ ਬਾਈਕ ਡਰਾਈਵਰ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)", bikeSawariBtn: "🙋‍♂️ ਬਾਈਕ ਸਵਾਰੀ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)",
-                otpTitle: "ਮੋਬਾਈਲ ਤਸਦੀਕ", otpDesc: "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ 10 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਅਤੇ OTP (ਕੋਡ: 7317) ਦਰਜ ਕਰੋ।",
-                otpBtn: "तਸਦੀਕ ਕਰੋ ਅਤੇ ਅੱਗੇ ਵਧੋ", loading: "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
-                statusRider: "ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਹਮੇਸ਼ਾ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ",
-                statusSawari: "ਫ਼ੋਨ ਨੂੰ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ ਅਤੇ ਜਿੱਥੇ ਜਾਣਾ ਹੈ ਉੱਥੇ ਛੋਹਵੋ",
-                counterRider: "ਡਰਾਈਵਰ", counterSawari: "ਸਵਾਰੀ",
-                reqMsg: "🙋‍♂️ ਨਵੀਂ ਸਵਾਰੀ ਦੀ ਬੇਨਤੀ ਆਈ ਹੈ!", acceptBtn: "ਸਵੀਕਾਰ ਕਰੋ", rejectBtn: "ਅਸਵੀਕਾਰ ਕਰੋ",
-                chatTitle: "💬 ਪ੍ਰਾਈਵੇਟ ਚੈਟ ਅਤੇ ਲਾਈਵ ਟਰੈਕਿੰਗ", closeChat: "✕ ਬੰਦ ਕਰੋ", sendBtn: "ਭੇਜੋ",
-                locationBtn: "📍 ਸਥਾਨ ਸਾਂਝਾ ਕਰੋ", destText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਕਰਨ ਲਈ ਮੈਪ 'ਤੇ ਟੈਪ ਕਰੋ", resetBtn: "ਰੀਸੈਟ ਕਰੋ",
-                chatConnected: "ਤੁਸੀਂ ਆਪਸ ਵਿੱਚ ਜੁੜ ਗਏ ਹੋ।", chatBroken: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖੋ",
-                chatBrokenSawari: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖ ਕੇ ਛੋਹਵੋ", reqSentText: "⏳ ਬੇਨਤੀ ਭੇਜੀ गई...",
-                reqBtnText: "📲 ਬੇਨਤੀ ਭੇਜੋ", myLocText: "<b>ਤੁਹਾਡਾ ਸਥਾਨ</b>", myDestText: "<b>ਤੁਹਾਡੀ ਮੰਜ਼ਿਲ</b>",
-                destSetText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਹੋ گئی ہے!", reqToast: "ਬੇਨਤੀ ਸਫਲਤਾਪૂર્વਕ ਭ भेजी ਗਈ ਹੈ!",
-                northWord: "ਉੱਤਰ", southWord: "ਦੱਖਣ", distText: "ਦੂਰੀ", kmText: "ਕિਮੀ",
-                chatPlaceholder: " ਸੁਨੇਹਾ ਲਿਖੋ...", voiceBtnText: "🎤 ਵాయిਸ ਰਿਕਾਰਡ", voiceRecording: "🔴 ਰਿਕਾਰਡਿੰਗ...",
-                voiceRecorded: "✅ ਰਿਕਾਰਡ ਹੋ ਗਿਆ"
-            },
-            as: {
-                modalTitle: "মড নিৰ্বাচন কৰক", modalDesc: "আপুনি কোন ৰূপত কাম কৰিব বিচাৰে?",
-                riderBtn: "অটো / ই-ৰিক্সা চালক", sawariBtn: "যাত্ৰী",
-                bikeRiderBtn: "🏍️ বাইক চালক (পুৱা ৬ পৰা সন্ধ্যা ৭)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্ৰী (পুৱা ৬ পৰা সন্ধ্যা ৭)",
-                otpTitle: "মবাইল প্ৰমাণীকৰণ", otpDesc: "অনুগ্রহ কৰি আপোনাৰ ১০ টা অংকৰ মবাইল নম্বৰ আৰু OTP (কোড: ৭৩১৭) দিয়ক।",
-                otpBtn: "প্ৰমাণীকৰণ কৰি আগবাঢ়ক", loading: "লোড হৈ আছে...",
-                statusRider: "আপোনাৰ ফোনটো সদায় উত্তৰ দিশলৈ ৰাখি মেপখন চাওক",
-                statusSawari: "ফোনটো উত্তৰ দিশলৈ ৰাখি মেপ চাওক আৰু ক'লৈ যাব লাগিব স্পৰ্শ কৰক",
-                counterRider: "চালক", counterSawari: "যাত্ৰী",
-                reqMsg: "🙋‍♂️ নতুন যাত্ৰীৰ অনুৰোধ আহিছে!", acceptBtn: "গ্ৰহଣ কৰক", rejectBtn: "প্ৰত্যাখ্যাত কৰক",
-                chatTitle: "💬 প্ৰাইভেট চাট আৰু লাইভ ট্ৰেকিং", closeChat: "✕ বন্ধ কৰক", sendBtn: "প্ৰেবণ কৰক",
-                locationBtn: "📍 অৱস্থান শ্বেয়াৰ কৰক", destText: "গন্তব্যস্থান নিৰ্ধাৰণ কৰিবলৈ মেপত টেপ কৰক", resetBtn: "ৰীছেট",
-                chatConnected: "আপুনি পৰস্পৰ সংযুক্ত হৈছে।", chatBroken: "সংযোগ বিচ্ছিন্ন - ফোন উত্তৰ দিশত ৰাখক",
-                chatBrokenSawari: "সংযোগ বিচ্ছিন্ন - ফোন উত্তৰত ৰাখি স্পৰ্শ কৰক", reqSentText: "⏳ অনুৰোধ প্ৰেসন কৰা হ'ল...",
-                reqBtnText: "📲 অনুৰোধ প্ৰেৰণ কৰক", myLocText: "<b>আপোনাৰ অৱস্থান</b>", myDestText: "<b>আপোনাৰ গন্তব্যস্থান</b>",
-                destSetText: "গন্তব্যস্থান নিৰ্ধাৰଣ কৰা হ'ল!", reqToast: "অনুৰোধ সফলভাৱে প্ৰেৰଣ কৰা হ'ল!",
-                northWord: "উত্তৰ", southWord: "দক্ষিণ", distText: "দূৰত্ব", kmText: "কি.মি.",
-                chatPlaceholder: "বাৰ্তা টাইপ কৰক...", voiceBtnText: "🎤 ভয়েচ ৰেকৰ্ড", voiceRecording: "🔴 ৰেকৰ্ডিং চলি আছে...",
-                voiceRecorded: "✅ ৰেকৰ্ড হ'ল"
-            },
-            rj: {
-                modalTitle: "मोड चुणो", modalDesc: "आप कै रूप में काम करणा चाहो हो?",
-                riderBtn: "ऑटो / ई-रिक्शा चालक", sawariBtn: "यात्री (सवारी)",
-                bikeRiderBtn: "🏍️ बाइक चालक (सुब ६ रू शाम ७)", bikeSawariBtn: "🙋‍♂️ बाइक सवारी",
-                otpTitle: "मोबाइल सत्यापन", otpDesc: "कृपया आप को 10 अंको को मोबाइल नंबर अर OTP (कोड: 7317) लगावड़ो।",
-                otpBtn: "सत्यापित करो अर आगे बढ़ो", loading: "लोड हो रह्यो है...",
-                statusRider: "फोन ने हमेशा उत्तर दिशा की तरफ राख्न ने मेप देखनो",
-                statusSawari: "फोन ने उत्तर दिशा में राख्न मेप देखनो अर कटे जाणो है थामे टच करो",
-                counterRider: "चालक", counterSawari: "सवारी",
-                reqMsg: "🙋‍♂️ नई सवारी की रिक्वेस्ट आई है!", acceptBtn: "स्वीकार करो", rejectBtn: "मना करो",
-                chatTitle: "💬 प्राइवेट चैट अर लाइव ट्रैकिंग", closeChat: "✕ बंद करो", sendBtn: "भेजो",
-                locationBtn: "📍 लोकेशन शेयर करो", destText: "मंजिल सेट करण खातिर मेप पर टैप करो", resetBtn: "रूट रीसेट",
-                chatConnected: "थाणे आपस में जुड़ गया हां।", chatBroken: "संपर्क टूट्यो - फोन उत्तर दिशा में राखो",
-                chatBrokenSawari: "संपर्क टूट्यो - फोन उत्तर दिशा में राख टच करो", reqSentText: "⏳ रिक्वेस्ट भेज दी है...",
-                reqBtnText: "📲 रिक्वेस्ट भेजो", myLocText: "<b>थारी लोकेशन</b>", myDestText: "<b>थारी मंजिल</b>",
-                destSetText: "मंजिल सेट हो गई है!", reqToast: "रिक्वेस्ट सफलतापर्वक भेज दी गई है!",
-                northWord: "उत्तर", southWord: "दक्षिण", distText: "अंतर", kmText: "किमी",
-                chatPlaceholder: "संदेश लिखो...", voiceBtnText: "🎤 आवाज रिकॉर्ड", voiceRecording: "🔴 रिकॉर्डिंग चालू है...",
-                voiceRecorded: "✅ रिकॉर्ड हो ग्यो"
-            },
-            es: {
-                modalTitle: "Seleccionar Modo", modalDesc: "¿Cómo te gustaría trabajar?",
-                riderBtn: "Conductor de Auto / E-Rickshaw", sawariBtn: "Pasajero",
-                bikeRiderBtn: "🏍️ Conductor de Moto (6 AM a 7 PM)", bikeSawariBtn: "🙋‍♂️ Pasajero de Moto (6 AM a 7 PM)",
-                otpTitle: "Verificación Móvil", otpDesc: "Por favor ingresa tu número móvil de 10 dígitos y OTP (Código: 7317).",
-                otpBtn: "Verificar y Continuar", loading: "Cargando...",
-                statusRider: "Mantén tu teléfono apuntando hacia el Norte y mira el mapa",
-                statusSawari: "Mantén tu teléfono apuntando hacia el Norte y toca a dónde quieres ir",
-                counterRider: "Conductores", counterSawari: "Pasajeros",
-                reqMsg: "🙋‍♂️ ¡Nueva solicitud de pasajero recibida!", acceptBtn: "Aceptar", rejectBtn: "Rechazar",
-                chatTitle: "💬 Chat Privado y Rastreo en Vivo", closeChat: "✕ Cerrar", sendBtn: "Enviar",
-                locationBtn: "📍 Compartir Ubicación", destText: "Toca en el mapa para establecer tu destino", resetBtn: "Restablecer Ruta",
-                chatConnected: "Ahora están conectados.", chatBroken: "Conexión perdida - Mantenga el teléfono hacia el Norte",
-                chatBrokenSawari: "Conexión perdida - Mantenga el teléfono hacia el Norte y toque", reqSentText: "⏳ Solicitud enviada...",
-                reqBtnText: "📲 Enviar Solicitud", myLocText: "<b>Tu Ubicación</b>", myDestText: "<b>Tu Destino</b>",
-                destSetText: "¡Destino establecido!", reqToast: "¡Solicitud enviada con éxito!",
-                northWord: "N", southWord: "S", distText: "Dist", kmText: "km",
-                chatPlaceholder: "Type a message...", voiceBtnText: "🎤 Voice Record", voiceRecording: "🔴 Recording...",
-                voiceRecorded: "✅ Recorded"
-            },
-            zh: {
-                modalTitle: "选择模式", modalDesc: "您希望以什么身份工作？",
-                riderBtn: "自动三轮车/电动三轮车司机", sawariBtn: "乘客",
-                bikeRiderBtn: "🏍️ 摩托车手（上午 6 点至晚上 7 点）", bikeSawariBtn: "🙋‍♂️ 摩托车乘客（上午 6 点至晚上 7 点）",
-                otpTitle: "手机验证", otpDesc: "请输入您的 10 位手机号码和验证码（代码：7317）。",
-                otpBtn: "验证并继续", loading: "加载中...",
-                statusRider: "请将手机朝向正北方查看地图",
-                statusSawari: "请将手机朝向正北方查看地图并点击目的地",
-                counterRider: "司机", counterSawari: "乘客",
-                reqMsg: "🙋‍♂️ 收到新的乘客请求！", acceptBtn: "接受", rejectBtn: "拒绝",
-                chatTitle: "💬 私人聊天与实时追踪", closeChat: "✕ 关闭", sendBtn: "发送",
-                locationBtn: "📍 分享位置", destText: "点击地图设置您的目的地", resetBtn: "重置路线",
-                chatConnected: "你们现在已连接。", chatBroken: "连接断开 - 请将手机保持朝向北方",
-                chatBrokenSawari: "连接断开 - 请将手机保持朝向北方并点击", reqSentText: "⏳ 请求已发送...",
-                reqBtnText: "📲 发送请求", myLocText: "<b>您的位置</b>", myDestText: "<b>您的目的地</b>",
-                destSetText: "目的地已设置！", reqToast: "请求发送成功！",
-                northWord: "北", southWord: "南", distText: "距离", kmText: "公里",
-                chatPlaceholder: "输入消息...", voiceBtnText: "🎤 语音录制", voiceRecording: "🔴 录音中...",
-                voiceRecorded: "✅ 已录制"
-            },
-            ar: {
-                modalTitle: "اختر الوضع", modalDesc: "كيفودك أن تعمل؟",
-                riderBtn: "سائق توك توك / ركشة", sawariBtn: "راكب",
-                bikeRiderBtn: "🏍️ سائق دراجة نارية (6 صباحاً إلى 7 مساءً)", bikeSawariBtn: "🙋‍♂️ راكب دراجة نارية (6 صباحاً إلى 7 مساءً)",
-                otpTitle: "التحقق من الهاتف المحمول", otpDesc: "الرجاء إدخال رقم هاتفك المحمول المكون من 10 أرقام ورمز التحقق (الرمز: 7317).",
-                otpBtn: "تحقق والمتابعة", loading: "جاري التحميل...",
-                statusRider: "اجعل هاتفك يشير دائماً نحو الشمال وانظر إلى الخريطة",
-                statusSawari: "اجعل هاتفك يشير نحو الشمال وانظر إلى الخريطة ثم المس الوجهة التي تريدها",
-                counterRider: "السائقين", counterSawari: "الركاب",
-                reqMsg: "🙋‍♂️ تم استلام طلب راكب جديد!", acceptBtn: "قبول", rejectBtn: "رفض",
-                chatTitle: "💬 دردشة خاصة وتتبع مباشر", closeChat: "✕ إغلاق", sendBtn: "إرسال",
-                locationBtn: "📍 مشاركة الموقع", destText: "انقر على الخريطة لتحديد وجهتك", resetBtn: "إعادة تعيين المسار",
-                chatConnected: "أنتما متصلان ببعضهما البعض.", chatBroken: "انقطع الاتصال - اجعل الهاتف باتجاه الشمال",
-                chatBrokenSawari: "انقطع الاتصال - اجعل الهاتف باتجاه الشمال والمس", reqSentText: "⏳ تم إرسال الطلب...",
-                reqBtnText: "📲 إرسال الطلب", myLocText: "<b>موقعك</b>", myDestText: "<b>وجهتك</b>",
-                destSetText: "تم تحديد الوجهة!", reqToast: "تم إرسال الطلب بنجاح!",
-                northWord: "شمال", southWord: "جنوب", distText: "المسافة", kmText: "كم",
-                chatPlaceholder: "اكتب رسالة...", voiceBtnText: "🎤 تسجيل صوتي", voiceRecording: "🔴 جاري التسجيل...",
-                voiceRecorded: "✅ تم التسجيل"
-            },
-            pt: {
-                modalTitle: "Selecionar Modo", modalDesc: "Como você gostaria de trabalhar?",
-                riderBtn: "Motorista de Auto / E-Rickshaw", sawariBtn: "Passageiro",
-                bikeRiderBtn: "🏍️ Motociclista (6h às 19h)", bikeSawariBtn: "🙋‍♂️ Passageiro de Moto (6h às 19h)",
-                otpTitle: "Verificação Móvel", otpDesc: "Por favor, insira seu número de celular de 10 dígitos e o OTP (Código: 7317).",
-                otpBtn: "Verificar e Prosseguir", loading: "Carregando...",
-                statusRider: "Mantenha seu telefone apontado para o Norte e veja o mapa",
-                statusSawari: "Mantenha seu telefone apontado para o Norte e toque para onde deseja ir",
-                counterRider: "Motoristas", counterSawari: "Passageiros",
-                reqMsg: "🙋‍♂️ Nova solicitação de passageiro recebida!", acceptBtn: "Aceitar", rejectBtn: "Rejeitar",
-                chatTitle: "💬 Chat Privado e Rastreamento ao Vivo", closeChat: "✕ Fechar", sendBtn: "Enviar",
-                locationBtn: "📍 Compartilhar Localização", destText: "Toque no mapa para definir seu destino", resetBtn: "Redefinir Rota",
-                chatConnected: "Vocês estão conectados um ao outro.", chatBroken: "Conexão perdida - Mantenha o telefone para o Norte",
-                chatBrokenSawari: "Conexão perdida - Mantenha o telefone para o Norte e toque", reqSentText: "⏳ Solicitação enviada...",
-                reqBtnText: "📲 Enviar Solicitação", myLocText: "<b>Sua Localização</b>", myDestText: "<b>Seu Destino</b>",
-                destSetText: "Destino definido!", reqToast: "Solicitação enviada com sucesso!",
-                northWord: "N", southWord: "S", distText: "Distância", kmText: "km",
-                chatPlaceholder: "Digite uma mensagem...", voiceBtnText: "🎤 Gravar áudio", voiceRecording: "...",
-                voiceRecorded: "✅ Gravado"
-            },
-            fr: {
-                modalTitle: "Sélectionner le Mode", modalDesc: "Comment souhaitez-vous travailler ?",
-                riderBtn: "Conducteur Auto / E-Rickshaw", sawariBtn: "Passager",
-                bikeRiderBtn: "🏍️ Motard (6h00 à 19h00)", bikeSawariBtn: "🙋‍♂️ Passager moto (6h00 à 19h00)",
-                otpTitle: "Vérification Mobile", otpDesc: "Veuillez entrer votre numéro de mobile à 10 chiffres et l'OTP (Code : 7317).",
-                otpBtn: "Vérifier et continuer", loading: "Chargement...",
-                statusRider: "Gardez votre téléphone pointé vers le Nord et regardez la carte",
-                statusSawari: "Gardez votre téléphone vers le Nord et touchez l'écran où vous souhaitez aller",
-                counterRider: "Conducteurs", counterSawari: "Passagers",
-                reqMsg: "🙋‍♂️ Nouvelle demande de passager reçue !", acceptBtn: "Acceptar", rejectBtn: "Rejeter",
-                chatTitle: "💬 Chat Privé & Suivi en direct", closeChat: "✕ Fermer", sendBtn: "Envoyer",
-                locationBtn: "📍 Partager la position", destText: "Appuyez sur la carte pour définir votre destination", resetBtn: "Réinitialiser",
-                chatConnected: "Vous êtes connectés ensemble.", chatBroken: "Connexion perdue - Gardez le téléphone vers le Nord",
-                chatBrokenSawari: "Connexion perdue - Gardez le téléphone vers le Nord et touchez", reqSentText: "⏳ Demande envoyée...",
-                reqBtnText: "📲 Envoyer la demande", myLocText: "<b>Votre position</b>", myDestText: "<b>Votre destination</b>",
-                destSetText: "Destination définie !", reqToast: "Demande envoyée avec succès !",
-                northWord: "N", southWord: "S", distText: "Distance", kmText: "km",
-                chatPlaceholder: "Tapez un message...", voiceBtnText: "🎤 Enregistrement", voiceRecording: "🔴 Enregistrement...",
-                voiceRecorded: "✅ Enregistré"
-            },
-            de: {
-                modalTitle: "Modus wählen", modalDesc: "Wie möchten Sie arbeiten?",
-                riderBtn: "Auto / E-Rikscha Fahrer", sawariBtn: "Fahrgast",
-                bikeRiderBtn: "🏍️ Motorradfahrer (6:00 bis 19:00 Uhr)", bikeSawariBtn: "🙋‍♂️ Motorrad-Fahrgast (6:00 bis 19:00 Uhr)",
-                otpTitle: "Handy-Verifizierung", otpDesc: "Bitte geben Sie Ihre 10-stellige Handynummer und den OTP ein (Code: 7317).",
-                otpBtn: "Bestätigen und fortfahren", loading: "Wird geladen...",
-                statusRider: "Halten Sie Ihr Handy nach Norden ausgerichtet und betrachten Sie die Karte",
-                statusSawari: "Halten Sie das Handy nach Norden, betrachten Sie die Karte und tippen Sie auf Ihr Ziel",
-                counterRider: "Fahrer", counterSawari: "Fahrgäste",
-                reqMsg: "🙋‍♂️ Neue Fahrgastanfrage eingegangen!", acceptBtn: "Annehmen", rejectBtn: "Ablehnen",
-                chatTitle: "💬 Privater Chat & Live-Tracking", closeChat: "✕ Schließen", sendBtn: "Senden",
-                locationBtn: "📍 Standort teilen", destText: "Tippen Sie auf die Karte, um Ihr Ziel festzulegen", resetBtn: "Route zurücksetzen",
-                chatConnected: "Sie sind jetzt miteinander verbunden.", chatBroken: "Verbindung unterbrochen - Handy nach Norden halten",
-                chatBrokenSawari: "Verbindung unterbrochen - Handy nach Norden halten und tippen", reqSentText: "⏳ Anfrage gesendet...",
-                reqBtnText: "📲 Anfrage senden", myLocText: "<b>Ihr Standort</b>", myDestText: "<b>Ihr Ziel</b>",
-                destSetText: "Ziel festgelegt!", reqToast: "Anfrage erfolgreich gesendet!",
-                northWord: "N", southWord: "S", distText: "Entfernung", kmText: "km",
-                chatPlaceholder: "Nachricht eingeben...", voiceBtnText: "🎤 Sprachaufnahme", voiceRecording: "🔴 Aufnahme...",
-                voiceRecorded: "✅ Aufgenommen"
-            },
-            ja: {
-                modalTitle: "モード選択", modalDesc: "どのように働きますか？",
-                riderBtn: "オート / Eリキシャ運転手", sawariBtn: "乗客",
-                bikeRiderBtn: "🏍️ バイクライダー (午前6時〜午後7時)", bikeSawariBtn: "🙋‍♂️ バイク乗客 (午前6時〜午後7時)",
-                otpTitle: "携帯電話認証", otpDesc: "10桁の携帯電話番号とOTP（コード: 7317）を入力してください。",
-                otpBtn: "確認して進む", loading: "読み込み中...",
-                statusRider: "スマホを常に北に向けた状態でマップを確認してください",
-                statusSawari: "スマホを常に北に向けた状態でマップを確認し、行きたい場所をタップしてください",
-                counterRider: "運転手", counterSawari: "乗客",
-                reqMsg: "🙋‍♂️ 新しい乗客のリクエストが届きました！", acceptBtn: "承認", rejectBtn: "拒否",
-                chatTitle: "💬 プライベートチャットとライブ追跡", closeChat: "✕ 閉じる", sendBtn: "送信",
-                locationBtn: "📍 位置情報を共有", destText: "マップをタップして目的地を設定してください", resetBtn: "ルートリセット",
-                chatConnected: "お互いに接続されました。", chatBroken: "接続が切れました - スマホを北に向けてください",
-                chatBrokenSawari: "接続が切れました - スマホを北に向けてタップしてください", reqSentText: "⏳ リクエスト送信済み...",
-                reqBtnText: "📲 リクエスト送信", myLocText: "<b>現在地</b>", myDestText: "<b>目的地</b>",
-                destSetText: "目的地が設定されました！", reqToast: "リクエストが正常に送信されました！",
-                northWord: "北", southWord: "南", distText: "距離", kmText: "km",
-                chatPlaceholder: "メッセージを入力...", voiceBtnText: "🎤 音声録音", voiceRecording: "🔴 録音中...",
-                voiceRecorded: "✅ 録音完了"
-            },
-            ru: {
-                modalTitle: "Выберите режим", modalDesc: "Как вы хотите работать?",
-                riderBtn: "Водитель авто / рикши", sawariBtn: "Пассажир",
-                bikeRiderBtn: "🏍️ Мотоциклист (с 6:00 до 19:00)", bikeSawariBtn: "🙋‍♂️ Пассажир мотоцикла (с 6:00 до 19:00)",
-                otpTitle: "Проверка номера", otpDesc: "Введите свой 10-значный номер телефона и OTP (Код: 7317).",
-                otpBtn: "Подтвердить и продолжить", loading: "Загрузка...",
-                statusRider: "Держите телефон лицом на Север и смотрите на карту",
-                statusSawari: "Держите телефон лицом на Север, смотрите на карту и коснитесь места назначения",
-                counterRider: "Водители", counterSawari: "Пассажиры",
-                reqMsg: "🙋‍♂️ Получен новый запрос от пассажира!", acceptBtn: "Принять", rejectBtn: "Отклонить",
-                chatTitle: "💬 Чат и живое отслеживание", closeChat: "✕ Закрыть", sendBtn: "Отправить",
-                locationBtn: "📍 Поделиться местоположением", destText: "Нажмите на карту, чтобы установить пункт назначения", resetBtn: "Сбросить маршрут",
-                chatConnected: "Вы подключены друг к другу.", chatBroken: "Связь потеряна - держите телефон на Север",
-                chatBrokenSawari: "Связь потеряна - держите телефон на Север и коснитесь", reqSentText: "⏳ Запрос отправлен...",
-                reqBtnText: "📲 Отправить запрос", myLocText: "<b>Ваше местоположение</b>", myDestText: "<b>Ваш пункт назначения</b>",
-                destSetText: "Пункт назначения установлен!", reqToast: "Запрос успешно отправлен!",
-                northWord: "С", southWord: "Ю", distText: "Расстояние", kmText: "км",
-                chatPlaceholder: "Введите сообщение...", voiceBtnText: "🎤 Запись голоса", voiceRecording: "🔴 Запись...",
-                voiceRecorded: "✅ Записано"
-            },
-            tr: {
-                modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmak istersiniz?",
-                riderBtn: "Oto / E-Rickshaw Sürücüsü", sawariBtn: "Yolcu",
-                bikeRiderBtn: "🏍️ Motosiklet Sürücüsü (06:00 - 19:00)", bikeSawariBtn: "🙋‍♂️ Motosiklet Yolcusu (06:00 - 19:00)",
-                otpTitle: "Mobil Doğrulama", otpDesc: "Lütfen 10 haneli cep telefonu numaranızı ve OTP'yi (Kod: 7317) girin.",
-                otpBtn: "Doğrula ve İlerle", loading: "Yükleniyor...",
-                statusRider: "Telefonunuzu her zaman kuzey yönüne tutarak haritayı görüntüleyin",
-                statusSawari: "Telefonunuzu kuzey yönüne tutun, haritaya bakın و gitmek istediğiniz yere dokunun",
-                counterRider: "Sürücüler", counterSawari: "Yolcular",
-                reqMsg: "🙋‍♂️ Yeni yolcu talebi geldi!", acceptBtn: "Kabul Et", rejectBtn: "Reddet",
-                chatTitle: "💬 Özel Sohbet ve Canlı Takip", closeChat: "✕ Kapat", sendBtn: "Gönder",
-                locationBtn: "📍 Konum Paylaş", destText: "Hedefinizi belirlemek için haritaya dokunun", resetBtn: "Rotayı Sıfırla",
-                chatConnected: "Artık birbirinizle bağlantı kurdunuz.", chatBroken: "Bağlantı Kesildi - Telefonu kuzeye doğru tutun",
-                chatBrokenSawari: "Bağlantı Kesildi - Telefonu kuzeye doğru tutup dokunun", reqSentText: "⏳ İstek Gönderildi...",
-                reqBtnText: "📲 İstek Gönder", myLocText: "<b>Konumunuz</b>", myDestText: "<b>Varış Noktanız</b>",
-                destSetText: "Varış noktası belirlendi!", reqToast: "İstek başarıyla gönderildi!",
-                northWord: "K", southWord: "G", distText: "Mesafe", kmText: "km",
-                chatPlaceholder: "Bir mesaj yazın...", voiceBtnText: "🎤 Ses Kaydı", voiceRecording: "🔴 Kayıt yapılıyor...",
-                voiceRecorded: "✅ Kaydedildi"
+                chatPlaceholder: "Type a message...", voiceRecording: "🔴 15s Recording... (Stop)",
+                voiceRecorded: "✅ Recorded (Send)",
+                sosLabel: "🚨 SOS Trusted Contact (Phone/WhatsApp)",
+                termsText: "Terms & Disclaimer: This app is only a networking directory connecting independent users. No commission or ride booking fee is charged. Use at your own risk."
             }
         };
 
@@ -657,7 +290,6 @@
 
         function applyTranslations() {
             const t = translations[currentLang] || translations['hi'];
-            
             const dropdown = document.getElementById('languageSelect');
             if(dropdown) dropdown.value = currentLang;
 
@@ -682,50 +314,43 @@
             if(document.getElementById('closeChatText')) document.getElementById('closeChatText').innerText = t.closeChat;
             if(document.getElementById('sendBtnText')) document.getElementById('sendBtnText').innerText = t.sendBtn;
             if(document.getElementById('locationBtnText')) document.getElementById('locationBtnText').innerText = t.locationBtn;
+            if(document.getElementById('photoBtnText')) document.getElementById('photoBtnText').innerText = t.photoBtn;
+            if(document.getElementById('voiceBtn') && !isRecording) document.getElementById('voiceBtn').innerText = t.voiceBtnText;
+
+            if(document.getElementById('sosConfigLabel')) document.getElementById('sosConfigLabel').innerText = t.sosLabel;
+            if(document.getElementById('termsFooterText')) document.getElementById('termsFooterText').innerText = t.termsText;
 
             if(document.getElementById('destStatus') && !myDestination) document.getElementById('destStatus').innerText = t.destText;
             if(document.getElementById('resetBtnText')) document.getElementById('resetBtnText').innerText = t.resetBtn;
 
-            // Updated for Compass & Chat Input & Voice Recorder
             if(document.getElementById('compassNorth')) document.getElementById('compassNorth').innerText = t.northWord;
             if(document.getElementById('compassSouth')) document.getElementById('compassSouth').innerText = t.southWord;
             if(document.getElementById('chatInput')) document.getElementById('chatInput').placeholder = t.chatPlaceholder;
-            if(document.getElementById('voiceBtn') && !isRecording) document.getElementById('voiceBtn').innerText = t.voiceBtnText;
         }
 
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
-        let isPassengerActive = true, tempSelectedRole = null;
+        let isPassengerActive = true;
         let requestedRiders = {}; 
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
+        let sentPhotoCount = 0; // Feature 1: Max 5 photos per chat session
+        let sosHoldTimer = null, isSosTriggered = false, lastSosTime = 0;
 
         window.onload = function() {
             if ("Notification" in window && Notification.permission !== "granted") {
                 Notification.requestPermission();
             }
-
             applyTranslations();
-
-            const savedMobile = localStorage.getItem('rickshaw_user_mobile');
-            if (savedMobile) {
-                document.getElementById('otpModal').style.display = 'none';
-                document.getElementById('roleModal').style.display = 'flex';
-            } else {
-                document.getElementById('otpModal').style.display = 'none';
-                document.getElementById('roleModal').style.display = 'flex';
-            }
         };
 
         function showToast(text) {
             const toast = document.getElementById('toastMsg');
             toast.innerText = text;
             toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 2000);
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
         }
 
         function selectRole(role) {
@@ -759,14 +384,10 @@
             if (window.DeviceOrientationEvent) {
                 window.addEventListener('deviceorientation', (event) => {
                     let compassHeading = event.alpha;
-                    if (event.webkitCompassHeading) {
-                        compassHeading = event.webkitCompassHeading;
-                    }
+                    if (event.webkitCompassHeading) compassHeading = event.webkitCompassHeading;
                     if (compassHeading !== null && compassHeading !== undefined) {
                         const dial = document.getElementById('compassDial');
-                        if (dial) {
-                            dial.style.transform = `rotate(${-compassHeading}deg)`;
-                        }
+                        if (dial) dial.style.transform = `rotate(${-compassHeading}deg)`;
                     }
                 }, true);
             }
@@ -775,9 +396,7 @@
         function requestCompassPermission() {
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission().then(response => {
-                    if (response === 'granted') {
-                        showToast('कंपास सक्रिय हो गया है!');
-                    }
+                    if (response === 'granted') showToast('कंपास सक्रिय हो गया है!');
                 }).catch(console.error);
             } else {
                 showToast('लाइव कंपास मोड चालू है');
@@ -814,27 +433,6 @@
         }
 
         function initializeAppAfterLogin() {
-            if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                const handleVisibility = () => {
-                    if (document.hidden || document.visibilityState === 'hidden') {
-                        isPassengerActive = false;
-                        if (socket && socket.connected) {
-                            socket.emit('deactivate_passenger', { id: myId });
-                        }
-                    } else {
-                        isPassengerActive = true;
-                        syncPosition();
-                    }
-                };
-
-                document.addEventListener("visibilitychange", handleVisibility);
-                window.addEventListener("pagehide", () => {
-                    if (socket && socket.connected) {
-                        socket.emit('deactivate_passenger', { id: myId });
-                    }
-                });
-            }
-
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((pos) => {
                     myLat = pos.coords.latitude;
@@ -842,7 +440,6 @@
                     myHeading = pos.coords.heading || 0;
                     initMapAndSystem();
                 }, (err) => {
-                    alert('लोकेशन एक्सेस जरूरी है! डिफ़ॉल्ट लोकेशन सेट की जा रही है।');
                     myLat = 20.5937; myLng = 78.9629;
                     initMapAndSystem();
                 }, { enableHighAccuracy: true, timeout: 10000 });
@@ -870,28 +467,18 @@
                 bgClass = 'pin-sawari';
                 innerElement = '<div class="sawari-inner"></div>';
             }
-
             if (isGlowing) bgClass += ' pin-glow';
-
             return L.divIcon({ className: '', html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>', iconSize: [22, 22], iconAnchor: [11, 11] });
         }
 
         function initMapAndSystem() {
             document.getElementById('trafficCounter').style.display = 'block';
-
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 document.getElementById('destCard').style.display = 'flex';
             }
 
             if (!map) {
-                map = L.map('map', { 
-                    zoomControl: false, 
-                    preferCanvas: true,
-                    touchZoom: true,
-                    dragging: true,
-                    scrollWheelZoom: true
-                }).setView([myLat, myLng], 16);
-
+                map = L.map('map', { zoomControl: false, preferCanvas: true, touchZoom: true, dragging: true }).setView([myLat, myLng], 16);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
                 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -937,32 +524,26 @@
 
         function startLiveGPS() {
             if ("geolocation" in navigator) {
-                navigator.geolocation.watchPosition(
-                    (pos) => {
-                        myLat = pos.coords.latitude;
-                        myLng = pos.coords.longitude;
-                        myHeading = pos.coords.heading || 0;
+                navigator.geolocation.watchPosition((pos) => {
+                    myLat = pos.coords.latitude;
+                    myLng = pos.coords.longitude;
+                    myHeading = pos.coords.heading || 0;
 
-                        if (map) {
-                            if (!isMapCentered) {
-                                map.setView([myLat, myLng], 16, { animate: true });
-                                isMapCentered = true;
-                            }
-                            if (selfMarker) {
-                                selfMarker.setLatLng([myLat, myLng]);
-                                selfMarker.setIcon(getIcon(myRole, myHeading, true));
-                            }
+                    if (map) {
+                        if (!isMapCentered) {
+                            map.setView([myLat, myLng], 16, { animate: true });
+                            isMapCentered = true;
                         }
-
-                        if (myDestination && destLine) {
-                            destLine.setLatLngs([[myLat, myLng], [myDestination.lat, myDestination.lng]]);
+                        if (selfMarker) {
+                            selfMarker.setLatLng([myLat, myLng]);
+                            selfMarker.setIcon(getIcon(myRole, myHeading, true));
                         }
-
-                        syncPosition();
-                    },
-                    (err) => {},
-                    { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
-                );
+                    }
+                    if (myDestination && destLine) {
+                        destLine.setLatLngs([[myLat, myLng], [myDestination.lat, myDestination.lng]]);
+                    }
+                    syncPosition();
+                }, (err) => {}, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
             }
         }
 
@@ -974,15 +555,11 @@
 
             socket.on('init_users', (users) => {
                 updateTrafficCounts(users);
-                for (let id in users) {
-                    if (id !== myId) processIncomingUser(users[id]);
-                }
+                for (let id in users) { if (id !== myId) processIncomingUser(users[id]); }
             });
 
             socket.on('live_broadcast', (data) => { 
-                if (data && data.user && data.user.id !== myId) {
-                    processIncomingUser(data.user);
-                }
+                if (data && data.user && data.user.id !== myId) processIncomingUser(data.user);
                 if (data && data.counts) {
                     document.getElementById('totalRiders').innerText = (data.counts.riders || 0);
                     document.getElementById('totalSawaris').innerText = (data.counts.sawaris || 0);
@@ -1003,13 +580,6 @@
                     const t = translations[currentLang] || translations['hi'];
                     document.getElementById('reqText').innerText = t.reqMsg;
                     document.getElementById('requestPopup').style.display = 'block';
-
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("New Request!", {
-                            body: "You have a new ride request.",
-                            icon: "https://cdn-icons-png.flaticon.com/512/854/854878.png"
-                        });
-                    }
                 }
             });
 
@@ -1017,6 +587,7 @@
                 if (myId === data.passengerId || myId === data.riderId) {
                     activeChatRoom = data.room;
                     connectedPartnerId = (myId === data.riderId) ? data.passengerId : data.riderId;
+                    sentPhotoCount = 0; // Reset photo quota on new accepted session
 
                     document.getElementById('chatMessages').innerHTML = '';
                     document.getElementById('requestPopup').style.display = 'none';
@@ -1024,13 +595,7 @@
                     
                     const t = translations[currentLang] || translations['hi'];
                     document.getElementById('chatHeaderTitle').innerText = t.chatTitle;
-
                     document.getElementById('statusDot').className = 'badge badge-green';
-                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                        document.getElementById('statusText').innerText = t.statusSawari;
-                    } else {
-                        document.getElementById('statusText').innerText = t.statusRider;
-                    }
                     appendChatMessage('System', t.chatConnected);
                 }
             });
@@ -1039,9 +604,6 @@
                 if (myId === data.passengerId) {
                     showToast('❌ Request rejected by partner.');
                     requestedRiders[data.riderId] = false; 
-                    if (activeMarkers[data.riderId]) {
-                        processIncomingUserMarkerRefresh(data.riderId);
-                    }
                 }
             });
 
@@ -1052,6 +614,8 @@
                         appendAudioMessage(senderLabel, msg.audioData);
                     } else if (msg.type === 'location') {
                         appendLocationMessage(senderLabel, msg.lat, msg.lng);
+                    } else if (msg.type === 'ephemeral_photo') {
+                        appendEphemeralPhotoMessage(senderLabel, msg.photoData);
                     } else {
                         appendChatMessage(senderLabel, msg.text);
                     }
@@ -1061,32 +625,11 @@
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
                     document.getElementById('statusDot').className = 'badge badge-red';
-                    const t = translations[currentLang] || translations['hi'];
-                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                        document.getElementById('statusText').innerText = t.chatBrokenSawari;
-                    } else {
-                        document.getElementById('statusText').innerText = t.chatBroken;
-                    }
-                    
-                    setTimeout(() => {
-                        document.getElementById('statusDot').className = 'badge badge-green';
-                        if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                            document.getElementById('statusText').innerText = t.statusSawari;
-                        } else {
-                            document.getElementById('statusText').innerText = t.statusRider;
-                        }
-                        document.getElementById('chatMessages').innerHTML = '';
-                        document.getElementById('chatOverlay').style.display = 'none';
-                    }, 2000);
-
+                    document.getElementById('chatMessages').innerHTML = '';
+                    document.getElementById('chatOverlay').style.display = 'none';
                     connectedPartnerId = null;
                     activeChatRoom = null;
                     incomingReqData = null;
-
-                    for (let id in activeRoutes) {
-                        map.removeLayer(activeRoutes[id]);
-                        delete activeRoutes[id];
-                    }
                 }
             });
         }
@@ -1103,7 +646,6 @@
 
         function syncPosition() {
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
-
             if (socket && socket.connected && myLat !== null && myLng !== null) {
                 socket.emit('update_location', { id: myId, role: myRole, lat: myLat, lng: myLng, heading: myHeading, destination: myDestination });
             }
@@ -1120,41 +662,23 @@
         function processIncomingUser(user) {
             if (!myLat || !myLng || !map) return;
             const distance = calculateDistance(myLat, myLng, user.lat, user.lng);
-            let maxRadius = 0;
-            let showPopupBtn = false;
-            let canSee = false;
+            let maxRadius = 0, showPopupBtn = false, canSee = false;
 
             if (myRole === 'rider') {
                 if ((user.role === 'rider' || user.role === 'sawari') && distance <= 25) {
                     canSee = true; maxRadius = 25;
-                    if (user.role === 'rider' && distance <= 10) {
-                        showPopupBtn = true;
-                    }
+                    if (user.role === 'rider' && distance <= 10) showPopupBtn = true;
                 }
-            } 
-            else if (myRole === 'sawari') {
-                if (user.role === 'rider' && distance <= 10) {
-                    canSee = true; maxRadius = 10; showPopupBtn = true;
-                }
-            } 
-            else if (myRole === 'bike_rider') {
-                if ((user.role === 'bike_rider' || user.role === 'bike_sawari') && distance <= 5) {
-                    canSee = true; maxRadius = 5;
-                }
-            } 
-            else if (myRole === 'bike_sawari') {
-                if (user.role === 'bike_rider' && distance <= 5) {
-                    canSee = true; maxRadius = 5;
-                    if (distance <= 2.5) showPopupBtn = true;
-                }
+            } else if (myRole === 'sawari') {
+                if (user.role === 'rider' && distance <= 10) { canSee = true; maxRadius = 10; showPopupBtn = true; }
+            } else if (myRole === 'bike_rider') {
+                if ((user.role === 'bike_rider' || user.role === 'bike_sawari') && distance <= 5) { canSee = true; maxRadius = 5; }
+            } else if (myRole === 'bike_sawari') {
+                if (user.role === 'bike_rider' && distance <= 5) { canSee = true; maxRadius = 5; if (distance <= 2.5) showPopupBtn = true; }
             }
 
             if (user.id === connectedPartnerId) canSee = true;
-
-            if (!canSee || (user.id !== connectedPartnerId && distance > maxRadius)) {
-                removeUser(user.id);
-                return;
-            }
+            if (!canSee || (user.id !== connectedPartnerId && distance > maxRadius)) { removeUser(user.id); return; }
 
             let isGlowing = (user.id === connectedPartnerId);
             const t = translations[currentLang] || translations['hi'];
@@ -1171,31 +695,7 @@
                         popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">' + t.reqBtnText + '</button>';
                     }
                 }
-                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map)
-                    .bindPopup(popupHtml);
-            }
-
-            if ((myRole === 'rider' || myRole === 'bike_rider') && (user.role === 'sawari' || user.role === 'bike_sawari')) {
-                if (user.destination) {
-                    if (activeRoutes[user.id]) {
-                        activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
-                    } else {
-                        activeRoutes[user.id] = L.polyline([[user.lat, user.lng], [user.destination.lat, user.destination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
-                    }
-                } else {
-                    if (activeRoutes[user.id]) {
-                        map.removeLayer(activeRoutes[user.id]);
-                        delete activeRoutes[user.id];
-                    }
-                }
-            }
-        }
-
-        function processIncomingUserMarkerRefresh(riderId) {
-            if (activeMarkers[riderId]) {
-                const t = translations[currentLang] || translations['hi'];
-                let popupHtml = '<b>DRIVER</b><br><button onclick="sendSmsRequest(\'' + riderId + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">' + t.reqBtnText + '</button>';
-                activeMarkers[riderId].bindPopup(popupHtml).openPopup();
+                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map).bindPopup(popupHtml);
             }
         }
 
@@ -1204,27 +704,20 @@
             socket.emit('send_sms_request', { passengerId: myId, riderId: riderId });
             const t = translations[currentLang] || translations['hi'];
             showToast(t.reqToast);
-            processIncomingUserMarkerRefresh(riderId);
         }
 
         function acceptRequest() {
             document.getElementById('requestPopup').style.display = 'none';
-            if (incomingReqData) {
-                socket.emit('accept_sms_request', incomingReqData);
-            }
+            if (incomingReqData) socket.emit('accept_sms_request', incomingReqData);
         }
 
         function rejectRequest() {
             document.getElementById('requestPopup').style.display = 'none';
-            if (incomingReqData) {
-                socket.emit('reject_sms_request', incomingReqData);
-                incomingReqData = null;
-            }
+            if (incomingReqData) { socket.emit('reject_sms_request', incomingReqData); incomingReqData = null; }
         }
 
         function sendChatMessage() {
             const text = document.getElementById('chatInput').value;
-            const t = translations[currentLang] || translations['hi'];
             if (text && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'text', text: text });
                 document.getElementById('chatInput').value = '';
@@ -1232,6 +725,7 @@
             else if (recordedAudioBase64 && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'audio', audioData: recordedAudioBase64 });
                 recordedAudioBase64 = null;
+                const t = translations[currentLang] || translations['hi'];
                 document.getElementById('voiceBtn').innerText = t.voiceBtnText;
             }
         }
@@ -1255,14 +749,77 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        function shareGoogleLocation() {
-            if (!myLat || !myLng || !activeChatRoom) {
-                showToast('Location or Chat not active!');
+        // ==========================================
+        // FEATURE 1: 10-Second Auto-Delete Live Compressed Photo (Max 5 per session)
+        // ==========================================
+        function captureAndSendLivePhoto() {
+            if (sentPhotoCount >= 5) {
+                alert('⚠️ You have reached the limit of 5 photos for this chat session.');
                 return;
             }
+            // Trigger device camera directly, gallery upload blocked via 'capture' attribute
+            document.getElementById('liveCameraInput').click();
+        }
+
+        function handleLivePhotoCaptured(event) {
+            const file = event.target.files[0];
+            if (!file || !activeChatRoom) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    // Aggressive compression to keep image size ~1KB or lower
+                    canvas.width = 160;
+                    canvas.height = 120;
+                    ctx.drawImage(img, 0, 0, 160, 120);
+
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.1);
+                    sentPhotoCount++;
+
+                    socket.emit('chat_message', { 
+                        room: activeChatRoom, 
+                        senderId: myId, 
+                        senderRole: myRole, 
+                        type: 'ephemeral_photo', 
+                        photoData: compressedBase64 
+                    });
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            event.target.value = ''; // Reset input
+        }
+
+        function appendEphemeralPhotoMessage(sender, photoData) {
+            const box = document.getElementById('chatMessages');
+            const uniqueImgId = 'photo_' + Math.random().toString(36.substring(2));
+            box.innerHTML += `<div id="${uniqueImgId}"><b>${sender}:</b> [Live Photo - Disappears in <span id="timer_${uniqueImgId}">10</span>s]<br><img src="${photoData}" style="max-width:100px; border-radius:6px; margin-top:4px;" /></div>`;
+            box.scrollTop = box.scrollHeight;
+
+            let timeLeft = 10;
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                const timerEl = document.getElementById(`timer_${uniqueImgId}`);
+                if (timerEl) timerEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    const container = document.getElementById(uniqueImgId);
+                    if (container) container.remove(); // Automatically destroyed/deleted from screen
+                }
+            }, 1000);
+        }
+
+        function shareGoogleLocation() {
+            if (!myLat || !myLng || !activeChatRoom) return;
             socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
         }
 
+        // ==========================================
+        // FEATURE 2: 15-Second Voice Recording Limit
+        // ==========================================
         function toggleVoiceRecording() {
             const btn = document.getElementById('voiceBtn');
             const t = translations[currentLang] || translations['hi'];
@@ -1287,46 +844,111 @@
                     isRecording = true;
                     btn.innerText = t.voiceRecording;
                     btn.classList.add('recording');
+
+                    // Auto-stop exactly after 15 seconds
+                    setTimeout(() => {
+                        if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
+                            mediaRecorder.stop();
+                            isRecording = false;
+                            btn.classList.remove('recording');
+                            showToast('⏱️ 15-second voice limit reached!');
+                        }
+                    }, 15000);
+
                 }).catch(err => alert('Microphone permission denied!'));
             } else {
-                if (mediaRecorder) mediaRecorder.stop();
+                if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
                 isRecording = false;
                 btn.classList.remove('recording');
             }
         }
 
-        function closeChat() {
-            if (activeChatRoom) {
-                socket.emit('close_chat', { room: activeChatRoom });
+        // ==========================================
+        // FEATURE 3: 3-Second Long Press SOS, Siren Alarm, Flash & WhatsApp/SMS Alert
+        // ==========================================
+        function startSosHold() {
+            const now = Date.now();
+            if (now - lastSosTime < 600000) { // 10 minutes cooldown period
+                alert('⏳ SOS is on cooldown. Please wait before triggering again.');
+                return;
             }
-            document.getElementById('chatOverlay').style.display = 'none';
-            
-            document.getElementById('statusDot').className = 'badge badge-red';
-            const t = translations[currentLang] || translations['hi'];
-            if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                document.getElementById('statusText').innerText = t.chatBrokenSawari;
-            } else {
-                document.getElementById('statusText').innerText = t.chatBroken;
-            }
-            
-            setTimeout(() => {
-                document.getElementById('statusDot').className = 'badge badge-green';
-                if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                    document.getElementById('statusText').innerText = t.statusSawari;
-                } else {
-                    document.getElementById('statusText').innerText = t.statusRider;
-                }
-                document.getElementById('chatMessages').innerHTML = '';
-            }, 2000);
-            
-            activeChatRoom = null;
-            incomingReqData = null;
-            connectedPartnerId = null;
 
-            for (let id in activeRoutes) {
-                map.removeLayer(activeRoutes[id]);
-                delete activeRoutes[id];
+            isSosTriggered = false;
+            showToast('🚨 Keep holding SOS for 3 seconds...');
+            
+            sosHoldTimer = setTimeout(() => {
+                if (confirm('⚠️ Are you in danger? SOS alert will be sent in 5 seconds! Click Cancel to abort.')) {
+                    // User confirmed or didn't cancel within timer window simulation
+                    triggerSosEmergencyAction();
+                }
+            }, 3000);
+        }
+
+        function cancelSosHold() {
+            if (sosHoldTimer && !isSosTriggered) {
+                clearTimeout(sosHoldTimer);
+                showToast('❌ SOS Cancelled.');
             }
+        }
+
+        function triggerSosEmergencyAction() {
+            isSosTriggered = true;
+            lastSosTime = Date.now();
+
+            // Flash Screen Red
+            const flashOverlay = document.getElementById('sosFlashOverlay');
+            flashOverlay.className = 'sos-active-flash';
+
+            // Play Local Siren Sound via Web Audio API
+            playSirenAlarm();
+
+            const trustedNumber = document.getElementById('trustedSosNumber').value.trim();
+            const mapsLink = myLat && myLng ? `https://www.google.com/maps?q=${myLat},${myLng}` : 'Location unknown';
+            const alertText = `EMERGENCY SOS! I am in danger. My live location: ${mapsLink}`;
+
+            if (trustedNumber.length === 10) {
+                // Trigger WhatsApp/SMS Web Share API or Intent
+                const waUrl = `https://api.whatsapp.com/send?phone=91${trustedNumber}&text=${encodeURIComponent(alertText)}`;
+                window.open(waUrl, '_blank');
+            } else {
+                alert('⚠️ No valid trusted emergency contact number entered in settings! But siren and flash are active.');
+            }
+
+            // Stop flash after 15 seconds
+            setTimeout(() => {
+                flashOverlay.className = '';
+            }, 15000);
+        }
+
+        function playSirenAlarm() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+
+                // Siren frequency sweep effect
+                let time = audioCtx.currentTime;
+                for (let i = 0; i < 10; i++) {
+                    osc.frequency.exponentialRampToValueAtTime(880, time + 0.5);
+                    osc.frequency.exponentialRampToValueAtTime(440, time + 1.0);
+                    time += 1.0;
+                }
+                setTimeout(() => osc.stop(), 10000);
+            } catch (e) {
+                console.log('Audio context blocked');
+            }
+        }
+
+        function closeChat() {
+            if (activeChatRoom) socket.emit('close_chat', { room: activeChatRoom });
+            document.getElementById('chatOverlay').style.display = 'none';
+            activeChatRoom = null;
+            connectedPartnerId = null;
         }
 
         function removeUser(id) {
