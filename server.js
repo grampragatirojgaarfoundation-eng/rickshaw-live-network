@@ -183,7 +183,6 @@ io.on('connection', (socket) => {
         console.log(`📍 Location: Lat ${data.lat}, Lng ${data.lng}`);
         console.log(`🔗 Maps Link: ${data.mapsUrl}`);
         console.log(`📞 Trusted Contacts:`, data.contacts);
-        // Server can optionally integrate Twilio / WhatsApp Cloud API here if production API keys are provided.
     });
 
     socket.on('deactivate_passenger', (data) => {
