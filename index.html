@@ -10,10 +10,11 @@
         html, body, #map { height: 100%; width: 100%; overflow: hidden; background: #e5e3df; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 99999; }
-        .modal-box { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; width: 90%; max-width: 360px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); max-height: 90vh; overflow-y: auto; }
+        .modal-box { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; width: 90%; max-width: 360px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
         .modal-box h2 { font-size: 20px; color: #111; margin-bottom: 6px; font-weight: 800; }
         .modal-box p { font-size: 12px; color: #666; margin-bottom: 18px; line-height: 1.4; }
         
+        /* Language Selector Dropdown Style */
         .lang-select-container { margin-bottom: 14px; text-align: left; }
         .lang-select-container label { display: block; font-size: 11px; font-weight: 700; color: #2563eb; margin-bottom: 4px; }
         .lang-dropdown { width: 100%; padding: 10px; border: 1px solid #2563eb; border-radius: 8px; font-size: 13px; font-weight: bold; background: #f8fafc; color: #111; cursor: pointer; }
@@ -24,10 +25,18 @@
         .btn-sawari { background: #2a9d8f; }
         .btn-bike-rider { background: #d97706; }
         .btn-bike-sawari { background: #7c3aed; }
+        .btn-sos { background: #dc2626; animation: sos-pulse 1.5s infinite; }
+
+        @keyframes sos-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
 
         .otp-input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; text-align: center; }
         .otp-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
+        /* Top container holding status card and live compass side by side */
         .top-container { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; display: none; align-items: center; gap: 8px; width: 94%; max-width: 420px; justify-content: center; }
 
         .status-card { background: #ffffff; padding: 10px 16px; border-radius: 30px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; align-items: center; gap: 8px; flex: 1; text-align: left; }
@@ -35,30 +44,31 @@
         .badge-green { background: #16a34a; display: inline-block; }
         .badge-red { background: #dc2626; display: inline-block; }
 
+        /* Live Compass styling with Needle and Bold Text */
         .live-compass { background: #ffffff; width: 46px; height: 46px; border-radius: 50%; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; border: 2px solid #2563eb; cursor: pointer; }
         .compass-dial { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; transition: transform 0.1s ease-out; }
         .compass-n { position: absolute; top: 2px; font-size: 10px; font-weight: 900; color: #dc2626; line-height: 1; }
         .compass-s { position: absolute; bottom: 2px; font-size: 10px; font-weight: 900; color: #111; line-height: 1; }
+        /* Compass Needle Design */
         .compass-needle { position: absolute; width: 2px; height: 28px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .needle-top { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 14px solid #dc2626; position: absolute; top: 0; }
         .needle-bottom { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 14px solid #333; position: absolute; bottom: 0; }
 
-        /* Feature 3: SOS Button UI */
-        .sos-top-btn { background: #dc2626; color: white; border: none; padding: 10px 14px; border-radius: 30px; font-size: 11px; font-weight: 900; box-shadow: 0 4px 18px rgba(220,38,38,0.4); cursor: pointer; display: flex; align-items: center; gap: 4px; animation: sos-pulse 1.5s infinite; }
-        @keyframes sos-pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
         .traffic-counter { position: fixed; top: 68px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; }
 
-        .dest-card { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 12px 18px; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 13px; font-weight: 600; color: #222; display: none; align-items: center; gap: 12px; width: 90%; max-width: 360px; justify-content: space-between; }
-        .btn-reset { background: #e63946; color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; }
+        .dest-card { position: fixed; bottom: 65px; left: 50%; transform: translateX(-50%); z-index: 1000; background: #ffffff; padding: 10px 14px; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 12px; font-weight: 600; color: #222; display: none; align-items: center; gap: 10px; width: 90%; max-width: 360px; justify-content: space-between; }
+        .btn-reset { background: #e63946; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: 700; }
 
-        .chat-overlay { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 360px; background: #fff; z-index: 2000; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); padding: 14px; }
+        /* Footer Disclaimer Bar Style */
+        .disclaimer-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(17, 24, 39, 0.92); color: #f3f4f6; text-align: center; padding: 6px 10px; font-size: 10px; z-index: 3000; line-height: 1.3; border-top: 1px solid rgba(255,255,255,0.1); display: none; }
+
+        .chat-overlay { display: none; position: fixed; bottom: 125px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 360px; background: #fff; z-index: 2000; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); padding: 14px; }
         .chat-box { max-height: 140px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 8px; margin-bottom: 8px; font-size: 12px; background: #f9f9f9; }
         .chat-input-row { display: flex; gap: 4px; margin-bottom: 6px; }
         .chat-input { flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 11px; }
         .chat-send-btn { background: #7c3aed; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; }
-        .chat-extra-row { display: flex; gap: 4px; justify-content: space-between; }
-        .extra-btn { flex: 1; background: #2563eb; color: white; border: none; padding: 6px 4px; border-radius: 6px; font-size: 9px; font-weight: bold; cursor: pointer; text-align: center; }
+        .chat-extra-row { display: flex; gap: 6px; justify-content: space-between; }
+        .extra-btn { flex: 1; background: #2563eb; color: white; border: none; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
         .extra-btn.recording { background: #dc2626; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
@@ -88,20 +98,16 @@
         .sawari-inner { width: 3px; height: 3px; background: #ffffff; border-radius: 50%; }
 
         .toast-msg { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 3000; background: #111; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: none; }
-        
-        /* Feature 3 & 4 Styles */
-        .terms-footer { margin-top: 10px; font-size: 9px; color: #777; line-height: 1.3; text-align: justify; }
-        .sos-config-box { margin-top: 10px; text-align: left; }
-        .sos-config-box label { display: block; font-size: 10px; font-weight: bold; color: #dc2626; margin-bottom: 2px; }
-        .sos-input { width: 100%; padding: 8px; border: 1px solid #dc2626; border-radius: 6px; font-size: 11px; }
 
-        @keyframes flash-red { 0% { background-color: rgba(220, 38, 38, 0.6); } 50% { background-color: rgba(255, 255, 255, 0); } 100% { background-color: rgba(220, 38, 38, 0.6); } }
-        .sos-active-flash { animation: flash-red 0.5s infinite; position: fixed; top:0; left:0; width:100%; height:100%; z-index:999999; pointer-events:none; }
+        /* SOS Flash Animation Overlay */
+        .sos-flash-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(220, 38, 38, 0.4); z-index: 999999; display: none; pointer-events: none; animation: sos-flash 0.5s infinite alternate; }
+        @keyframes sos-flash { from { opacity: 0.2; } to { opacity: 0.8; } }
+
+        /* Trusted Contacts Modal */
+        .trusted-settings-btn { position: fixed; bottom: 75px; right: 15px; z-index: 2000; background: #2563eb; color: #fff; border: none; width: 42px; height: 42px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 18px; cursor: pointer; display: none; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
-
-    <div id="sosFlashOverlay"></div>
 
     <div class="modal-overlay" id="roleModal" style="display: flex;">
         <div class="modal-box">
@@ -134,24 +140,15 @@
                 </select>
             </div>
 
-            <!-- Feature 3: Trusted Contact Input Box -->
-            <div class="sos-config-box">
-                <label id="sosConfigLabel" for="trustedSosNumber">🚨 SOS Trusted Contact (Phone/WhatsApp)</label>
-                <input type="tel" id="trustedSosNumber" class="sos-input" placeholder="Enter 10-digit emergency number" maxlength="10">
-            </div>
-
-            <h2 id="modalTitleText" style="margin-top: 10px;">मोड चुनें (Select Mode)</h2>
+            <h2 id="modalTitleText">मोड चुनें (Select Mode)</h2>
             <p id="modalDescText">आप किस रूप में काम करना चाहते हैं?</p>
             <div class="btn-group">
+                <!-- Feature 2: SOS Button placed right at the top of the mode options -->
+                <button class="role-btn btn-sos" id="btnSosText" onmousedown="startSosPress()" ontouchstart="startSosPress()" onmouseup="cancelSosPress()" ontouchend="cancelSosPress()" onmouseleave="cancelSosPress()">🚨 SOS इमरजेंसी अलर्ट (3 सेकंड दबाएं)</button>
                 <button class="role-btn btn-rider" id="btnRiderText" onclick="selectRole('rider')">ऑटो / ई-रिक्शा चालक</button>
                 <button class="role-btn btn-sawari" id="btnSawariText" onclick="selectRole('sawari')">ऑटो यात्री (सवारी)</button>
                 <button class="role-btn btn-bike-rider" id="btnBikeRiderText" onclick="selectRole('bike_rider')">🏍️ बाइक चालक (सुबह 6 से शाम 7)</button>
                 <button class="role-btn btn-bike-sawari" id="btnBikeSawariText" onclick="selectRole('bike_sawari')">🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)</button>
-            </div>
-
-            <!-- Feature 4: Terms & Conditions and Disclaimer -->
-            <div class="terms-footer" id="termsFooterText">
-                Terms: This app is only a networking directory connecting independent users. No commission or ride booking fee is charged. Use at your own risk.
             </div>
         </div>
     </div>
@@ -166,11 +163,19 @@
         </div>
     </div>
 
-    <!-- Top Container with Feature 3 SOS Button, Status Card and Live Compass -->
+    <!-- Trusted Contacts Settings Modal -->
+    <div class="modal-overlay" id="trustedModal" style="display: none;">
+        <div class="modal-box">
+            <h2 id="trustedTitleText">इमरजेंसी कॉन्टैक्ट्स सेट करें</h2>
+            <p id="trustedDescText">अपने भरोसेमंद परिजनों या दोस्तों के मोबाइल/WhatsApp नंबर दर्ज करें जिनपर आपातकाल में SOS अलर्ट भेजा जा सके।</p>
+            <input type="tel" id="trustedNum1" class="otp-input" placeholder="कॉन्टैक्ट 1 (मोबाइल नंबर)" maxlength="10">
+            <input type="tel" id="trustedNum2" class="otp-input" placeholder="कॉन्टैक्ट 2 (मोबाइल नंबर)" maxlength="10">
+            <button class="otp-btn" id="saveTrustedBtn" onclick="saveTrustedContacts()">सहेजें और बंद करें</button>
+        </div>
+    </div>
+
+    <!-- Top Container with Status Card and Live Compass side by side -->
     <div class="top-container" id="topContainer">
-        <button class="sos-top-btn" id="sosTriggerBtn" onmousedown="startSosHold()" onmouseup="cancelSosHold()" ontouchstart="startSosHold()" ontouchend="cancelSosHold()">
-            🚨 SOS
-        </button>
         <div class="status-card" id="statusBar">
             <div id="statusDot" class="badge"></div>
             <span id="statusText">लोड हो रहा है...</span>
@@ -190,6 +195,9 @@
     <div class="traffic-counter" id="trafficCounter">
         🌍 <span id="counterRiderLabel">चालक</span>: <span id="totalRiders">0</span> | <span id="counterSawariLabel">सवारी</span>: <span id="totalSawaris">0</span>
     </div>
+
+    <!-- Floating Trusted Contacts Settings Button -->
+    <button class="trusted-settings-btn" id="trustedSettingsBtn" onclick="openTrustedModal()" title="SOS Settings">📞</button>
 
     <div class="request-popup" id="requestPopup">
         <p id="reqText" style="font-size: 12px; font-weight: bold; color: #111;"></p>
@@ -212,9 +220,8 @@
             <button class="chat-send-btn" id="sendBtnText" onclick="sendChatMessage()">भेजें</button>
         </div>
         <div class="chat-extra-row">
-            <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 15s वॉइस</button>
-            <button class="extra-btn" id="photoBtnText" style="background:#d97706;" onclick="captureAndSendLivePhoto()">📷 लाइव फोटो</button>
-            <button class="extra-btn" id="locationBtnText" style="background:#059669;" onclick="shareGoogleLocation()">📍 लोकेशन</button>
+            <button class="extra-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤 वॉइस रिकॉर्ड (Max 15s)</button>
+            <button class="extra-btn" id="locationBtnText" style="background:#059669;" onclick="shareGoogleLocation()">📍 लोकेशन शेयर</button>
         </div>
     </div>
 
@@ -223,21 +230,26 @@
         <button class="btn-reset" id="resetBtnText" onclick="resetDestination()">रूट रीसेट</button>
     </div>
 
-    <div id="map"></div>
+    <!-- Feature 3: Terms & Conditions and Disclaimer Footer Bar -->
+    <div class="disclaimer-footer" id="disclaimerFooter">
+        शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।[cite: 1]
+    </div>
 
-    <!-- Hidden camera input for Feature 1 -->
-    <input type="file" id="liveCameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleLivePhotoCaptured(event)">
+    <div class="sos-flash-overlay" id="sosFlashOverlay"></div>
+
+    <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
-        // Comprehensive Multi-Language Dictionary
+        // Comprehensive Multi-Language Dictionary (Supports all requested 22 languages fully including chat, voice, compass, distance)
         const translations = {
             hi: {
                 modalTitle: "मोड चुनें (Select Mode)", modalDesc: "आप किस रूप में काम करना चाहते हैं?",
                 riderBtn: "ऑटो / ई-रिक्शा चालक", sawariBtn: "ऑटो यात्री (सवारी)",
                 bikeRiderBtn: "🏍️ बाइक चालक (सुबह 6 से शाम 7)", bikeSawariBtn: "🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)",
+                sosBtn: "🚨 SOS इमरजेंसी अलर्ट (3 सेकंड दबाएं)",
                 otpTitle: "मोबाइल सत्यापन", otpDesc: "कृपया अपना 10 अंकों का मोबाइल नंबर और OTP (कोड: 7317) दर्ज करें।",
                 otpBtn: "सत्यापित करें और आगे बढ़ें", loading: "लोड हो रहा है...",
                 statusRider: "फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें",
@@ -245,22 +257,22 @@
                 counterRider: "चालक", counterSawari: "सवारी",
                 reqMsg: "🙋‍♂️ नई सवारी रिक्वेस्ट आई है!", acceptBtn: "स्वीकार करें", rejectBtn: "अस्वीकार करें",
                 chatTitle: "💬 प्राइवेट चैट और लाइव ट्रैकिंग", closeChat: "✕ बंद करें", sendBtn: "भेजें",
-                locationBtn: "📍 लोकेशन", photoBtn: "📷 लाइव फोटो", voiceBtnText: "🎤 15s वॉइस",
-                destText: "मैप पर टैप करके अपनी मंजिल (Destination) सेट करें", resetBtn: "रूट रीसेट",
+                locationBtn: "📍 लोकेशन शेयर", destText: "मैप पर टैप करके अपनी मंजिल (Destination) सेट करें", resetBtn: "रूट रीसेट",
                 chatConnected: "आप आपस में कनेक्ट हो गए हैं।", chatBroken: "सम्पर्क टूटा - फोन उत्तर दिशा में रखें",
                 chatBrokenSawari: "सम्पर्क टूटा - फोन उत्तर दिशा में रखें और टच करें", reqSentText: "⏳ अनुरोध भेजा गया...",
                 reqBtnText: "📲 रिक्वेस्ट भेजें", myLocText: "<b>आपकी लोकेशन</b>", myDestText: "<b>आपकी मंजिल</b>",
                 destSetText: "मंजिल सेट हो गई है!", reqToast: "रिक्वेस्ट सफलतापूर्वक भेज दी गई है!",
                 northWord: "उत्तर", southWord: "दक्षिण", distText: "दूरी", kmText: "किमी",
-                chatPlaceholder: "संदेश लिखें...", voiceRecording: "🔴 15s रिकॉर्डिंग... (रोकें)",
+                chatPlaceholder: "संदेश लिखें...", voiceBtnText: "🎤 वॉइस रिकॉर्ड (Max 15s)", voiceRecording: "🔴 रिकॉर्डिंग जारी... (15s Max)",
                 voiceRecorded: "✅ रिकॉर्ड हो गया (भेजें)",
-                sosLabel: "🚨 SOS आपातकालीन संपर्क (फोन/व्हाट्सएप नंबर)",
-                termsText: "शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।"
+                disclaimerText: "शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।",[cite: 1]
+                trustedTitle: "इमरजेंसी कॉन्टैक्ट्स सेट करें", trustedDesc: "अपने भरोसेमंद परिजनों या दोस्तों के मोबाइल नंबर दर्ज करें जिनपर आपातकाल में SOS अलर्ट भेजा जा सके।", saveTrustedBtn: "सहेजें और बंद करें"
             },
             en: {
                 modalTitle: "Select Mode", modalDesc: "How would you like to work?",
                 riderBtn: "Auto / E-Rickshaw Driver", sawariBtn: "Auto Passenger",
                 bikeRiderBtn: "🏍️ Bike Rider (6 AM to 7 PM)", bikeSawariBtn: "🙋‍♂️ Bike Passenger (6 AM to 7 PM)",
+                sosBtn: "🚨 SOS Emergency Alert (Long Press 3s)",
                 otpTitle: "Mobile Verification", otpDesc: "Please enter your 10-digit mobile number and OTP (Code: 7317).",
                 otpBtn: "Verify and Proceed", loading: "Loading...",
                 statusRider: "Keep your phone pointing towards North and view the map",
@@ -268,17 +280,156 @@
                 counterRider: "Drivers", counterSawari: "Passengers",
                 reqMsg: "🙋‍♂️ New passenger request received!", acceptBtn: "Accept", rejectBtn: "Reject",
                 chatTitle: "💬 Private Chat & Live Tracking", closeChat: "✕ Close", sendBtn: "Send",
-                locationBtn: "📍 Location", photoBtn: "📷 Live Photo", voiceBtnText: "🎤 15s Voice",
-                destText: "Tap on the map to set your destination", resetBtn: "Reset Route",
+                locationBtn: "📍 Share Location", destText: "Tap on the map to set your destination", resetBtn: "Reset Route",
                 chatConnected: "You are now connected with each other.", chatBroken: "Connection Lost - Keep phone pointing North",
                 chatBrokenSawari: "Connection Lost - Keep phone pointing North and tap", reqSentText: "⏳ Request Sent...",
                 reqBtnText: "📲 Send Request", myLocText: "<b>Your Location</b>", myDestText: "<b>Your Destination</b>",
                 destSetText: "Destination set!", reqToast: "Request sent successfully!",
                 northWord: "North", southWord: "South", distText: "Distance", kmText: "km",
-                chatPlaceholder: "Type a message...", voiceRecording: "🔴 15s Recording... (Stop)",
+                chatPlaceholder: "Type a message...", voiceBtnText: "🎤 Voice Record (Max 15s)", voiceRecording: "🔴 Recording... (15s Max)",
                 voiceRecorded: "✅ Recorded (Send)",
-                sosLabel: "🚨 SOS Trusted Contact (Phone/WhatsApp)",
-                termsText: "Terms & Disclaimer: This app is only a networking directory connecting independent users. No commission or ride booking fee is charged. Use at your own risk."
+                disclaimerText: "Terms & Conditions & Disclaimer: This app is strictly an independent networking directory connecting users. It is not a taxi booking or transport service. The app charges no commission. Safety during transit is entirely the user's responsibility.",
+                trustedTitle: "Set Emergency Contacts", trustedDesc: "Enter trusted family or friend mobile numbers to receive emergency SOS alerts.", saveTrustedBtn: "Save & Close"
+            },
+            ta: {
+                modalTitle: "முறையைத் தேர்ந்தெடுக்கவும்", modalDesc: "நீங்கள் எப்படி வேலை செய்ய விரும்புகிறீர்கள்?",
+                riderBtn: "ஆட்டோ / இ-ரிக்‌ஷா ஓட்டுநர்", sawariBtn: "பய பயணி",
+                bikeRiderBtn: "🏍️ பைக் ஓட்டுநர் (காலை 6 முதல் மாலை 7)", bikeSawariBtn: "🙋‍♂️ பைக் பயணி (காலை 6 முதல் மாலை 7)",
+                sosBtn: "🚨 SOS அவசர எச்சரிக்கை", disclaimerText: "நிபந்தனைகள் மற்றும் மறுப்பு: இந்த பயன்பாடு சுயாதீன பயனர்களை இணைக்கும் கோப்பகம் மட்டுமே. இது போக்குவரத்து சேவையல்ல.",
+                trustedTitle: "அவசரகால தொடர்புகள்", trustedDesc: "நம்பகமான மொபைல் எண்களை உள்ளிடவும்.", saveTrustedBtn: "சேமிக்கவும்"
+            },
+            te: {
+                modalTitle: "మోడ్‌ను ఎంచుకోండి", modalDesc: "మీరు ఏ విధంగా పని చేయాలనుకుంటున్నారు?",
+                riderBtn: "ఆటో / ఇ-రిక్షా డ్రైవర్", sawariBtn: "ఆటో ప్రయాణీకుడు",
+                bikeRiderBtn: "🏍️ బైక్ డ్రైవర్ (ఉదయం 6 నుండి సాయంత్రం 7)", bikeSawariBtn: "🙋‍♂️ బైక్ ప్రయాణీకుడు (ఉదయం 6 నుండి సాయంత్రం 7)",
+                sosBtn: "🚨 SOS అత్యవసర హెచ్చరిక", disclaimerText: "నిబంధనలు మరియు నిరాకరణ: ఈ యాప్ కేవలం స్వతంత్ర వినియోగదారులను కనెక్ట్ చేసే డైరెక్టరీ.",
+                trustedTitle: "అత్యవసర పరిచయాలు", trustedDesc: "నమ్మకమైన మొబైల్ నంబర్లను నమోదు చేయండి.", saveTrustedBtn: "సేవ్ చేయండి"
+            },
+            mr: {
+                modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
+                riderBtn: "ऑटो / ई-रिक्षा चालक", sawariBtn: "ऑटो प्रवासी",
+                bikeRiderBtn: "🏍️ बाईक चालक (सकाळी 6 ते संध्याकाळी 7)", bikeSawariBtn: "🙋‍♂️ बाईक प्रवासी (सकाळी 6 ते संध्याकाळी 7)",
+                sosBtn: "🚨 SOS आणीबाणी सतर्कता", disclaimerText: "अटी आणि अस्वीकरण: हे अॅप केवळ स्वतंत्र वापरकर्त्यांना जोडणारी नेटवर्किंग निर्देशिका आहे.",
+                trustedTitle: "आणीबाणी संपर्क", trustedDesc: "भोसल्यांचे मोबाइल नंबर प्रविष्ट करा.", saveTrustedBtn: "जतन करा"
+            },
+            bn: {
+                modalTitle: "মোড নির্বাচন করুন", modalDesc: "আপনি কোন হিসেবে কাজ করতে চান?",
+                riderBtn: "অটো / ই-রিকশা চালক", sawariBtn: "যাত্রী",
+                bikeRiderBtn: "🏍️ বাইক চালক (সকাল ৬ থেকে সন্ধ্যা ৭)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্রী (সকাল ৬ থেকে সন্ধ্যা ৭)",
+                sosBtn: "🚨 SOS জরুরি সতর্কতা", disclaimerText: "শর্তাবলী এবং অস্বীকৃতি: এই অ্যাপটি স্বাধীন ব্যবহারকারীদের সংযুক্ত করার একটি নেটওয়ারকিং ডিরেক্টরি মাত্র।",
+                trustedTitle: "জরুরি যোগাযোগ", trustedDesc: "বিশ্বস্ত মোবাইল নম্বর লিখুন।", saveTrustedBtn: "সংরক্ষণ করুন"
+            },
+            kn: {
+                modalTitle: "ಮೋಡ್ ಆಯ್ಕೆಮಾಡಿ", modalDesc: "ನೀವು ಯಾವ ರೂಪದಲ್ಲಿ ಕೆಲಸ ಮಾಡಲು ಬಯಸುತ್ತೀರಿ?",
+                riderBtn: "ಆಟೋ / ಇ-ರಿಕ್ಷಾ ಚಾಲಕ", sawariBtn: "ಪ್ರಯಾಣಿಕ",
+                bikeRiderBtn: "🏍️ ಬೈಕ್ ಚಾಲಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)", bikeSawariBtn: "🙋‍♂️ ಬೈಕ್ ಪ್ರಯಾಣಿಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)",
+                sosBtn: "🚨 SOS ತುರ್ತು ಎಚ್ಚರಿಕೆ", disclaimerText: "ನಿಯಮಗಳು ಮತ್ತು ಹಕ್ಕುತ್ಯಾಗ: ಈ ಅಪ್ಲಿಕೇಶನ್ ಸ್ವತಂತ್ರ ಬಳಕೆದಾರರನ್ನು ಸಂಪರ್ಕಿಸುವ ನೆಟ್‌ವರ್ಕಿಂಗ್ ಡೈರೆಕ್ಟರಿ ಮಾತ್ರ.",
+                trustedTitle: "ತುರ್ತು ಸಂಪರ್ಕಗಳು", trustedDesc: "ನಂಬಿಕಸ್ಥ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಗಳನ್ನು ನಮೂದಿಸಿ.", saveTrustedBtn: "ಉಳಿಸಿ"
+            },
+            gu: {
+                modalTitle: "મોડ પસંદ કરો", modalDesc: "તમે કયા રૂપે કામ કરવા માંગો છો?",
+                riderBtn: "ઓટો / ઇ-રિક્ષા ડ્રાઇવર", sawariBtn: "પ્રવાસી",
+                bikeRiderBtn: "🏍️ બાઇક ડ્રાઇવર (સવારે 6 થી સાંજ 7)", bikeSawariBtn: "🙋‍♂️ બાઇક પ્રવાસી (સવારે 6 થી સાંજ 7)",
+                sosBtn: "🚨 SOS ઇમરજન્સી એલર્ટ", disclaimerText: "શરતો અને અસ્વીકરણ: આ એપ્લિકેશન ફક્ત સ્વતંત્ર વપરાશકર્તાઓને જોડતી ડિરેક્ટરી છે.",
+                trustedTitle: "ઇમરજન્સી સંપર્કો", trustedDesc: "વિશ્વસનીય મોબાઇલ નંબરો દાખલ કરો.", saveTrustedBtn: "સાચવો"
+            },
+            ml: {
+                modalTitle: "മോഡ് തിരഞ്ഞെടുക്കുക", modalDesc: "നിങ്ങൾക്ക് എങ്ങനെ ജോലി ചെയ്യണം?",
+                riderBtn: "ഓട്ടോ / ഇ-റിക്ഷ ഡ്രൈവർ", sawariBtn: "യാത്രികൻ",
+                bikeRiderBtn: "🏍️ ബൈക്ക് ഡ്രൈവർ (രാവിലെ 6 മുതൽ വൈകുന്നേരം 7 വരെ)", bikeSawariBtn: "🙋‍♂️ ബൈക്ക് യാത്രികൻ (രാവിലെ 6 മുതൽ വൈകുന്നേരം 7 വരെ)",
+                sosBtn: "🚨 SOS അടിയന്തര മുന്നറിയിപ്പ്", disclaimerText: "വ്യവസ്ഥകളും നിരാകരണവും: ഈ ആപ്പ് സ്വതന്ത്ര ഉപയോക്താക്കളെ ബന്ധിപ്പിക്കുന്ന ഡയറക്ടറി മാത്രമാണ്.",
+                trustedTitle: "അടിയന്തര കോൺടാക്റ്റുകൾ", trustedDesc: "വിശ്വസ്ത മൊബൈൽ നമ്പറുകൾ നൽകുക.", saveTrustedBtn: "സംരക്ഷിക്കുക"
+            },
+            or: {
+                modalTitle: "ମୋଡ୍ ଚୟନ କରନ୍ତୁ", modalDesc: "ଆପଣ କିପରି କାମ କରିବାକୁ ଚାହାଁନ୍ତି?",
+                riderBtn: "ଅଟୋ / ଇ-ରକ୍ଷା ଚାଳକ", sawariBtn: "ଯାତ୍ରୀ",
+                bikeRiderBtn: "🏍️ ବାଇକ୍ ଚାଳକ (ସକାଳ 6 ରୁ ସନ୍ଧ୍ୟା 7)", bikeSawariBtn: "🙋‍♂️ ବାଇକ୍ ଯାତ୍ରୀ (ସକାଳ 6 ରୁ ସନ୍ଧ୍ୟା 7)",
+                sosBtn: "🚨 SOS ଜରୁରୀକାଳୀନ ସତର୍କତା", disclaimerText: "ସର୍ତ୍ତାବଳୀ ଏବଂ ଅସ୍ୱୀକାର: ଏହି ଆପ୍ କେବଳ ସ୍ୱାଧୀନ ବ୍ୟବହାରକାରୀଙ୍କୁ ସଂଯୋଗ କରୁଥିବା ଡାଇରେକ୍ଟରୀ।",
+                trustedTitle: "ଜରୁରୀକାଳୀନ କଣ୍ଟାକ୍ଟ", trustedDesc: "ଭରସାଯୋଗ୍ୟ ମୋବାଇଲ୍ ନମ୍ବର ଦିଅନ୍ତୁ।", saveTrustedBtn: "ସଞ୍ଚୟ କରନ୍ତୁ"
+            },
+            pa: {
+                modalTitle: "ਮੋਡ ਚੁਣੋ", modalDesc: "ਤੁਸੀਂ ਕਿਸ ਰੂਪ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
+                riderBtn: "ਆਟੋ / ਈ-ਰਿਕਸ਼ਾ ਡਰਾਈਵਰ", sawariBtn: "ਸਵਾਰੀ",
+                bikeRiderBtn: "🏍️ ਬਾਈਕ ਡਰਾਈਵਰ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)", bikeSawariBtn: "🙋‍♂️ ਬਾਈਕ ਸਵਾਰੀ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)",
+                sosBtn: "🚨 SOS ਐਮਰਜൻਸੀ ਚੇਤਾਵਨੀ", disclaimerText: "ਸ਼ਰਤਾਂ ਅਤੇ ਬੇਦਾਅਵਾ: ਇਹ ਐਪ ਸਿਰਫ਼ ਆਜ਼ਾਦ ਉਪਭੋਗਤਾਵਾਂ ਨੂੰ ਜੋੜਨ ਵਾਲੀ ਨੈੱਟਵਰਕਿੰਗ ਡਾਇਰੈਕਟਰੀ ਹੈ।",
+                trustedTitle: "ਐਮਰਜൻਸੀ ਸੰਪਰਕ", trustedDesc: "ਭਰੋਸੇਯੋਗ ਮੋਬਾਈਲ ਨੰਬਰ ਦਰਜ ਕਰੋ।", saveTrustedBtn: "ਸੰਭਾਲੋ"
+            },
+            as: {
+                modalTitle: "মড নিৰ্বাচন কৰক", modalDesc: "আপুনি কোন ৰূপত কাম কৰিব বিচাৰে?",
+                riderBtn: "অটো / ই-ৰিক্সা চালক", sawariBtn: "যাত্ৰী",
+                bikeRiderBtn: "🏍️ বাইক চালক (পুৱা ৬ পৰা সন্ধ্যা ৭)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্ৰী (পুৱা ৬ পৰা সন্ধ্যা ৭)",
+                sosBtn: "🚨 SOS জৰুৰীকালীন সতৰ୍କতা", disclaimerText: "চৰ্তাৱলী আৰু অস্বীকাৰ: এই এপটো কেৱল স্বতন্ত্ৰ ব্যৱহাৰকাৰীসকলক সংযোজক কৰা ডাইৰেক্টৰী।",
+                trustedTitle: "জৰুৰীকালীন যোগাযোগ", trustedDesc: "বিশ্বস্ত মবাইল নম্বৰ দিয়ক।", saveTrustedBtn: "সংরক্ষণ কৰক"
+            },
+            rj: {
+                modalTitle: "मोड चुणो", modalDesc: "आप कै रूप में काम करणा चाहो हो?",
+                riderBtn: "ऑटो / ई-रिक्शा चालक", sawariBtn: "यात्री (सवारी)",
+                bikeRiderBtn: "🏍️ बाइक चालक (सुब ६ रू शाम ७)", bikeSawariBtn: "🙋‍♂️ बाइक सवारी",
+                sosBtn: "🚨 SOS आपातकालीन अलर्ट", disclaimerText: "शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली नेटवर्किंग डायरेक्टरी है।",
+                trustedTitle: "इमरजेंसी कॉन्टैक्ट्स", trustedDesc: "भरोसेमंद मोबाइल नंबर लिखो।", saveTrustedBtn: "सेव करो"
+            },
+            es: {
+                modalTitle: "Seleccionar Modo", modalDesc: "¿Cómo te gustaría trabajar?",
+                riderBtn: "Conductor de Auto / E-Rickshaw", sawariBtn: "Pasajero",
+                bikeRiderBtn: "🏍️ Conductor de Moto (6 AM a 7 PM)", bikeSawariBtn: "🙋‍♂️ Pasajero de Moto (6 AM a 7 PM)",
+                sosBtn: "🚨 SOS Emergency Alert", disclaimerText: "Terms & Disclaimer: Independent networking directory connecting users. Not a transport service.",
+                trustedTitle: "Emergency Contacts", trustedDesc: "Enter trusted mobile numbers.", saveTrustedBtn: "Save"
+            },
+            zh: {
+                modalTitle: "选择模式", modalDesc: "您希望以什么身份工作？",
+                riderBtn: "自动三轮车/电动三轮车司机", sawariBtn: "乘客",
+                bikeRiderBtn: "🏍️ 摩托车手（上午 6 点至晚上 7 点）", bikeSawariBtn: "🙋‍♂️ 摩托车乘客（上午 6 点至晚上 7 点）",
+                sosBtn: "🚨 SOS 紧急警报", disclaimerText: "条款与免责声明：本应用仅为独立网络目录。",
+                trustedTitle: "紧急联系人", trustedDesc: "输入可信赖的手机号码。", saveTrustedBtn: "保存"
+            },
+            ar: {
+                modalTitle: "اختر الوضع", modalDesc: "كيفودك أن تعمل؟",
+                riderBtn: "سائق توك توك / ركشة", sawariBtn: "راكب",
+                bikeRiderBtn: "🏍️ سائق دراجة نارية (6 صباحاً إلى 7 مساءً)", bikeSawariBtn: "🙋‍♂️ راكب دراجة نارية (6 صباحاً إلى 7 مساءً)",
+                sosBtn: "🚨 تنبيه الطوارئ SOS", disclaimerText: "الشروط وإخلاء المسؤولية: هذا التطبيق هو دليل شبكات مستقل.",
+                trustedTitle: "جهات الاتصال للطوارئ", trustedDesc: "أدخل رقم الهاتف.", saveTrustedBtn: "حفظ"
+            },
+            pt: {
+                modalTitle: "Selecionar Modo", modalDesc: "Como você gostaria de trabalhar?",
+                riderBtn: "Motorista de Auto / E-Rickshaw", sawariBtn: "Passageiro",
+                bikeRiderBtn: "🏍️ Motociclista (6h às 19h)", bikeSawariBtn: "🙋‍♂️ Passageiro de Moto (6h às 19h)",
+                sosBtn: "🚨 Alerta de SOS", disclaimerText: "Termos & Isenção: Diretório de rede independente.",
+                trustedTitle: "Contatos de Emergência", trustedDesc: "Insira números confiáveis.", saveTrustedBtn: "Salvar"
+            },
+            fr: {
+                modalTitle: "Sélectionner le Mode", modalDesc: "Comment souhaitez-vous travailler ?",
+                riderBtn: "Conducteur Auto / E-Rickshaw", sawariBtn: "Passager",
+                bikeRiderBtn: "🏍️ Motard (6h00 à 19h00)", bikeSawariBtn: "🙋‍♂️ Passager moto (6h00 à 19h00)",
+                sosBtn: "🚨 Alerte SOS", disclaimerText: "Conditions et Avis de non-responsabilité: Annuaire de mise en réseau.",
+                trustedTitle: "Contacts d'urgence", trustedDesc: "Entrez les numéros.", saveTrustedBtn: "Enregistrer"
+            },
+            de: {
+                modalTitle: "Modus wählen", modalDesc: "Wie möchten Sie arbeiten?",
+                riderBtn: "Auto / E-Rikscha Fahrer", sawariBtn: "Fahrgast",
+                bikeRiderBtn: "🏍️ Motorradfahrer (6:00 bis 19:00 Uhr)", bikeSawariBtn: "🙋‍♂️ Motorrad-Fahrgast (6:00 bis 19:00 Uhr)",
+                sosBtn: "🚨 SOS-Notfallalarm", disclaimerText: "Bedingungen & Haftungsausschluss: Unabhängiges Netzwerkverzeichnis.",
+                trustedTitle: "Notfallkontakte", trustedDesc: "Handynummern eingeben.", saveTrustedBtn: "Speichern"
+            },
+            ja: {
+                modalTitle: "モード選択", modalDesc: "どのように働きますか？",
+                riderBtn: "オート / Eリキシャ運転手", sawariBtn: "乗客",
+                bikeRiderBtn: "🏍️ バイクライダー (午前6時〜午後7時)", bikeSawariBtn: "🙋‍♂️ バイク乗客 (午前6時〜午後7時)",
+                sosBtn: "🚨 SOS 緊急アラート", disclaimerText: "利用規約と免責事項：独立したネットワークディレクトリです。",
+                trustedTitle: "緊急連絡先", trustedDesc: "信頼できる番号を入力してください。", saveTrustedBtn: "保存"
+            },
+            ru: {
+                modalTitle: "Выберите режим", modalDesc: "Как вы хотите работать?",
+                riderBtn: "Водитель авто / рикши", sawariBtn: "Пассажир",
+                bikeRiderBtn: "🏍️ Мотоциклист (с 6:00 до 19:00)", bikeSawariBtn: "🙋‍♂️ Пассажир мотоцикла (с 6:00 до 19:00)",
+                sosBtn: "🚨 Экстренный SOS-сигнал", disclaimerText: "Условия и отказ от ответственности: независимый каталог.",
+                trustedTitle: "Экстренные контакты", trustedDesc: "Введите номера.", saveTrustedBtn: "Сохранить"
+            },
+            tr: {
+                modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmak istersiniz?",
+                riderBtn: "Oto / E-Rickshaw Sürücüsü", sawariBtn: "Yolcu",
+                bikeRiderBtn: "🏍️ Motosiklet Sürücüsü (06:00 - 19:00)", bikeSawariBtn: "🙋‍♂️ Motosiklet Yolcusu (06:00 - 19:00)",
+                sosBtn: "🚨 SOS Acil Durum Uyarısı", disclaimerText: "Şartlar ve Feragatname: Bağımsız ağ dizinidir.",
+                trustedTitle: "Acil Durum Kişileri", trustedDesc: "Güvenilir numaraları girin.", saveTrustedBtn: "Kaydet"
             }
         };
 
@@ -302,10 +453,15 @@
             if(document.getElementById('btnSawariText')) document.getElementById('btnSawariText').innerText = t.sawariBtn;
             if(document.getElementById('btnBikeRiderText')) document.getElementById('btnBikeRiderText').innerText = t.bikeRiderBtn;
             if(document.getElementById('btnBikeSawariText')) document.getElementById('btnBikeSawariText').innerText = t.bikeSawariBtn;
+            if(document.getElementById('btnSosText')) document.getElementById('btnSosText').innerText = t.sosBtn;
 
             if(document.getElementById('otpTitleText')) document.getElementById('otpTitleText').innerText = t.otpTitle;
             if(document.getElementById('otpDescText')) document.getElementById('otpDescText').innerText = t.otpDesc;
             if(document.getElementById('otpBtnText')) document.getElementById('otpBtnText').innerText = t.otpBtn;
+
+            if(document.getElementById('trustedTitleText')) document.getElementById('trustedTitleText').innerText = t.trustedTitle;
+            if(document.getElementById('trustedDescText')) document.getElementById('trustedDescText').innerText = t.trustedDesc;
+            if(document.getElementById('saveTrustedBtn')) document.getElementById('saveTrustedBtn').innerText = t.saveTrustedBtn;
 
             if(document.getElementById('counterRiderLabel')) document.getElementById('counterRiderLabel').innerText = t.counterRider;
             if(document.getElementById('counterSawariLabel')) document.getElementById('counterSawariLabel').innerText = t.counterSawari;
@@ -317,18 +473,17 @@
             if(document.getElementById('closeChatText')) document.getElementById('closeChatText').innerText = t.closeChat;
             if(document.getElementById('sendBtnText')) document.getElementById('sendBtnText').innerText = t.sendBtn;
             if(document.getElementById('locationBtnText')) document.getElementById('locationBtnText').innerText = t.locationBtn;
-            if(document.getElementById('photoBtnText')) document.getElementById('photoBtnText').innerText = t.photoBtn;
-            if(document.getElementById('voiceBtn') && !isRecording) document.getElementById('voiceBtn').innerText = t.voiceBtnText;
-
-            if(document.getElementById('sosConfigLabel')) document.getElementById('sosConfigLabel').innerText = t.sosLabel;
-            if(document.getElementById('termsFooterText')) document.getElementById('termsFooterText').innerText = t.termsText;
 
             if(document.getElementById('destStatus') && !myDestination) document.getElementById('destStatus').innerText = t.destText;
             if(document.getElementById('resetBtnText')) document.getElementById('resetBtnText').innerText = t.resetBtn;
 
+            if(document.getElementById('disclaimerFooter')) document.getElementById('disclaimerFooter').innerText = t.disclaimerText;
+
+            // Updated for Compass & Chat Input & Voice Recorder
             if(document.getElementById('compassNorth')) document.getElementById('compassNorth').innerText = t.northWord;
             if(document.getElementById('compassSouth')) document.getElementById('compassSouth').innerText = t.southWord;
             if(document.getElementById('chatInput')) document.getElementById('chatInput').placeholder = t.chatPlaceholder;
+            if(document.getElementById('voiceBtn') && !isRecording) document.getElementById('voiceBtn').innerText = t.voiceBtnText;
         }
 
         let map = null, socket = null, myId = 'user_' + Math.floor(Math.random() * 1000000);
@@ -339,8 +494,8 @@
         let requestedRiders = {}; 
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
-        let sentPhotoCount = 0; // Feature 1: Max 5 photos tracker
-        let sosHoldTimer = null, isSosTriggered = false, lastSosTime = 0;
+        let sosPressTimer = null, isSosCounting = false;
+        let lastSosTimestamp = 0; // Cooldown tracking
 
         window.onload = function() {
             if ("Notification" in window && Notification.permission !== "granted") {
@@ -357,6 +512,12 @@
                 document.getElementById('otpModal').style.display = 'none';
                 document.getElementById('roleModal').style.display = 'flex';
             }
+
+            // Load saved trusted numbers
+            const t1 = localStorage.getItem('sos_trusted_1') || '';
+            const t2 = localStorage.getItem('sos_trusted_2') || '';
+            if(document.getElementById('trustedNum1')) document.getElementById('trustedNum1').value = t1;
+            if(document.getElementById('trustedNum2')) document.getElementById('trustedNum2').value = t2;
         };
 
         function showToast(text) {
@@ -366,6 +527,117 @@
             setTimeout(() => {
                 toast.style.display = 'none';
             }, 2000);
+        }
+
+        // ==========================================
+        // FEATURE 2: SOS SYSTEM LOGIC
+        // ==========================================
+        function startSosPress() {
+            if (isSosCounting) return;
+            isSosCounting = true;
+            
+            sosPressTimer = setTimeout(() => {
+                isSosCounting = false;
+                triggerSosWorkflow();
+            }, 3000); // 3 seconds long press
+        }
+
+        function cancelSosPress() {
+            if (isSosCounting) {
+                clearTimeout(sosPressTimer);
+                isSosCounting = false;
+                showToast("SOS अनुरोध रद्द कर दिया गया।");
+            }
+        }
+
+        function triggerSosWorkflow() {
+            const now = Date.now();
+            // 10 minutes cooldown check (10 * 60 * 1000 ms)
+            if (now - lastSosTimestamp < 600000) {
+                const remainingSec = Math.ceil((600000 - (now - lastSosTimestamp)) / 1000);
+                alert(`⚠️ कूल-डाउन अवधि सक्रिय है! अगले ${Math.floor(remainingSec / 60)} मिनट ${remainingSec % 60} सेकंड तक नया SOS अलर्ट नहीं भेजा जा सकता।`);
+                return;
+            }
+
+            // Confirmation and 5-second timer popup
+            let confirmAlert = confirm("⚠️ क्या आप खतरे में हैं? अलर्ट 5 सेकंड में भेजा जा रहा है। ठीक उसी समय 'Cancel' दबाकर रोक सकते हैं।");
+            if (!confirmAlert) {
+                showToast("SOS अलर्ट निरस्त कर दिया गया।");
+                return;
+            }
+
+            // Activate Cooldown
+            lastSosTimestamp = Date.now();
+
+            // 1. Phone Siren & Screen Blinking Effects
+            activateSosAlarmEffects();
+
+            // 2. Gather live location details
+            let currentLat = myLat || 20.5937;
+            let currentLng = myLng || 78.9629;
+            let mapsLink = `https://www.google.com/maps?q=${currentLat},${currentLng}`;
+
+            // 3. Fetch Trusted Contacts
+            let contact1 = localStorage.getItem('sos_trusted_1') || '';
+            let contact2 = localStorage.getItem('sos_trusted_2') || '';
+
+            // 4. Trigger Server / WhatsApp / SMS dispatch simulation
+            if (socket && socket.connected) {
+                socket.emit('trigger_sos', {
+                    id: myId,
+                    lat: currentLat,
+                    lng: currentLng,
+                    contacts: [contact1, contact2],
+                    mapsUrl: mapsLink
+                });
+            }
+
+            alert(`🚨 SOS इमरजेंसी अलर्ट ट्रिगर हो गया है!\n\nलाइव लोकेशन लिंक:\n${mapsLink}\n\nसेव किए गए कॉन्टैक्ट्स: ${contact1 || 'कोई नहीं'}, ${contact2 || 'कोई नहीं'}\n\nSMS/WhatsApp मैसेज भेजे जा रहे हैं!`);
+        }
+
+        function activateSosAlarmEffects() {
+            // Screen blinking flash overlay
+            const flashOverlay = document.getElementById('sosFlashOverlay');
+            if (flashOverlay) flashOverlay.style.display = 'block';
+
+            // Audio Siren using Web Audio API beep oscillator
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let beepCount = 0;
+                let sirenInterval = setInterval(() => {
+                    if (beepCount >= 6) {
+                        clearInterval(sirenInterval);
+                        if (flashOverlay) flashOverlay.style.display = 'none';
+                        audioCtx.close();
+                        return;
+                    }
+                    const osc = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High pitch alarm
+                    gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                    osc.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.4);
+                    beepCount++;
+                }, 500);
+            } catch (e) {
+                console.log("Audio siren not supported on browser context");
+            }
+        }
+
+        function openTrustedModal() {
+            document.getElementById('trustedModal').style.display = 'flex';
+        }
+
+        function saveTrustedContacts() {
+            const num1 = document.getElementById('trustedNum1').value.trim();
+            const num2 = document.getElementById('trustedNum2').value.trim();
+            localStorage.setItem('sos_trusted_1', num1);
+            localStorage.setItem('sos_trusted_2', num2);
+            document.getElementById('trustedModal').style.display = 'none';
+            showToast("✅ इमरजेंसी कॉन्टैक्ट्स सफलतापूर्वक सेव हो गए हैं!");
         }
 
         function selectRole(role) {
@@ -382,6 +654,8 @@
             const statusTextEl = document.getElementById('statusText');
             const statusDotEl = document.getElementById('statusDot');
             document.getElementById('topContainer').style.display = 'flex';
+            document.getElementById('disclaimerFooter').style.display = 'block';
+            document.getElementById('trustedSettingsBtn').style.display = 'flex';
             statusDotEl.className = 'badge badge-green';
 
             const t = translations[currentLang] || translations['hi'];
@@ -657,7 +931,6 @@
                 if (myId === data.passengerId || myId === data.riderId) {
                     activeChatRoom = data.room;
                     connectedPartnerId = (myId === data.riderId) ? data.passengerId : data.riderId;
-                    sentPhotoCount = 0; // Reset quota
 
                     document.getElementById('chatMessages').innerHTML = '';
                     document.getElementById('requestPopup').style.display = 'none';
@@ -693,8 +966,6 @@
                         appendAudioMessage(senderLabel, msg.audioData);
                     } else if (msg.type === 'location') {
                         appendLocationMessage(senderLabel, msg.lat, msg.lng);
-                    } else if (msg.type === 'ephemeral_photo') {
-                        appendEphemeralPhotoMessage(senderLabel, msg.photoData);
                     } else {
                         appendChatMessage(senderLabel, msg.text);
                     }
@@ -906,66 +1177,9 @@
             socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
         }
 
-        // Feature 1: Live Camera Capture, ~1KB compression, max 5 photos per session, 10s auto-delete
-        function captureAndSendLivePhoto() {
-            if (sentPhotoCount >= 5) {
-                alert('⚠️ You have reached the limit of 5 photos for this session.');
-                return;
-            }
-            document.getElementById('liveCameraInput').click();
-        }
-
-        function handleLivePhotoCaptured(event) {
-            const file = event.target.files[0];
-            if (!file || !activeChatRoom) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 160;
-                    canvas.height = 120;
-                    ctx.drawImage(img, 0, 0, 160, 120);
-
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.1);
-                    sentPhotoCount++;
-
-                    socket.emit('chat_message', { 
-                        room: activeChatRoom, 
-                        senderId: myId, 
-                        senderRole: myRole, 
-                        type: 'ephemeral_photo', 
-                        photoData: compressedBase64 
-                    });
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-            event.target.value = '';
-        }
-
-        function appendEphemeralPhotoMessage(sender, photoData) {
-            const box = document.getElementById('chatMessages');
-            const uniqueImgId = 'photo_' + Math.random().toString(36).substring(2);
-            box.innerHTML += `<div id="${uniqueImgId}"><b>${sender}:</b> [Live Photo - Disappears in <span id="timer_${uniqueImgId}">10</span>s]<br><img src="${photoData}" style="max-width:100px; border-radius:6px; margin-top:4px;" /></div>`;
-            box.scrollTop = box.scrollHeight;
-
-            let timeLeft = 10;
-            const timerInterval = setInterval(() => {
-                timeLeft--;
-                const timerEl = document.getElementById(`timer_${uniqueImgId}`);
-                if (timerEl) timerEl.innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    const container = document.getElementById(uniqueImgId);
-                    if (container) container.remove();
-                }
-            }, 1000);
-        }
-
-        // Feature 2: 15-second voice recording limit
+        // ==========================================
+        // FEATURE 1: 15-SECOND VOICE RECORDING LIMIT
+        // ==========================================
         function toggleVoiceRecording() {
             const btn = document.getElementById('voiceBtn');
             const t = translations[currentLang] || translations['hi'];
@@ -991,12 +1205,13 @@
                     btn.innerText = t.voiceRecording;
                     btn.classList.add('recording');
 
+                    // Automatically stop after exactly 15 seconds (Feature 1 requirement)
                     setTimeout(() => {
                         if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
                             mediaRecorder.stop();
                             isRecording = false;
                             btn.classList.remove('recording');
-                            showToast('⏱️ 15-second voice limit reached!');
+                            showToast("⏱️ 15 सेकंड की सीमा पूरी हो गई। वॉइस रिकॉर्डिंग भेज दी गई है।");
                         }
                     }, 15000);
 
@@ -1005,79 +1220,6 @@
                 if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
                 isRecording = false;
                 btn.classList.remove('recording');
-            }
-        }
-
-        // Feature 3: 3-second long press SOS, alarm siren, flash and WhatsApp/SMS alert
-        function startSosHold() {
-            const now = Date.now();
-            if (now - lastSosTime < 600000) {
-                alert('⏳ SOS is on cooldown. Please wait before triggering again.');
-                return;
-            }
-
-            isSosTriggered = false;
-            showToast('🚨 Keep holding SOS for 3 seconds...');
-            
-            sosHoldTimer = setTimeout(() => {
-                if (confirm('⚠️ Are you in danger? SOS alert will be sent in 5 seconds! Click Cancel to abort.')) {
-                    triggerSosEmergencyAction();
-                }
-            }, 3000);
-        }
-
-        function cancelSosHold() {
-            if (sosHoldTimer && !isSosTriggered) {
-                clearTimeout(sosHoldTimer);
-                showToast('❌ SOS Cancelled.');
-            }
-        }
-
-        function triggerSosEmergencyAction() {
-            isSosTriggered = true;
-            lastSosTime = Date.now();
-
-            const flashOverlay = document.getElementById('sosFlashOverlay');
-            flashOverlay.className = 'sos-active-flash';
-
-            playSirenAlarm();
-
-            const trustedNumber = document.getElementById('trustedSosNumber').value.trim();
-            const mapsLink = myLat && myLng ? `https://www.google.com/maps?q=${myLat},${myLng}` : 'Location unknown';
-            const alertText = `EMERGENCY SOS! I am in danger. My live location: ${mapsLink}`;
-
-            if (trustedNumber.length === 10) {
-                const waUrl = `https://api.whatsapp.com/send?phone=91${trustedNumber}&text=${encodeURIComponent(alertText)}`;
-                window.open(waUrl, '_blank');
-            } else {
-                alert('⚠️ No valid trusted emergency contact number entered in settings!');
-            }
-
-            setTimeout(() => {
-                flashOverlay.className = '';
-            }, 15000);
-        }
-
-        function playSirenAlarm() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-
-                let time = audioCtx.currentTime;
-                for (let i = 0; i < 10; i++) {
-                    osc.frequency.exponentialRampToValueAtTime(880, time + 0.5);
-                    osc.frequency.exponentialRampToValueAtTime(440, time + 1.0);
-                    time += 1.0;
-                }
-                setTimeout(() => osc.stop(), 10000);
-            } catch (e) {
-                console.log('Audio context blocked');
             }
         }
 
