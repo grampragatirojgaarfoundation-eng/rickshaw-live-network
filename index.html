@@ -10,7 +10,7 @@
         html, body, #map { height: 100%; width: 100%; overflow: hidden; background: #e5e3df; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 99999; }
-        .modal-box { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; width: 90%; max-width: 360px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
+        .modal-box { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; width: 90%; max-width: 360px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); max-height: 90vh; overflow-y: auto; }
         .modal-box h2 { font-size: 20px; color: #111; margin-bottom: 6px; font-weight: 800; }
         .modal-box p { font-size: 12px; color: #666; margin-bottom: 18px; line-height: 1.4; }
         
@@ -29,6 +29,7 @@
         .otp-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
         .top-container { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; display: none; align-items: center; gap: 8px; width: 94%; max-width: 420px; justify-content: center; }
+
         .status-card { background: #ffffff; padding: 10px 16px; border-radius: 30px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; align-items: center; gap: 8px; flex: 1; text-align: left; }
         .badge { width: 10px; height: 10px; border-radius: 50%; display: none; flex-shrink: 0; }
         .badge-green { background: #16a34a; display: inline-block; }
@@ -42,7 +43,7 @@
         .needle-top { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 14px solid #dc2626; position: absolute; top: 0; }
         .needle-bottom { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 14px solid #333; position: absolute; bottom: 0; }
 
-        /* SOS Top Button Style */
+        /* Feature 3: SOS Button UI */
         .sos-top-btn { background: #dc2626; color: white; border: none; padding: 10px 14px; border-radius: 30px; font-size: 11px; font-weight: 900; box-shadow: 0 4px 18px rgba(220,38,38,0.4); cursor: pointer; display: flex; align-items: center; gap: 4px; animation: sos-pulse 1.5s infinite; }
         @keyframes sos-pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
@@ -88,13 +89,12 @@
 
         .toast-msg { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 3000; background: #111; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: none; }
         
-        /* Terms and Footer styling */
+        /* Feature 3 & 4 Styles */
         .terms-footer { margin-top: 10px; font-size: 9px; color: #777; line-height: 1.3; text-align: justify; }
         .sos-config-box { margin-top: 10px; text-align: left; }
         .sos-config-box label { display: block; font-size: 10px; font-weight: bold; color: #dc2626; margin-bottom: 2px; }
         .sos-input { width: 100%; padding: 8px; border: 1px solid #dc2626; border-radius: 6px; font-size: 11px; }
 
-        /* Flash Red Screen for SOS alarm */
         @keyframes flash-red { 0% { background-color: rgba(220, 38, 38, 0.6); } 50% { background-color: rgba(255, 255, 255, 0); } 100% { background-color: rgba(220, 38, 38, 0.6); } }
         .sos-active-flash { animation: flash-red 0.5s infinite; position: fixed; top:0; left:0; width:100%; height:100%; z-index:999999; pointer-events:none; }
     </style>
@@ -105,6 +105,7 @@
 
     <div class="modal-overlay" id="roleModal" style="display: flex;">
         <div class="modal-box">
+            <!-- Select Language Section -->
             <div class="lang-select-container">
                 <label for="languageSelect">Select your language</label>
                 <select id="languageSelect" class="lang-dropdown" onchange="changeAppLanguage(this.value)">
@@ -133,7 +134,7 @@
                 </select>
             </div>
 
-            <!-- Feature 3: Trusted WhatsApp/Phone Number Input for SOS -->
+            <!-- Feature 3: Trusted Contact Input Box -->
             <div class="sos-config-box">
                 <label id="sosConfigLabel" for="trustedSosNumber">🚨 SOS Trusted Contact (Phone/WhatsApp)</label>
                 <input type="tel" id="trustedSosNumber" class="sos-input" placeholder="Enter 10-digit emergency number" maxlength="10">
@@ -148,7 +149,7 @@
                 <button class="role-btn btn-bike-sawari" id="btnBikeSawariText" onclick="selectRole('bike_sawari')">🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)</button>
             </div>
 
-            <!-- Feature 4: Terms & Conditions and Disclaimer based on selected language -->
+            <!-- Feature 4: Terms & Conditions and Disclaimer -->
             <div class="terms-footer" id="termsFooterText">
                 Terms: This app is only a networking directory connecting independent users. No commission or ride booking fee is charged. Use at your own risk.
             </div>
@@ -165,9 +166,9 @@
         </div>
     </div>
 
-    <!-- Top Container with Status Card, Compass and Feature 3 SOS Button -->
+    <!-- Top Container with Feature 3 SOS Button, Status Card and Live Compass -->
     <div class="top-container" id="topContainer">
-        <button class="sos-top-btn" id="sosTriggerBtn" onmousedown="startSosHold()" onmouseup="cancelSosHold()" onttouchstart="startSosHold()" ontouchend="cancelSosHold()">
+        <button class="sos-top-btn" id="sosTriggerBtn" onmousedown="startSosHold()" onmouseup="cancelSosHold()" ontouchstart="startSosHold()" ontouchend="cancelSosHold()">
             🚨 SOS
         </button>
         <div class="status-card" id="statusBar">
@@ -224,13 +225,14 @@
 
     <div id="map"></div>
 
-    <!-- Hidden file input for strict live camera capture only -->
+    <!-- Hidden camera input for Feature 1 -->
     <input type="file" id="liveCameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleLivePhotoCaptured(event)">
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
+        // Comprehensive Multi-Language Dictionary
         const translations = {
             hi: {
                 modalTitle: "मोड चुनें (Select Mode)", modalDesc: "आप किस रूप में काम करना चाहते हैं?",
@@ -290,6 +292,7 @@
 
         function applyTranslations() {
             const t = translations[currentLang] || translations['hi'];
+            
             const dropdown = document.getElementById('languageSelect');
             if(dropdown) dropdown.value = currentLang;
 
@@ -332,25 +335,37 @@
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
-        let isPassengerActive = true;
+        let isPassengerActive = true, tempSelectedRole = null;
         let requestedRiders = {}; 
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
-        let sentPhotoCount = 0; // Feature 1: Max 5 photos per chat session
+        let sentPhotoCount = 0; // Feature 1: Max 5 photos tracker
         let sosHoldTimer = null, isSosTriggered = false, lastSosTime = 0;
 
         window.onload = function() {
             if ("Notification" in window && Notification.permission !== "granted") {
                 Notification.requestPermission();
             }
+
             applyTranslations();
+
+            const savedMobile = localStorage.getItem('rickshaw_user_mobile');
+            if (savedMobile) {
+                document.getElementById('otpModal').style.display = 'none';
+                document.getElementById('roleModal').style.display = 'flex';
+            } else {
+                document.getElementById('otpModal').style.display = 'none';
+                document.getElementById('roleModal').style.display = 'flex';
+            }
         };
 
         function showToast(text) {
             const toast = document.getElementById('toastMsg');
             toast.innerText = text;
             toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2000);
         }
 
         function selectRole(role) {
@@ -384,10 +399,14 @@
             if (window.DeviceOrientationEvent) {
                 window.addEventListener('deviceorientation', (event) => {
                     let compassHeading = event.alpha;
-                    if (event.webkitCompassHeading) compassHeading = event.webkitCompassHeading;
+                    if (event.webkitCompassHeading) {
+                        compassHeading = event.webkitCompassHeading;
+                    }
                     if (compassHeading !== null && compassHeading !== undefined) {
                         const dial = document.getElementById('compassDial');
-                        if (dial) dial.style.transform = `rotate(${-compassHeading}deg)`;
+                        if (dial) {
+                            dial.style.transform = `rotate(${-compassHeading}deg)`;
+                        }
                     }
                 }, true);
             }
@@ -396,7 +415,9 @@
         function requestCompassPermission() {
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission().then(response => {
-                    if (response === 'granted') showToast('कंपास सक्रिय हो गया है!');
+                    if (response === 'granted') {
+                        showToast('कंपास सक्रिय हो गया है!');
+                    }
                 }).catch(console.error);
             } else {
                 showToast('लाइव कंपास मोड चालू है');
@@ -433,6 +454,27 @@
         }
 
         function initializeAppAfterLogin() {
+            if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                const handleVisibility = () => {
+                    if (document.hidden || document.visibilityState === 'hidden') {
+                        isPassengerActive = false;
+                        if (socket && socket.connected) {
+                            socket.emit('deactivate_passenger', { id: myId });
+                        }
+                    } else {
+                        isPassengerActive = true;
+                        syncPosition();
+                    }
+                };
+
+                document.addEventListener("visibilitychange", handleVisibility);
+                window.addEventListener("pagehide", () => {
+                    if (socket && socket.connected) {
+                        socket.emit('deactivate_passenger', { id: myId });
+                    }
+                });
+            }
+
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((pos) => {
                     myLat = pos.coords.latitude;
@@ -440,6 +482,7 @@
                     myHeading = pos.coords.heading || 0;
                     initMapAndSystem();
                 }, (err) => {
+                    alert('लोकेशन एक्सेस जरूरी है! डिफ़ॉल्ट लोकेशन सेट की जा रही है।');
                     myLat = 20.5937; myLng = 78.9629;
                     initMapAndSystem();
                 }, { enableHighAccuracy: true, timeout: 10000 });
@@ -467,18 +510,28 @@
                 bgClass = 'pin-sawari';
                 innerElement = '<div class="sawari-inner"></div>';
             }
+
             if (isGlowing) bgClass += ' pin-glow';
+
             return L.divIcon({ className: '', html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>', iconSize: [22, 22], iconAnchor: [11, 11] });
         }
 
         function initMapAndSystem() {
             document.getElementById('trafficCounter').style.display = 'block';
+
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 document.getElementById('destCard').style.display = 'flex';
             }
 
             if (!map) {
-                map = L.map('map', { zoomControl: false, preferCanvas: true, touchZoom: true, dragging: true }).setView([myLat, myLng], 16);
+                map = L.map('map', { 
+                    zoomControl: false, 
+                    preferCanvas: true,
+                    touchZoom: true,
+                    dragging: true,
+                    scrollWheelZoom: true
+                }).setView([myLat, myLng], 16);
+
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
                 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -524,26 +577,32 @@
 
         function startLiveGPS() {
             if ("geolocation" in navigator) {
-                navigator.geolocation.watchPosition((pos) => {
-                    myLat = pos.coords.latitude;
-                    myLng = pos.coords.longitude;
-                    myHeading = pos.coords.heading || 0;
+                navigator.geolocation.watchPosition(
+                    (pos) => {
+                        myLat = pos.coords.latitude;
+                        myLng = pos.coords.longitude;
+                        myHeading = pos.coords.heading || 0;
 
-                    if (map) {
-                        if (!isMapCentered) {
-                            map.setView([myLat, myLng], 16, { animate: true });
-                            isMapCentered = true;
+                        if (map) {
+                            if (!isMapCentered) {
+                                map.setView([myLat, myLng], 16, { animate: true });
+                                isMapCentered = true;
+                            }
+                            if (selfMarker) {
+                                selfMarker.setLatLng([myLat, myLng]);
+                                selfMarker.setIcon(getIcon(myRole, myHeading, true));
+                            }
                         }
-                        if (selfMarker) {
-                            selfMarker.setLatLng([myLat, myLng]);
-                            selfMarker.setIcon(getIcon(myRole, myHeading, true));
+
+                        if (myDestination && destLine) {
+                            destLine.setLatLngs([[myLat, myLng], [myDestination.lat, myDestination.lng]]);
                         }
-                    }
-                    if (myDestination && destLine) {
-                        destLine.setLatLngs([[myLat, myLng], [myDestination.lat, myDestination.lng]]);
-                    }
-                    syncPosition();
-                }, (err) => {}, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
+
+                        syncPosition();
+                    },
+                    (err) => {},
+                    { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+                );
             }
         }
 
@@ -555,11 +614,15 @@
 
             socket.on('init_users', (users) => {
                 updateTrafficCounts(users);
-                for (let id in users) { if (id !== myId) processIncomingUser(users[id]); }
+                for (let id in users) {
+                    if (id !== myId) processIncomingUser(users[id]);
+                }
             });
 
             socket.on('live_broadcast', (data) => { 
-                if (data && data.user && data.user.id !== myId) processIncomingUser(data.user);
+                if (data && data.user && data.user.id !== myId) {
+                    processIncomingUser(data.user);
+                }
                 if (data && data.counts) {
                     document.getElementById('totalRiders').innerText = (data.counts.riders || 0);
                     document.getElementById('totalSawaris').innerText = (data.counts.sawaris || 0);
@@ -580,6 +643,13 @@
                     const t = translations[currentLang] || translations['hi'];
                     document.getElementById('reqText').innerText = t.reqMsg;
                     document.getElementById('requestPopup').style.display = 'block';
+
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification("New Request!", {
+                            body: "You have a new ride request.",
+                            icon: "https://cdn-icons-png.flaticon.com/512/854/854878.png"
+                        });
+                    }
                 }
             });
 
@@ -587,7 +657,7 @@
                 if (myId === data.passengerId || myId === data.riderId) {
                     activeChatRoom = data.room;
                     connectedPartnerId = (myId === data.riderId) ? data.passengerId : data.riderId;
-                    sentPhotoCount = 0; // Reset photo quota on new accepted session
+                    sentPhotoCount = 0; // Reset quota
 
                     document.getElementById('chatMessages').innerHTML = '';
                     document.getElementById('requestPopup').style.display = 'none';
@@ -595,7 +665,13 @@
                     
                     const t = translations[currentLang] || translations['hi'];
                     document.getElementById('chatHeaderTitle').innerText = t.chatTitle;
+
                     document.getElementById('statusDot').className = 'badge badge-green';
+                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                        document.getElementById('statusText').innerText = t.statusSawari;
+                    } else {
+                        document.getElementById('statusText').innerText = t.statusRider;
+                    }
                     appendChatMessage('System', t.chatConnected);
                 }
             });
@@ -604,6 +680,9 @@
                 if (myId === data.passengerId) {
                     showToast('❌ Request rejected by partner.');
                     requestedRiders[data.riderId] = false; 
+                    if (activeMarkers[data.riderId]) {
+                        processIncomingUserMarkerRefresh(data.riderId);
+                    }
                 }
             });
 
@@ -625,11 +704,32 @@
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
                     document.getElementById('statusDot').className = 'badge badge-red';
-                    document.getElementById('chatMessages').innerHTML = '';
-                    document.getElementById('chatOverlay').style.display = 'none';
+                    const t = translations[currentLang] || translations['hi'];
+                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                        document.getElementById('statusText').innerText = t.chatBrokenSawari;
+                    } else {
+                        document.getElementById('statusText').innerText = t.chatBroken;
+                    }
+                    
+                    setTimeout(() => {
+                        document.getElementById('statusDot').className = 'badge badge-green';
+                        if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                            document.getElementById('statusText').innerText = t.statusSawari;
+                        } else {
+                            document.getElementById('statusText').innerText = t.statusRider;
+                        }
+                        document.getElementById('chatMessages').innerHTML = '';
+                        document.getElementById('chatOverlay').style.display = 'none';
+                    }, 2000);
+
                     connectedPartnerId = null;
                     activeChatRoom = null;
                     incomingReqData = null;
+
+                    for (let id in activeRoutes) {
+                        map.removeLayer(activeRoutes[id]);
+                        delete activeRoutes[id];
+                    }
                 }
             });
         }
@@ -646,6 +746,7 @@
 
         function syncPosition() {
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
+
             if (socket && socket.connected && myLat !== null && myLng !== null) {
                 socket.emit('update_location', { id: myId, role: myRole, lat: myLat, lng: myLng, heading: myHeading, destination: myDestination });
             }
@@ -662,23 +763,41 @@
         function processIncomingUser(user) {
             if (!myLat || !myLng || !map) return;
             const distance = calculateDistance(myLat, myLng, user.lat, user.lng);
-            let maxRadius = 0, showPopupBtn = false, canSee = false;
+            let maxRadius = 0;
+            let showPopupBtn = false;
+            let canSee = false;
 
             if (myRole === 'rider') {
                 if ((user.role === 'rider' || user.role === 'sawari') && distance <= 25) {
                     canSee = true; maxRadius = 25;
-                    if (user.role === 'rider' && distance <= 10) showPopupBtn = true;
+                    if (user.role === 'rider' && distance <= 10) {
+                        showPopupBtn = true;
+                    }
                 }
-            } else if (myRole === 'sawari') {
-                if (user.role === 'rider' && distance <= 10) { canSee = true; maxRadius = 10; showPopupBtn = true; }
-            } else if (myRole === 'bike_rider') {
-                if ((user.role === 'bike_rider' || user.role === 'bike_sawari') && distance <= 5) { canSee = true; maxRadius = 5; }
-            } else if (myRole === 'bike_sawari') {
-                if (user.role === 'bike_rider' && distance <= 5) { canSee = true; maxRadius = 5; if (distance <= 2.5) showPopupBtn = true; }
+            } 
+            else if (myRole === 'sawari') {
+                if (user.role === 'rider' && distance <= 10) {
+                    canSee = true; maxRadius = 10; showPopupBtn = true;
+                }
+            } 
+            else if (myRole === 'bike_rider') {
+                if ((user.role === 'bike_rider' || user.role === 'bike_sawari') && distance <= 5) {
+                    canSee = true; maxRadius = 5;
+                }
+            } 
+            else if (myRole === 'bike_sawari') {
+                if (user.role === 'bike_rider' && distance <= 5) {
+                    canSee = true; maxRadius = 5;
+                    if (distance <= 2.5) showPopupBtn = true;
+                }
             }
 
             if (user.id === connectedPartnerId) canSee = true;
-            if (!canSee || (user.id !== connectedPartnerId && distance > maxRadius)) { removeUser(user.id); return; }
+
+            if (!canSee || (user.id !== connectedPartnerId && distance > maxRadius)) {
+                removeUser(user.id);
+                return;
+            }
 
             let isGlowing = (user.id === connectedPartnerId);
             const t = translations[currentLang] || translations['hi'];
@@ -695,7 +814,31 @@
                         popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">' + t.reqBtnText + '</button>';
                     }
                 }
-                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map).bindPopup(popupHtml);
+                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map)
+                    .bindPopup(popupHtml);
+            }
+
+            if ((myRole === 'rider' || myRole === 'bike_rider') && (user.role === 'sawari' || user.role === 'bike_sawari')) {
+                if (user.destination) {
+                    if (activeRoutes[user.id]) {
+                        activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
+                    } else {
+                        activeRoutes[user.id] = L.polyline([[user.lat, user.lng], [user.destination.lat, user.destination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
+                    }
+                } else {
+                    if (activeRoutes[user.id]) {
+                        map.removeLayer(activeRoutes[user.id]);
+                        delete activeRoutes[user.id];
+                    }
+                }
+            }
+        }
+
+        function processIncomingUserMarkerRefresh(riderId) {
+            if (activeMarkers[riderId]) {
+                const t = translations[currentLang] || translations['hi'];
+                let popupHtml = '<b>DRIVER</b><br><button onclick="sendSmsRequest(\'' + riderId + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">' + t.reqBtnText + '</button>';
+                activeMarkers[riderId].bindPopup(popupHtml).openPopup();
             }
         }
 
@@ -704,20 +847,27 @@
             socket.emit('send_sms_request', { passengerId: myId, riderId: riderId });
             const t = translations[currentLang] || translations['hi'];
             showToast(t.reqToast);
+            processIncomingUserMarkerRefresh(riderId);
         }
 
         function acceptRequest() {
             document.getElementById('requestPopup').style.display = 'none';
-            if (incomingReqData) socket.emit('accept_sms_request', incomingReqData);
+            if (incomingReqData) {
+                socket.emit('accept_sms_request', incomingReqData);
+            }
         }
 
         function rejectRequest() {
             document.getElementById('requestPopup').style.display = 'none';
-            if (incomingReqData) { socket.emit('reject_sms_request', incomingReqData); incomingReqData = null; }
+            if (incomingReqData) {
+                socket.emit('reject_sms_request', incomingReqData);
+                incomingReqData = null;
+            }
         }
 
         function sendChatMessage() {
             const text = document.getElementById('chatInput').value;
+            const t = translations[currentLang] || translations['hi'];
             if (text && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'text', text: text });
                 document.getElementById('chatInput').value = '';
@@ -725,7 +875,6 @@
             else if (recordedAudioBase64 && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'audio', audioData: recordedAudioBase64 });
                 recordedAudioBase64 = null;
-                const t = translations[currentLang] || translations['hi'];
                 document.getElementById('voiceBtn').innerText = t.voiceBtnText;
             }
         }
@@ -749,15 +898,20 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        // ==========================================
-        // FEATURE 1: 10-Second Auto-Delete Live Compressed Photo (Max 5 per session)
-        // ==========================================
-        function captureAndSendLivePhoto() {
-            if (sentPhotoCount >= 5) {
-                alert('⚠️ You have reached the limit of 5 photos for this chat session.');
+        function shareGoogleLocation() {
+            if (!myLat || !myLng || !activeChatRoom) {
+                showToast('Location or Chat not active!');
                 return;
             }
-            // Trigger device camera directly, gallery upload blocked via 'capture' attribute
+            socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
+        }
+
+        // Feature 1: Live Camera Capture, ~1KB compression, max 5 photos per session, 10s auto-delete
+        function captureAndSendLivePhoto() {
+            if (sentPhotoCount >= 5) {
+                alert('⚠️ You have reached the limit of 5 photos for this session.');
+                return;
+            }
             document.getElementById('liveCameraInput').click();
         }
 
@@ -771,7 +925,6 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    // Aggressive compression to keep image size ~1KB or lower
                     canvas.width = 160;
                     canvas.height = 120;
                     ctx.drawImage(img, 0, 0, 160, 120);
@@ -790,12 +943,12 @@
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
-            event.target.value = ''; // Reset input
+            event.target.value = '';
         }
 
         function appendEphemeralPhotoMessage(sender, photoData) {
             const box = document.getElementById('chatMessages');
-            const uniqueImgId = 'photo_' + Math.random().toString(36.substring(2));
+            const uniqueImgId = 'photo_' + Math.random().toString(36).substring(2);
             box.innerHTML += `<div id="${uniqueImgId}"><b>${sender}:</b> [Live Photo - Disappears in <span id="timer_${uniqueImgId}">10</span>s]<br><img src="${photoData}" style="max-width:100px; border-radius:6px; margin-top:4px;" /></div>`;
             box.scrollTop = box.scrollHeight;
 
@@ -807,19 +960,12 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     const container = document.getElementById(uniqueImgId);
-                    if (container) container.remove(); // Automatically destroyed/deleted from screen
+                    if (container) container.remove();
                 }
             }, 1000);
         }
 
-        function shareGoogleLocation() {
-            if (!myLat || !myLng || !activeChatRoom) return;
-            socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
-        }
-
-        // ==========================================
-        // FEATURE 2: 15-Second Voice Recording Limit
-        // ==========================================
+        // Feature 2: 15-second voice recording limit
         function toggleVoiceRecording() {
             const btn = document.getElementById('voiceBtn');
             const t = translations[currentLang] || translations['hi'];
@@ -845,7 +991,6 @@
                     btn.innerText = t.voiceRecording;
                     btn.classList.add('recording');
 
-                    // Auto-stop exactly after 15 seconds
                     setTimeout(() => {
                         if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
                             mediaRecorder.stop();
@@ -863,12 +1008,10 @@
             }
         }
 
-        // ==========================================
-        // FEATURE 3: 3-Second Long Press SOS, Siren Alarm, Flash & WhatsApp/SMS Alert
-        // ==========================================
+        // Feature 3: 3-second long press SOS, alarm siren, flash and WhatsApp/SMS alert
         function startSosHold() {
             const now = Date.now();
-            if (now - lastSosTime < 600000) { // 10 minutes cooldown period
+            if (now - lastSosTime < 600000) {
                 alert('⏳ SOS is on cooldown. Please wait before triggering again.');
                 return;
             }
@@ -878,7 +1021,6 @@
             
             sosHoldTimer = setTimeout(() => {
                 if (confirm('⚠️ Are you in danger? SOS alert will be sent in 5 seconds! Click Cancel to abort.')) {
-                    // User confirmed or didn't cancel within timer window simulation
                     triggerSosEmergencyAction();
                 }
             }, 3000);
@@ -895,11 +1037,9 @@
             isSosTriggered = true;
             lastSosTime = Date.now();
 
-            // Flash Screen Red
             const flashOverlay = document.getElementById('sosFlashOverlay');
             flashOverlay.className = 'sos-active-flash';
 
-            // Play Local Siren Sound via Web Audio API
             playSirenAlarm();
 
             const trustedNumber = document.getElementById('trustedSosNumber').value.trim();
@@ -907,14 +1047,12 @@
             const alertText = `EMERGENCY SOS! I am in danger. My live location: ${mapsLink}`;
 
             if (trustedNumber.length === 10) {
-                // Trigger WhatsApp/SMS Web Share API or Intent
                 const waUrl = `https://api.whatsapp.com/send?phone=91${trustedNumber}&text=${encodeURIComponent(alertText)}`;
                 window.open(waUrl, '_blank');
             } else {
-                alert('⚠️ No valid trusted emergency contact number entered in settings! But siren and flash are active.');
+                alert('⚠️ No valid trusted emergency contact number entered in settings!');
             }
 
-            // Stop flash after 15 seconds
             setTimeout(() => {
                 flashOverlay.className = '';
             }, 15000);
@@ -931,7 +1069,6 @@
                 gain.connect(audioCtx.destination);
                 osc.start();
 
-                // Siren frequency sweep effect
                 let time = audioCtx.currentTime;
                 for (let i = 0; i < 10; i++) {
                     osc.frequency.exponentialRampToValueAtTime(880, time + 0.5);
@@ -945,10 +1082,37 @@
         }
 
         function closeChat() {
-            if (activeChatRoom) socket.emit('close_chat', { room: activeChatRoom });
+            if (activeChatRoom) {
+                socket.emit('close_chat', { room: activeChatRoom });
+            }
             document.getElementById('chatOverlay').style.display = 'none';
+            
+            document.getElementById('statusDot').className = 'badge badge-red';
+            const t = translations[currentLang] || translations['hi'];
+            if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                document.getElementById('statusText').innerText = t.chatBrokenSawari;
+            } else {
+                document.getElementById('statusText').innerText = t.chatBroken;
+            }
+            
+            setTimeout(() => {
+                document.getElementById('statusDot').className = 'badge badge-green';
+                if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                    document.getElementById('statusText').innerText = t.statusSawari;
+                } else {
+                    document.getElementById('statusText').innerText = t.statusRider;
+                }
+                document.getElementById('chatMessages').innerHTML = '';
+            }, 2000);
+            
             activeChatRoom = null;
+            incomingReqData = null;
             connectedPartnerId = null;
+
+            for (let id in activeRoutes) {
+                map.removeLayer(activeRoutes[id]);
+                delete activeRoutes[id];
+            }
         }
 
         function removeUser(id) {
