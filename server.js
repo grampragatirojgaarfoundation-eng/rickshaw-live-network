@@ -177,14 +177,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Handle SOS alert dispatch to server console / connected peers
-    socket.on('trigger_sos', (data) => {
-        console.log(`🚨 SOS ALERT TRIGGERED BY USER: ${data.id}`);
-        console.log(`📍 Location: Lat ${data.lat}, Lng ${data.lng}`);
-        console.log(`🔗 Maps Link: ${data.mapsUrl}`);
-        console.log(`📞 Trusted Contacts:`, data.contacts);
-    });
-
     socket.on('deactivate_passenger', (data) => {
         if (data && data.id && activeUsers[data.id]) {
             removeUserFromGrid(data.id);
