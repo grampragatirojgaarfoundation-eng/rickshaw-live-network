@@ -283,7 +283,7 @@
                 destSetText: "గమ్యస్థానం సెట్ చేయబడింది!", reqToast: "అభ్యర్థన విజయవంతంగా పంపబడింది!",
                 northWord: "ఉత్తరం", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
                 chatPlaceholder: "సందేశాన్ని టైప్ చేయండి...", voiceBtnText: "🎤 వాయిస్ రికార్డ్", voiceRecording: "🔴 రికార్డింగ్...",
-                voiceRecorded: "✅ రికార్డ్ చేయబడింది"
+                voiceRecorded: "✅ రికಾರ್డ్ చేయబడింది"
             },
             mr: {
                 modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
@@ -594,7 +594,7 @@
                 statusRider: "スマホを常に北に向けた状態でマップを確認してください",
                 statusSawari: "スマホを常に北に向けた状態でマップを確認し、行きたい場所をタップしてください",
                 counterRider: "運転手", counterSawari: "乗客",
-                reqMsg: "🙋‍♂️ 새로운乗客のリクエストが届きました！", acceptBtn: "承認", rejectBtn: "拒否",
+                reqMsg: "🙋‍♂️ 新しい乗客のリクエストが届きました！", acceptBtn: "承認", rejectBtn: "拒否",
                 chatTitle: "💬 プライベートチャットとライブ追跡", closeChat: "✕ 閉じる", sendBtn: "送信",
                 locationBtn: "📍 位置情報を共有", destText: "マップをタップして目的地を設定してください", resetBtn: "ルートリセット",
                 chatConnected: "お互いに接続されました。", chatBroken: "接続が切れました - スマホを北に向けてください",
@@ -629,10 +629,10 @@
                 modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmak istersiniz?",
                 riderBtn: "Oto / E-Rickshaw Sürücüsü", sawariBtn: "Yolcu",
                 bikeRiderBtn: "🏍️ Motosiklet Sürücüsü (06:00 - 19:00)", bikeSawariBtn: "🙋‍♂️ Motosiklet Yolcusu (06:00 - 19:00)",
-                otpTitle: "Mobil Doğrulama", otpDesc: "Lütfen 10 haneli cep telefonu numaranızı ve OTP'yi (Kod: 7317) girin.",
-                otpBtn: "Doğrula ve İlerle", loading: "Yükleniyor...",
+                otpTitle: "Mobil Doğrulama", otpDesc: "Lütfen 10 haneli cep telefonu numaranızı و OTP'yi (Kod: 7317) girin.",
+                otpBtn: "Doğrula و İlerle", loading: "Yükleniyor...",
                 statusRider: "Telefonunuzu her zaman kuzey yönüne tutarak haritayı görüntüleyin",
-                statusSawari: "Telefonunuzu kuzey yönüne tutun, haritaya bakın و gitmek istediğiniz yere dokunun",
+                statusSawari: "Telefonunuzu kuzey yönüne tutুন, haritaya bakın و gitmek istediğiniz yere dokunun",
                 counterRider: "Sürücüler", counterSawari: "Yolcular",
                 reqMsg: "🙋‍♂️ Yeni yolcu talebi geldi!", acceptBtn: "Kabul Et", rejectBtn: "Reddet",
                 chatTitle: "💬 Özel Sohbet و Canlı Takip", closeChat: "✕ Kapat", sendBtn: "Gönder",
@@ -1239,20 +1239,44 @@
 
         function appendChatMessage(sender, text) {
             const box = document.getElementById('chatMessages');
-            box.innerHTML += '<div><b>' + sender + ':</b> ' + text + '</div>';
+            const msgId = 'msg_' + Math.random().toString(36).substring(2, 9);
+            
+            // Text-to-Speech (TTS) बटन जोड़ा गया है ताकि अनपढ़ लोग मैसेज को सुनकर समझ सकें
+            let htmlContent = `<div id="${msgId}" style="margin-bottom: 6px; border-bottom: 1px solid #eee; padding-bottom: 4px;">` +
+                              `<b>${sender}:</b> <span>${text}</span> ` +
+                              `<button onclick="speakText('${msgId}')" style="background:#2563eb; color:white; border:none; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer; margin-left:6px;" title="सुनें">🔊 सुनें</button>` +
+                              `</div>`;
+            box.innerHTML += htmlContent;
             box.scrollTop = box.scrollHeight;
+        }
+
+        // टेक्स्ट को ऑडियो में बोलकर सुनाने वाला फंक्शन (Text-to-Speech)
+        function speakText(msgId) {
+            const container = document.getElementById(msgId);
+            if (container) {
+                const textSpan = container.querySelector('span');
+                if (textSpan && 'speechSynthesis' in window) {
+                    window.speechSynthesis.cancel(); // पिछली कोई आवाज़ चल रही हो तो रोकें
+                    const utterance = new SpeechSynthesisUtterance(textSpan.innerText);
+                    utterance.lang = currentLang === 'hi' ? 'hi-IN' : 'en-US';
+                    utterance.rate = 1.0;
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    alert('आपके ब्राउज़र में स्पीच सिंथेसिस उपलब्ध नहीं है।');
+                }
+            }
         }
 
         function appendAudioMessage(sender, audioData) {
             const box = document.getElementById('chatMessages');
-            box.innerHTML += '<div><b>' + sender + ':</b> <audio controls src="' + audioData + '" style="height:25px; vertical-align:middle;"></audio></div>';
+            box.innerHTML += '<div style="margin-bottom: 6px;"><b>' + sender + ':</b> <audio controls src="' + audioData + '" style="height:25px; vertical-align:middle;"></audio></div>';
             box.scrollTop = box.scrollHeight;
         }
 
         function appendLocationMessage(sender, lat, lng) {
             const box = document.getElementById('chatMessages');
             let mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-            box.innerHTML += '<div><b>' + sender + ':</b> <a href="' + mapsUrl + '" target="_blank" style="color:#2563eb; font-weight:bold;">📍 View Location</a></div>';
+            box.innerHTML += '<div style="margin-bottom: 6px;"><b>' + sender + ':</b> <a href="' + mapsUrl + '" target="_blank" style="color:#2563eb; font-weight:bold;">📍 View Location</a></div>';
             box.scrollTop = box.scrollHeight;
         }
 
