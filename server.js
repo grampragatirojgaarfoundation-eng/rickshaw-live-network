@@ -155,7 +155,6 @@ io.on('connection', (socket) => {
             const neighborKeys = getNeighborCellKeys(data.lat, data.lng);
             const notifiedSockets = new Set();
             
-            // केवल 25 KM के आसपास के ग्रिड डिब्बों में लाइव ब्रॉडकास्ट भेजें
             for (let key of neighborKeys) {
                 if (spatialGrid[key]) {
                     for (let targetId in spatialGrid[key]) {
@@ -164,7 +163,8 @@ io.on('connection', (socket) => {
                             notifiedSockets.add(targetUser.socketId);
                             
                             const dist = calculateDistance(data.lat, data.lng, targetUser.lat, targetUser.lng);
-                            if (dist <= 25 || targetId === data.id) {
+                            // 25 से घटाकर 15 KM किया गया
+                            if (dist <= 15 || targetId === data.id) {
                                 io.to(targetUser.socketId).emit('live_broadcast', {
                                     user: userData,
                                     counts: globalCounts
