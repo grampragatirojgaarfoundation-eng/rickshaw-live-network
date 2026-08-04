@@ -26,6 +26,9 @@
         .btn-bike-rider { background: #d97706; }
         .btn-bike-sawari { background: #7c3aed; }
 
+        /* Disclaimer Footer Style inside Modal */
+        .disclaimer-text { font-size: 9.5px; color: #777; margin-top: 14px; line-height: 1.35; text-align: justify; border-top: 1px solid #eee; padding-top: 8px; }
+
         .otp-input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; text-align: center; }
         .otp-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
@@ -131,6 +134,11 @@
                 <button class="role-btn btn-bike-rider" id="btnBikeRiderText" onclick="selectRole('bike_rider')">🏍️ बाइक चालक (सुबह 6 से शाम 7)</button>
                 <button class="role-btn btn-bike-sawari" id="btnBikeSawariText" onclick="selectRole('bike_sawari')">🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)</button>
             </div>
+
+            <!-- Disclaimer Footer Added at the bottom of the Mode modal box -->
+            <div class="disclaimer-text" id="disclaimerText">
+                शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।
+            </div>
         </div>
     </div>
 
@@ -203,12 +211,13 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
-        // Comprehensive Multi-Language Dictionary (Supports all requested 22 languages fully including chat, voice, compass, distance)
+        // Comprehensive Multi-Language Dictionary with Disclaimer Text Added
         const translations = {
             hi: {
                 modalTitle: "मोड चुनें (Select Mode)", modalDesc: "आप किस रूप में काम करना चाहते हैं?",
                 riderBtn: "ऑटो / ई-रिक्शा चालक", sawariBtn: "ऑटो यात्री (सवारी)",
                 bikeRiderBtn: "🏍️ बाइक चालक (सुबह 6 से शाम 7)", bikeSawariBtn: "🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)",
+                disclaimer: "शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।",
                 otpTitle: "मोबाइल सत्यापन", otpDesc: "कृपया अपना 10 अंकों का मोबाइल नंबर और OTP (कोड: 7317) दर्ज करें।",
                 otpBtn: "सत्यापित करें और आगे बढ़ें", loading: "लोड हो रहा है...",
                 statusRider: "फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें",
@@ -229,6 +238,7 @@
                 modalTitle: "Select Mode", modalDesc: "How would you like to work?",
                 riderBtn: "Auto / E-Rickshaw Driver", sawariBtn: "Auto Passenger",
                 bikeRiderBtn: "🏍️ Bike Rider (6 AM to 7 PM)", bikeSawariBtn: "🙋‍♂️ Bike Passenger (6 AM to 7 PM)",
+                disclaimer: "Terms & Disclaimer: This app is only a networking directory connecting independent users. It is not a taxi booking or transport service. The app does not take any commission. Users are solely responsible for their own safety during travel.",
                 otpTitle: "Mobile Verification", otpDesc: "Please enter your 10-digit mobile number and OTP (Code: 7317).",
                 otpBtn: "Verify and Proceed", loading: "Loading...",
                 statusRider: "Keep your phone pointing towards North and view the map",
@@ -249,6 +259,7 @@
                 modalTitle: "முறையைத் தேர்ந்தெடுக்கவும்", modalDesc: "நீங்கள் எப்படி வேலை செய்ய விரும்புகிறீர்கள்?",
                 riderBtn: "ஆட்டோ / இ-ரிக்‌ஷா ஓட்டுநர்", sawariBtn: "பய பயணி",
                 bikeRiderBtn: "🏍️ பைக் ஓட்டுநர் (காலை 6 முதல் மாலை 7)", bikeSawariBtn: "🙋‍♂️ பைக் பயணி (காலை 6 முதல் மாலை 7)",
+                disclaimer: "நிபந்தனைகள் மற்றும் மறுப்பு: இந்த பயன்பாடு சுயாதீன பயனர்களை இணைக்கும் நெட்வொர்க்கிங் டைரக்டரி மட்டுமே. இது டாக்சி புக்கிங் அல்லது போக்குவரத்து சேவை அல்ல. செயலி எந்த கமிஷனும் எடுப்பதில்லை. பயணத்தின் போது பாதுகாப்பிற்கு பயனர்களே முழு பொறுப்பு.",
                 otpTitle: "மொபைல் சரிபார்ப்பு", otpDesc: "உங்கள் 10 இலக்க மொபைல் எண் மற்றும் OTP (குறியீடு: 7317) உள்ளிடவும்.",
                 otpBtn: "சரிபார்த்து தொடரவும்", loading: "ஏற்றுகிறது...",
                 statusRider: "உங்கள் தொலைபேசியை வட திசையை நோக்கி வைத்து வரைபடத்தைப் பார்க்கவும்",
@@ -269,6 +280,7 @@
                 modalTitle: "మోడ్‌ను ఎంచుకోండి", modalDesc: "మీరు ఏ విధంగా పని చేయాలనుకుంటున్నారు?",
                 riderBtn: "ఆటో / ఇ-రిక్షా డ్రైవర్", sawariBtn: "ఆటో ప్రయాణీకుడు",
                 bikeRiderBtn: "🏍️ బైక్ డ్రైవర్ (ఉదయం 6 నుండి సాయంత్రం 7)", bikeSawariBtn: "🙋‍♂️ బైక్ ప్రయాణీకుడు (ఉదయం 6 నుండి సాయంత్రం 7)",
+                disclaimer: "నిబంధనలు & నిరాకరణ: ఈ యాప్ కేవలం స్వతంత్ర వినియోగదారులను కనెక్ట్ చేసే నెట్‌వర్కింగ్ డైరెక్టరీ మాత్రమే. ఇది ట్యాక్సి బుకింగ్ లేదా రవాణా సేవ కాదు. యాప్ ఎటువంటి కమిషన్ తీసుకోదు. ప్రయాణంలో భద్రతకు వినియోగదారులే పూర్తిగా బాధ్యులు.",
                 otpTitle: "మొబైల్ ధృవీకరణ", otpDesc: "దయచేసి మీ 10 అంకెల మొబైల్ నంబర్ మరియు OTP (కోడ్: 7317) నమోదు చేయండి.",
                 otpBtn: "ధృవీకరించి కొనసాగించు", loading: "లోడ్ అవుతోంది...",
                 statusRider: "మీ ఫోన్‌ను ఉత్తర దిశ వైపు ఉంచి మ్యాప్‌ను చూడండి",
@@ -281,14 +293,15 @@
                 chatBrokenSawari: "కనెక్షన్ పోయింది - ఫోన్‌ను ఉత్తరం వైపు ఉంచి తాకండి", reqSentText: "⏳ అభ్యర్థన పంపబడింది...",
                 reqBtnText: "📲 అభ్యర్థన పంపు", myLocText: "<b>మీ స్థానం</b>", myDestText: "<b>మీ గమ్యస్థానం</b>",
                 destSetText: "గమ్యస్థానం సెట్ చేయబడింది!", reqToast: "అభ్యర్థన విజయవంతంగా పంపబడింది!",
-                northWord: "ఉత్తరం", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
+                northWord: "ఉత్తரம்", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
                 chatPlaceholder: "సందేశాన్ని టైప్ చేయండి...", voiceBtnText: "🎤 వాయిస్ రికార్డ్", voiceRecording: "🔴 రికార్డింగ్...",
-                voiceRecorded: "✅ రికಾರ್డ్ చేయబడింది"
+                voiceRecorded: "✅ రికార్డ్ చేయబడింది"
             },
             mr: {
                 modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
                 riderBtn: "ऑटो / ई-रिक्षा चालक", sawariBtn: "ऑटो प्रवासी",
                 bikeRiderBtn: "🏍️ बाईक चालक (सकाळी 6 ते संध्याकाळी 7)", bikeSawariBtn: "🙋‍♂️ बाईक प्रवासी (सकाळी 6 ते संध्याकाळी 7)",
+                disclaimer: "अटी आणि अस्वीकरण: हे अॅप केवळ स्वतंत्र वापरकर्त्यांना जोडणारी नेटवर्किंग डायरेक्टरी आहे. ही कोणतीही टॅक्सी बुकिंग किंवा वाहतूक सेवा नाही. अॅप कोणतेही कमिशन घेत नाही. प्रवासादरम्यान सुरक्षेची संपूर्ण जबाबदारी वापरकर्त्यांची स्वतःची असेल.",
                 otpTitle: "मोबाईल सत्यापण", otpDesc: "कृपया तुमचा 10 अंकी मोबाईल नंबर आणि OTP (कोड: 7317) प्रविष्ट करा.",
                 otpBtn: "तपासा आणि पुढे जा", loading: "लोड होत आहे...",
                 statusRider: "तुमचा फोन नेहमी उत्तर दिशेला ठेवून नकाशा पहा",
@@ -309,6 +322,7 @@
                 modalTitle: "মোড নির্বাচন করুন", modalDesc: "আপনি কোন হিসেবে কাজ করতে চান?",
                 riderBtn: "অটো / ই-রিকশা চালক", sawariBtn: "যাত্রী",
                 bikeRiderBtn: "🏍️ বাইক চালক (সকাল ৬ থেকে সন্ধ্যা ৭)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্রী (সকাল ৬ থেকে সন্ধ্যা ৭)",
+                disclaimer: "শর্তাবলী এবং অস্বীকৃতি: এই অ্যাপটি শুধুমাত্র স্বাধীন ব্যবহারকারীদের সংযোগকারী একটি নেটওয়ার্কিং ডিরেক্টরি। এটি কোনো ট্যাক্সি বুকিং বা পরিবহন পরিষেবা নয়। অ্যাপ কোনো কমিশন নেয় না। ভ্রমণের সময় নিরাপত্তার সম্পূর্ণ দায়িত্ব ব্যবহারকারীদের নিজস্ব হবে।",
                 otpTitle: "মোবাইল যাচাইকরণ", otpDesc: "দয়া করে আপনার ১০ অঙ্কের মোবাইল নম্বর এবং ওটিপি (কোড: ৭৩১৭) দিন।",
                 otpBtn: "যাচাই করুন এবং এগিয়ে যান", loading: "লোড হচ্ছে...",
                 statusRider: "আপনার ফোনটি সর্বদা উত্তর দিকে রেখে মানচিত্র দেখুন",
@@ -329,6 +343,7 @@
                 modalTitle: "ಮೋಡ್ ಆಯ್ಕೆಮಾಡಿ", modalDesc: "ನೀವು ಯಾವ ರೂಪದಲ್ಲಿ ಕೆಲಸ ಮಾಡಲು ಬಯಸುತ್ತೀರಿ?",
                 riderBtn: "ಆಟೋ / ಇ-ರಿಕ್ಷಾ ಚಾಲಕ", sawariBtn: "ಪ್ರಯಾಣಿಕ",
                 bikeRiderBtn: "🏍️ ಬೈಕ್ ಚಾಲಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)", bikeSawariBtn: "🙋‍♂️ ಬೈಕ್ ಪ್ರಯಾಣಿಕ (ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ಸಂಜೆ 7)",
+                disclaimer: "ನಿಯಮಗಳು ಮತ್ತು ಹಕ್ಕುತ್ಯಾಗ: ಈ ಅಪ್ಲಿಕೇಶನ್ ಸ್ವತಂತ್ರ ಬಳಕೆದಾರರನ್ನು ಸಂಪರ್ಕಿಸುವ ನೆಟ್‌ವರ್ಕಿಂಗ್ ಡೈರೆಕ್ಟರಿ ಮಾತ್ರ. ಇದು ಟ್ಯಾಕ್ಸಿ ಬುಕಿಂಗ್ ಅಥವಾ ಸಾರಿಗೆ ಸೇವೆಯಲ್ಲ. ಅಪ್ಲಿಕೇಶನ್ ಯಾವುದೇ ಕಮಿಷನ್ ಪಡೆಯುವುದಿಲ್ಲ. ಪ್ರಯಾಣದ ಸಮಯದಲ್ಲಿ ಸುರಕ್ಷತೆಯ ಸಂಪೂರ್ಣ ಜವಾಬ್ದಾರಿ ಬಳಕೆದಾರರದ್ದೇ ಆಗಿರುತ್ತದೆ.",
                 otpTitle: "ಮೊಬೈಲ್ ಪರಿಶೀಲನೆ", otpDesc: "ದಯವಿಟ್ಟು ನಿಮ್ಮ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಮತ್ತು OTP (ಕೋಡ್: 7317) ನಮೂದಿಸಿ.",
                 otpBtn: "ಪರಿಶೀಲಿಸಿ ಮುಂದುವರಿಸಿ", loading: "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
                 statusRider: "ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ಉತ್ತರ ದಿಕ್ಕಿಗೆ ಇಟ್ಟುಕೊಂಡು ನಕ್ಷೆಯನ್ನು ನೋಡಿ",
@@ -349,6 +364,7 @@
                 modalTitle: "મોડ પસંદ કરો", modalDesc: "તમે કયા રૂપે કામ કરવા માંગો છો?",
                 riderBtn: "ઓટો / ઇ-રિક્ષા ડ્રાઇવર", sawariBtn: "પ્રવાસી",
                 bikeRiderBtn: "🏍️ બાઇક ડ્રાઇવર (સવારે 6 થી સાંજ 7)", bikeSawariBtn: "🙋‍♂️ બાઇક પ્રવાસી (સવારે 6 થી સાંજ 7)",
+                disclaimer: "શરતો અને અસ્વીકરણ: આ એપ્લિકેશન માત્ર સ્વતંત્ર વપરાશકર્તાઓને જોડતી નેટવર્કિંગ ડિરેક્ટરી છે. આ કોઈ ટેક્સી બુકિંગ કે પરિવહન સેવા નથી. એપ્લિકેશન કોઈ કમિશન લેતી નથી. મુસાફરી દરમિયાન સલામતીની સંપૂર્ણ જવાબદારી વપરાશકર્તાઓની પોતાની રહેશે.",
                 otpTitle: "મોબાઇલ ચકાસણી", otpDesc: "કૃપા કરીને તમારો 10 અંકનો મોબાઇલ નંબર અને OTP (કોડ: 7317) દાખલ કરો.",
                 otpBtn: "ચકાસો અને આગળ વધો", loading: "લોડ થઈ રહ્યું છે...",
                 statusRider: "તમારા ફોનને હંમેશા ઉત્તર દિશા તરફ રાખીને નકશો જુઓ",
@@ -369,6 +385,7 @@
                 modalTitle: "മോഡ് തിരഞ്ഞെടുക്കുക", modalDesc: "നിങ്ങൾക്ക് എങ്ങനെ ജോലി ചെയ്യണം?",
                 riderBtn: "ഓട്ടോ / ഇ-റിക്ഷ ഡ്രൈവർ", sawariBtn: "യാത്രികൻ",
                 bikeRiderBtn: "🏍️ ബൈക്ക് ഡ്രൈവർ (രാവിലെ 6 മുതൽ വൈകുന്നേരം 7 വരെ)", bikeSawariBtn: "🙋‍♂️ ബൈക്ക് യാത്രികൻ (രാവിലെ 6 മുതൽ വൈകുന്നേരം 7 വരെ)",
+                disclaimer: "നിബന്ധനകളും നിരാകരണവും: ഈ ആപ്പ് സ്വതന്ത്ര ഉപയോക്താക്കളെ ബന്ധിപ്പിക്കുന്ന ഒരു നെറ്റ്‌വർക്കിംഗ് ഡയറക്ടറി മാത്രമാണ്. ഇതൊരു ടാക്സി ബുക്കിംഗோ ഗതാഗത സേവനമോ അല്ല. ആപ്പ് കമ്മീഷൻ ഒന്നും ഈടാക്കുന്നില്ല. യാത്രയ്ക്കിടയിലെ സുരക്ഷയുടെ പൂർണ്ണ ഉത്തരവാദിത്തം ഉപയോക്താക്കൾക്ക് മാത്രമായിരിക്കും.",
                 otpTitle: "മൊബൈൽ സ്ഥിരീകരണം", otpDesc: "നിങ്ങളുടെ 10 അക്ക മൊബൈൽ നമ്പറും OTP (കോഡ്: 7317) നൽകുക.",
                 otpBtn: "സ്ഥിരീകരിച്ച് മുന്നോട്ട് പോവുക", loading: "ലോഡ് ചെയ്യുന്നു...",
                 statusRider: "ഫോൺ എപ്പോഴും വടക്കോട്ട് പിടിച്ച് മാപ്പ് കാണുക",
@@ -389,6 +406,7 @@
                 modalTitle: "ମୋଡ୍ ଚୟନ କରନ୍ତୁ", modalDesc: "ଆପଣ କିପରି କାମ କରିବାକୁ ଚାହାଁନ୍ତି?",
                 riderBtn: "ଅଟୋ / ଇ-ରକ୍ଷା ଚାଳକ", sawariBtn: "ଯାତ୍ରୀ",
                 bikeRiderBtn: "🏍️ ବାଇକ୍ ଚାଳକ (ସକାଳ 6 ରୁ ସନ୍ଧ୍ୟା 7)", bikeSawariBtn: "🙋‍♂️ ବାଇକ୍ ଯାତ୍ରୀ (ସକାଳ 6 ରୁ ସନ୍ଧ୍ୟା 7)",
+                disclaimer: "ସର୍ତ୍ତାବଳୀ ଏବଂ ଅସ୍ୱୀକାର: ଏହି ଆପ୍ କେବଳ ସ୍ୱାଧୀନ ବ୍ୟବହାରକାରୀଙ୍କୁ ସଂଯୋଗ କରୁଥିବା ଏକ ନେଟୱାର୍କିଂ ଡାଇରେକ୍ଟୋରୀ ଅଟେ। ଏହା କୌଣସି ଟ୍ୟାକ୍ସି ବୁକିଂ କିମ୍ବା ପରିବହନ ସେବା ନୁହେଁ। ଆପ୍ କୌଣସି କମିଶନ ନିଏ ନାହିଁ। ଯାତ୍ରା ସମୟରେ ସୁରକ୍ଷାର ସମ୍ପୂର୍ଣ୍ଣ ଦାୟିତ୍ୱ ବ୍ୟବହାରକାରୀଙ୍କ ନିଜର ରହିବ।",
                 otpTitle: "ମୋବାଇଲ୍ ଯାଞ୍ଚ", otpDesc: "ଦୟାକରି ଆପଣଙ୍କର 10 ଅଙ୍କ ବିଶିଷ୍ଟ ମୋବାଇଲ୍ ନମ୍ବର ଏବଂ OTP (କୋଡ୍: 7317) ଦିଅନ୍ତୁ।",
                 otpBtn: "ଯାଞ୍ଚ କରି ଆଗକୁ ବ଼୍ହନ୍ତୁ", loading: "ଲୋଡ୍ ହେଉଛି...",
                 statusRider: "ଆପଣଙ୍କର ଫୋନ୍ ସର୍ବଦା ଉତ୍ତର ଦିଗକୁ ରଖି ମ୍ୟାପ୍ ଦେଖନ୍ତୁ",
@@ -409,6 +427,7 @@
                 modalTitle: "ਮੋਡ ਚੁਣੋ", modalDesc: "ਤੁਸੀਂ ਕਿਸ ਰੂਪ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
                 riderBtn: "ਆਟੋ / ਈ-ਰਿਕਸ਼ਾ ਡਰਾਈਵਰ", sawariBtn: "ਸਵਾਰੀ",
                 bikeRiderBtn: "🏍️ ਬਾਈਕ ਡਰਾਈਵਰ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)", bikeSawariBtn: "🙋‍♂️ ਬਾਈਕ ਸਵਾਰੀ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)",
+                disclaimer: "ਸ਼ਰਤਾਂ ਅਤੇ ਬੇਦਾਵਾ: ਇਹ ਐਪ ਸਿਰਫ਼ ਸੁਤੰਤਰ ਉਪਭੋਗਤਾਵਾਂ ਨੂੰ ਆਪਸ ਵਿੱਚ ਜੋੜਨ ਵਾਲੀ ਇੱਕ ਨੈੱਟਵਰਕਿੰਗ ਡਾਇਰੈক্টਰੀ ਹੈ। ਇਹ ਕੋਈ ਟੈਕਸੀ ਬੁਕਿੰਗ ਜਾਂ ਆਵਾਜਾਈ ਸੇਵਾ ਨਹੀਂ ਹੈ। ਐਪ ਕੋਈ ਕਮিশਨ ਨਹੀਂ ਲੈਂਦਾ। ਯਾਤਰਾ ਦੌਰਾਨ ਸੁਰੱਖਿਆ ਦੀ ਪੂਰੀ ਜ਼ਿੰਮੇਵਾਰੀ ਉਪਭੋਗਤਾਵਾਂ ਦੀ ਆਪਣੀ ਹੋਵੇਗੀ।",
                 otpTitle: "ਮੋਬਾਈਲ ਤਸਦੀਕ", otpDesc: "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ 10 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਅਤੇ OTP (ਕੋਡ: 7317) ਦਰਜ ਕਰੋ।",
                 otpBtn: "तਸਦੀਕ ਕਰੋ ਅਤੇ ਅੱਗੇ ਵਧੋ", loading: "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
                 statusRider: "ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਹਮੇਸ਼ਾ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ",
@@ -420,7 +439,7 @@
                 chatConnected: "ਤੁਸੀਂ ਆਪਸ ਵਿੱਚ ਜੁੜ ਗਏ ਹੋ।", chatBroken: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖੋ",
                 chatBrokenSawari: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖ ਕੇ ਛੋਹਵੋ", reqSentText: "⏳ ਬੇਨਤੀ ਭੇਜੀ गई...",
                 reqBtnText: "📲 ਬੇਨਤੀ ਭੇਜੋ", myLocText: "<b>ਤੁਹਾਡਾ ਸਥਾਨ</b>", myDestText: "<b>ਤੁਹਾਡੀ ਮੰਜ਼ਿਲ</b>",
-                destSetText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਹੋ گئی ہے!", reqToast: "ਬੇਨਤੀ ਸਫਲਤਾਪૂર્વਕ ਭ भेजी ਗਈ ਹੈ!",
+                destSetText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਹੋ गई है!", reqToast: "ਬੇਨਤੀ ਸਫਲਤਾਪૂર્વਕ ਭ भेजी ਗਈ ਹੈ!",
                 northWord: "ਉੱਤਰ", southWord: "ਦੱਖਣ", distText: "ਦੂਰੀ", kmText: "ਕિਮੀ",
                 chatPlaceholder: " ਸੁਨੇਹਾ ਲਿਖੋ...", voiceBtnText: "🎤 ਵాయిਸ ਰਿਕਾਰਡ", voiceRecording: "🔴 ਰਿਕਾਰਡਿੰਗ...",
                 voiceRecorded: "✅ ਰਿਕਾਰਡ ਹੋ ਗਿਆ"
@@ -429,18 +448,19 @@
                 modalTitle: "মড নিৰ্বাচন কৰক", modalDesc: "আপুনি কোন ৰূপত কাম কৰিব বিচাৰে?",
                 riderBtn: "অটো / ই-ৰিক্সা চালক", sawariBtn: "যাত্ৰী",
                 bikeRiderBtn: "🏍️ বাইক চালক (পুৱা ৬ পৰা সন্ধ্যা ৭)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্ৰী (পুৱা ৬ পৰা সন্ধ্যা ৭)",
+                disclaimer: "চৰ্তাৱলী আৰু অস্বীকাৰ: এই এপটো কেৱল স্বাধীন ব্যৱহাৰকাৰীসকলক সংযোগ কৰা এটা নেটৱৰ্কিং ডাইৰেক্টৰী হে। এয়া কোনো টেক্সি বুকিং বা পৰিবহণ সেৱা নহয়। এপে কোনো কমিচন নিলায়। যাত্ৰাৰ সময়ত নিৰাপত্তাৰ সম্পূৰ্ণ দায়িত্ব ব্যৱহাৰকাৰীসকলৰ নিজৰ হ'ব।",
                 otpTitle: "মবাইল প্ৰমাণীকৰণ", otpDesc: "অনুগ্রহ কৰি আপোনাৰ ১০ টা অংকৰ মবাইল নম্বৰ আৰু OTP (কোড: ৭৩১৭) দিয়ক।",
                 otpBtn: "প্ৰমাণীকৰণ কৰি আগবাঢ়ক", loading: "লোড হৈ আছে...",
                 statusRider: "আপোনাৰ ফোনটো সদায় উত্তৰ দিশলৈ ৰাখি মেপখন চাওক",
                 statusSawari: "ফোনটো উত্তৰ দিশলৈ ৰাখি মেপ চাওক আৰু ক'লৈ যাব লাগিব স্পৰ্শ কৰক",
                 counterRider: "চালক", counterSawari: "যাত্ৰী",
-                reqMsg: "🙋‍♂️ নতুন যাত্ৰীৰ অনুৰোধ আহিছে!", acceptBtn: "গ্ৰহଣ কৰক", rejectBtn: "প্ৰত্যাখ্যাত কৰক",
+                reqMsg: "🙋‍♂️ নতুন যাত্ৰীৰ অনুৰোধ আহিছে!", acceptBtn: "গ্ৰହଣ কৰক", rejectBtn: "প্ৰত্যাখ্যাত কৰক",
                 chatTitle: "💬 প্ৰাইভেট চাট আৰু লাইভ ট্ৰেকিং", closeChat: "✕ বন্ধ কৰক", sendBtn: "প্ৰেবণ কৰক",
                 locationBtn: "📍 অৱস্থান শ্বেয়াৰ কৰক", destText: "গন্তব্যস্থান নিৰ্ধাৰণ কৰিবলৈ মেপত টেপ কৰক", resetBtn: "ৰীছেট",
                 chatConnected: "আপুনি পৰস্পৰ সংযুক্ত হৈছে।", chatBroken: "সংযোগ বিচ্ছিন্ন - ফোন উত্তৰ দিশত ৰাখক",
                 chatBrokenSawari: "সংযোগ বিচ্ছিন্ন - ফোন উত্তৰত ৰাখি স্পৰ্শ কৰক", reqSentText: "⏳ অনুৰোধ প্ৰেসন কৰা হ'ল...",
                 reqBtnText: "📲 অনুৰোধ প্ৰেৰণ কৰক", myLocText: "<b>আপোনাৰ অৱস্থান</b>", myDestText: "<b>আপোনাৰ গন্তব্যস্থান</b>",
-                destSetText: "গন্তব্যস্থান নিৰ্ধাৰণ কৰা হ'ল!", reqToast: "অনুৰোধ সফলভাৱে প্ৰেৰণ কৰা হ'ল!",
+                destSetText: "গন্তব্যস্থান নিৰ্ধাৰଣ কৰা হ'ল!", reqToast: "অনুৰোধ সফলভাৱে প্ৰেৰণ কৰা হ'ল!",
                 northWord: "উত্তৰ", southWord: "দক্ষিণ", distText: "দূৰত্ব", kmText: "কি.মি.",
                 chatPlaceholder: "বাৰ্তা টাইপ কৰক...", voiceBtnText: "🎤 ভয়েচ ৰেকৰ্ড", voiceRecording: "🔴 ৰেকৰ্ডিং চলি আছে...",
                 voiceRecorded: "✅ ৰেকৰ্ড হ'ল"
@@ -449,6 +469,7 @@
                 modalTitle: "मोड चुणो", modalDesc: "आप कै रूप में काम करणा चाहो हो?",
                 riderBtn: "ऑटो / ई-रिक्शा चालक", sawariBtn: "यात्री (सवारी)",
                 bikeRiderBtn: "🏍️ बाइक चालक (सुब ६ रू शाम ७)", bikeSawariBtn: "🙋‍♂️ बाइक सवारी",
+                disclaimer: "शर्तें अर अस्वीकरण: यो ऐप केवल स्वतंत्र उपयोगकर्ताओं ने आपस में जोड़ण वाळी एक नेटवर्किंग डायरेक्टरी है। ई कोई टैक्सी बुकिंग या परिवहन सेवा कोनी है। ऐप कोई कमीशन कोनी लेवे। सफर का दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की खुद की होगी।",
                 otpTitle: "मोबाइल सत्यापन", otpDesc: "कृपया आप को 10 अंको को मोबाइल नंबर अर OTP (कोड: 7317) लगावड़ो।",
                 otpBtn: "सत्यापित करो अर आगे बढ़ो", loading: "लोड हो रह्यो है...",
                 statusRider: "फोन ने हमेशा उत्तर दिशा की तरफ राख्न ने मेप देखनो",
@@ -469,6 +490,7 @@
                 modalTitle: "Seleccionar Modo", modalDesc: "¿Cómo te gustaría trabajar?",
                 riderBtn: "Conductor de Auto / E-Rickshaw", sawariBtn: "Pasajero",
                 bikeRiderBtn: "🏍️ Conductor de Moto (6 AM a 7 PM)", bikeSawariBtn: "🙋‍♂️ Pasajero de Moto (6 AM a 7 PM)",
+                disclaimer: "Términos y descargo de responsabilidad: Esta aplicación es solo un directorio de redes que conecta a usuarios independientes. No es un servicio de reserva de taxis ni de transporte. La aplicación no cobra ninguna comisión. Los usuarios son los únicos responsables de su propia seguridad durante el viaje.",
                 otpTitle: "Verificación Móvil", otpDesc: "Por favor ingresa tu número móvil de 10 dígitos y OTP (Código: 7317).",
                 otpBtn: "Verificar y Continuar", loading: "Cargando...",
                 statusRider: "Mantén tu teléfono apuntando hacia el Norte y mira el mapa",
@@ -489,6 +511,7 @@
                 modalTitle: "选择模式", modalDesc: "您希望以什么身份工作？",
                 riderBtn: "自动三轮车/电动三轮车司机", sawariBtn: "乘客",
                 bikeRiderBtn: "🏍️ 摩托车手（上午 6 点至晚上 7 点）", bikeSawariBtn: "🙋‍♂️ 摩托车乘客（上午 6 点至晚上 7 点）",
+                disclaimer: "条款与免责声明：本应用仅是一个连接独立用户的网络目录，并非出租车预约或运输服务。本应用不收取任何佣金。用户须自行承担旅行期间的安全责任。",
                 otpTitle: "手机验证", otpDesc: "请输入您的 10 位手机号码和验证码（代码：7317）。",
                 otpBtn: "验证并继续", loading: "加载中...",
                 statusRider: "请将手机朝向正北方查看地图",
@@ -509,6 +532,7 @@
                 modalTitle: "اختر الوضع", modalDesc: "كيفودك أن تعمل؟",
                 riderBtn: "سائق توك توك / ركشة", sawariBtn: "راكب",
                 bikeRiderBtn: "🏍️ سائق دراجة نارية (6 صباحاً إلى 7 مساءً)", bikeSawariBtn: "🙋‍♂️ راكب دراجة نارية (6 صباحاً إلى 7 مساءً)",
+                disclaimer: "الشروط وإخلاء المسؤولية: هذا التطبيق هو مجرد دليل شبكي يربط بين المستخدمين المستقلين. ليس خدمة حجز سيارات أجرة أو نقل. التطبيق لا يأخذ أي عمولة. يتحمل المستخدمون وحدهم المسؤولية الكاملة عن سلامتهم أثناء السفر.",
                 otpTitle: "التحقق من الهاتف المحمول", otpDesc: "الرجاء إدخال رقم هاتفك المحمول المكون من 10 أرقام ورمز التحقق (الرمز: 7317).",
                 otpBtn: "تحقق والمتابعة", loading: "جاري التحميل...",
                 statusRider: "اجعل هاتفك يشير دائماً نحو الشمال وانظر إلى الخريطة",
@@ -529,6 +553,7 @@
                 modalTitle: "Selecionar Modo", modalDesc: "Como você gostaria de trabalhar?",
                 riderBtn: "Motorista de Auto / E-Rickshaw", sawariBtn: "Passageiro",
                 bikeRiderBtn: "🏍️ Motociclista (6h às 19h)", bikeSawariBtn: "🙋‍♂️ Passageiro de Moto (6h às 19h)",
+                disclaimer: "Termos e Isenção de Responsabilidade: Este aplicativo é apenas um diretório de rede que conecta usuários independentes. Não é um serviço de reserva de táxi ou transporte. O aplicativo não cobra nenhuma comissão. Os usuários são os únicos responsáveis pela sua própria segurança durante a viagem.",
                 otpTitle: "Verificação Móvel", otpDesc: "Por favor, insira seu número de celular de 10 dígitos e o OTP (Código: 7317).",
                 otpBtn: "Verificar e Prosseguir", loading: "Carregando...",
                 statusRider: "Mantenha seu telefone apontado para o Norte e veja o mapa",
@@ -549,6 +574,7 @@
                 modalTitle: "Sélectionner le Mode", modalDesc: "Comment souhaitez-vous travailler ?",
                 riderBtn: "Conducteur Auto / E-Rickshaw", sawariBtn: "Passager",
                 bikeRiderBtn: "🏍️ Motard (6h00 à 19h00)", bikeSawariBtn: "🙋‍♂️ Passager moto (6h00 à 19h00)",
+                disclaimer: "Conditions et Avis de non-responsabilité : Cette application est simplement un annuaire de mise en réseau connectant des utilisateurs indépendants. Ce n'est pas un service de réservation de taxi ou de transport. L'application ne prend aucune commission. Les utilisateurs sont seuls responsables de leur propre sécurité pendant le voyage.",
                 otpTitle: "Vérification Mobile", otpDesc: "Veuillez entrer votre numéro de mobile à 10 chiffres et l'OTP (Code : 7317).",
                 otpBtn: "Vérifier et continuer", loading: "Chargement...",
                 statusRider: "Gardez votre téléphone pointé vers le Nord et regardez la carte",
@@ -569,6 +595,7 @@
                 modalTitle: "Modus wählen", modalDesc: "Wie möchten Sie arbeiten?",
                 riderBtn: "Auto / E-Rikscha Fahrer", sawariBtn: "Fahrgast",
                 bikeRiderBtn: "🏍️ Motorradfahrer (6:00 bis 19:00 Uhr)", bikeSawariBtn: "🙋‍♂️ Motorrad-Fahrgast (6:00 bis 19:00 Uhr)",
+                disclaimer: "Bedingungen und Haftungsausschluss: Diese App ist lediglich ein Netzwerkverzeichnis, das unabhängige Nutzer verbindet. Es handelt sich weder um einen Taxibuchungs- noch um einen Transportdienst. Die App nimmt keine Provision. Die Nutzer sind während der Reise allein für ihre eigene Sicherheit verantwortlich.",
                 otpTitle: "Handy-Verifizierung", otpDesc: "Bitte geben Sie Ihre 10-stellige Handynummer und den OTP ein (Code: 7317).",
                 otpBtn: "Bestätigen und fortfahren", loading: "Wird geladen...",
                 statusRider: "Halten Sie Ihr Handy nach Norden ausgerichtet und betrachten Sie die Karte",
@@ -589,6 +616,7 @@
                 modalTitle: "モード選択", modalDesc: "どのように働きますか？",
                 riderBtn: "オート / Eリキシャ運転手", sawariBtn: "乗客",
                 bikeRiderBtn: "🏍️ バイクライダー (午前6時〜午後7時)", bikeSawariBtn: "🙋‍♂️ バイク乗客 (午前6時〜午後7時)",
+                disclaimer: "利用規約および免責事項：このアプリは、独立したユーザー同士をつなぐ単なるネットワーキングディレクトリです。タクシー配車や運送サービスではありません。アプリは手数料を一切徴収しません。移動中の安全については、ユーザー自身の責任となります。",
                 otpTitle: "携帯電話認証", otpDesc: "10桁の携帯電話番号とOTP（コード: 7317）を入力してください。",
                 otpBtn: "確認して進む", loading: "読み込み中...",
                 statusRider: "スマホを常に北に向けた状態でマップを確認してください",
@@ -609,6 +637,7 @@
                 modalTitle: "Выберите режим", modalDesc: "Как вы хотите работать?",
                 riderBtn: "Водитель авто / рикши", sawariBtn: "Пассажир",
                 bikeRiderBtn: "🏍️ Мотоциклист (с 6:00 до 19:00)", bikeSawariBtn: "🙋‍♂️ Пассажир мотоцикла (с 6:00 до 19:00)",
+                disclaimer: "Условия и отказ от ответственности: Это приложение является лишь сетевым каталогом, связывающим независимых пользователей. Это не служба заказа такси или транспортных услуг. Приложение не взимает комиссию. Пользователи несут полную ответственность за собственную безопасность во время поездки.",
                 otpTitle: "Проверка номера", otpDesc: "Введите свой 10-значный номер телефона и OTP (Код: 7317).",
                 otpBtn: "Подтвердить и продолжить", loading: "Загрузка...",
                 statusRider: "Держите телефон лицом на Север и смотрите на карту",
@@ -629,10 +658,11 @@
                 modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmak istersiniz?",
                 riderBtn: "Oto / E-Rickshaw Sürücüsü", sawariBtn: "Yolcu",
                 bikeRiderBtn: "🏍️ Motosiklet Sürücüsü (06:00 - 19:00)", bikeSawariBtn: "🙋‍♂️ Motosiklet Yolcusu (06:00 - 19:00)",
-                otpTitle: "Mobil Doğrulama", otpDesc: "Lütfen 10 haneli cep telefonu numaranızı و OTP'yi (Kod: 7317) girin.",
+                disclaimer: "Şartlar ve Sorumluluk Reddi: Bu uygulama, yalnızca bağımsız kullanıcıları birbirine bağlayan bir ağ dizinidir. Bir taksi rezervasyonu veya taşımacılık hizmeti değildir. Uygulama herhangi bir komisyon almaz. Yolculuk sırasında güvenliğin tüm sorumluluğu tamamen kullanıcıların kendisine aittir.",
+                otpTitle: "Mobil Doğrulama", otpDesc: "Lütfen 10 haneli cep telefonu numaranızı ve OTP'yi (Kod: 7317) girin.",
                 otpBtn: "Doğrula و İlerle", loading: "Yükleniyor...",
                 statusRider: "Telefonunuzu her zaman kuzey yönüne tutarak haritayı görüntüleyin",
-                statusSawari: "Telefonunuzu kuzey yönüne tutুন, haritaya bakın و gitmek istediğiniz yere dokunun",
+                statusSawari: "Telefonunuzu kuzey yönüne tutun, haritaya bakın و gitmek istediğiniz yere dokunun",
                 counterRider: "Sürücüler", counterSawari: "Yolcular",
                 reqMsg: "🙋‍♂️ Yeni yolcu talebi geldi!", acceptBtn: "Kabul Et", rejectBtn: "Reddet",
                 chatTitle: "💬 Özel Sohbet و Canlı Takip", closeChat: "✕ Kapat", sendBtn: "Gönder",
@@ -667,6 +697,7 @@
             if(document.getElementById('btnSawariText')) document.getElementById('btnSawariText').innerText = t.sawariBtn;
             if(document.getElementById('btnBikeRiderText')) document.getElementById('btnBikeRiderText').innerText = t.bikeRiderBtn;
             if(document.getElementById('btnBikeSawariText')) document.getElementById('btnBikeSawariText').innerText = t.bikeSawariBtn;
+            if(document.getElementById('disclaimerText')) document.getElementById('disclaimerText').innerText = t.disclaimer;
 
             if(document.getElementById('otpTitleText')) document.getElementById('otpTitleText').innerText = t.otpTitle;
             if(document.getElementById('otpDescText')) document.getElementById('otpDescText').innerText = t.otpDesc;
@@ -1241,7 +1272,6 @@
             const box = document.getElementById('chatMessages');
             const msgId = 'msg_' + Math.random().toString(36).substring(2, 9);
             
-            // Text-to-Speech (TTS) बटन जोड़ा गया है ताकि अनपढ़ लोग मैसेज को सुनकर समझ सकें
             let htmlContent = `<div id="${msgId}" style="margin-bottom: 6px; border-bottom: 1px solid #eee; padding-bottom: 4px;">` +
                               `<b>${sender}:</b> <span>${text}</span> ` +
                               `<button onclick="speakText('${msgId}')" style="background:#2563eb; color:white; border:none; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer; margin-left:6px;" title="सुनें">🔊 सुनें</button>` +
@@ -1250,13 +1280,12 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        // टेक्स्ट को ऑडियो में बोलकर सुनाने वाला फंक्शन (Text-to-Speech)
         function speakText(msgId) {
             const container = document.getElementById(msgId);
             if (container) {
                 const textSpan = container.querySelector('span');
                 if (textSpan && 'speechSynthesis' in window) {
-                    window.speechSynthesis.cancel(); // पिछली कोई आवाज़ चल रही हो तो रोकें
+                    window.speechSynthesis.cancel();
                     const utterance = new SpeechSynthesisUtterance(textSpan.innerText);
                     utterance.lang = currentLang === 'hi' ? 'hi-IN' : 'en-US';
                     utterance.rate = 1.0;
@@ -1318,7 +1347,6 @@
                     btn.innerText = t.voiceRecording;
                     btn.classList.add('recording');
 
-                    // 15 सेकंड का टाइमर (15000 milliseconds)
                     recordingTimer = setTimeout(() => {
                         if (isRecording && mediaRecorder && mediaRecorder.state === "recording") {
                             mediaRecorder.stop();
