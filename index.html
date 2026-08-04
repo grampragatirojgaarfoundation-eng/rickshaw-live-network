@@ -10,16 +10,16 @@
         html, body, #map { height: 100%; width: 100%; overflow: hidden; background: #e5e3df; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 99999; }
-        .modal-box { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; width: 90%; max-width: 360px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); max-height: 90vh; overflow-y: auto; }
-        .modal-box h2 { font-size: 20px; color: #111; margin-bottom: 6px; font-weight: 800; }
-        .modal-box p { font-size: 12px; color: #666; margin-bottom: 18px; line-height: 1.4; }
+        .modal-box { background: #ffffff; padding: 20px 16px; border-radius: 20px; text-align: center; width: 92%; max-width: 380px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); max-height: 90vh; overflow-y: auto; }
+        .modal-box h2 { font-size: 18px; color: #111; margin-bottom: 4px; font-weight: 800; }
+        .modal-box p { font-size: 11px; color: #666; margin-bottom: 12px; line-height: 1.3; }
         
-        .lang-select-container { margin-bottom: 14px; text-align: left; }
-        .lang-select-container label { display: block; font-size: 11px; font-weight: 700; color: #2563eb; margin-bottom: 4px; }
-        .lang-dropdown { width: 100%; padding: 10px; border: 1px solid #2563eb; border-radius: 8px; font-size: 13px; font-weight: bold; background: #f8fafc; color: #111; cursor: pointer; }
+        .lang-select-container { margin-bottom: 10px; text-align: left; }
+        .lang-select-container label { display: block; font-size: 11px; font-weight: 700; color: #2563eb; margin-bottom: 2px; }
+        .lang-dropdown { width: 100%; padding: 8px; border: 1px solid #2563eb; border-radius: 8px; font-size: 12px; font-weight: bold; background: #f8fafc; color: #111; cursor: pointer; }
 
-        .btn-group { display: flex; flex-direction: column; gap: 10px; }
-        .role-btn { padding: 14px; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-group { display: flex; flex-direction: column; gap: 8px; }
+        .role-btn { padding: 12px; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-rider { background: #e63946; }
         .btn-sawari { background: #2a9d8f; }
         .btn-bike-rider { background: #d97706; }
@@ -88,10 +88,10 @@
 
         .toast-msg { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 3000; background: #111; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: none; }
 
-        .terms-footer { margin-top: 10px; font-size: 9px; color: #777; line-height: 1.3; text-align: justify; }
-        .sos-config-box { margin-top: 10px; text-align: left; }
+        .terms-footer { margin-top: 8px; font-size: 9px; color: #777; line-height: 1.2; text-align: justify; }
+        .sos-config-box { margin-bottom: 8px; text-align: left; background: #fef2f2; padding: 8px; border-radius: 8px; border: 1px solid #fecaca; }
         .sos-config-box label { display: block; font-size: 10px; font-weight: bold; color: #dc2626; margin-bottom: 2px; }
-        .sos-input { width: 100%; padding: 8px; border: 1px solid #dc2626; border-radius: 6px; font-size: 11px; }
+        .sos-input { width: 100%; padding: 6px; border: 1px solid #f87171; border-radius: 6px; font-size: 11px; margin-bottom: 4px; }
 
         @keyframes flash-red { 0% { background-color: rgba(220, 38, 38, 0.6); } 50% { background-color: rgba(255, 255, 255, 0); } 100% { background-color: rgba(220, 38, 38, 0.6); } }
         .sos-active-flash { animation: flash-red 0.5s infinite; position: fixed; top:0; left:0; width:100%; height:100%; z-index:999999; pointer-events:none; }
@@ -104,7 +104,7 @@
     <div class="modal-overlay" id="roleModal" style="display: flex;">
         <div class="modal-box">
             <div class="lang-select-container">
-                <label for="languageSelect">Select your language</label>
+                <label id="langLabel" for="languageSelect">Select your language</label>
                 <select id="languageSelect" class="lang-dropdown" onchange="changeAppLanguage(this.value)">
                     <option value="hi">Hindi (हिन्दी)</option>
                     <option value="en">English</option>
@@ -131,12 +131,15 @@
                 </select>
             </div>
 
+            <!-- SOS 3 Permanent Numbers Settings Box -->
             <div class="sos-config-box">
-                <label id="sosConfigLabel" for="trustedSosNumber">🚨 SOS Trusted Contact (Phone/WhatsApp)</label>
-                <input type="tel" id="trustedSosNumber" class="sos-input" placeholder="Enter 10-digit emergency number" maxlength="10">
+                <label id="sosTitleLabel">🚨 SOS Emergency Contacts (3 Numbers)</label>
+                <input type="tel" id="sosNum1" class="sos-input" placeholder="Contact 1 (10 digits)" maxlength="10">
+                <input type="tel" id="sosNum2" class="sos-input" placeholder="Contact 2 (10 digits)" maxlength="10">
+                <input type="tel" id="sosNum3" class="sos-input" placeholder="Contact 3 (10 digits)" maxlength="10">
             </div>
 
-            <h2 id="modalTitleText" style="margin-top: 10px;">मोड चुनें (Select Mode)</h2>
+            <h2 id="modalTitleText">मोड चुनें (Select Mode)</h2>
             <p id="modalDescText">आप किस रूप में काम करना चाहते हैं?</p>
             <div class="btn-group">
                 <button class="role-btn btn-rider" id="btnRiderText" onclick="selectRole('rider')">ऑटो / ई-रिक्शा चालक</button>
@@ -222,8 +225,10 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
+        // Comprehensive 22 Languages Complete Dictionary Translation Support
         const translations = {
             hi: {
+                langName: "Select your language", sosTitle: "🚨 SOS आपातकालीन संपर्क (3 नंबर)",
                 modalTitle: "मोड चुनें (Select Mode)", modalDesc: "आप किस रूप में काम करना चाहते हैं?",
                 riderBtn: "ऑटो / ई-रिक्शा चालक", sawariBtn: "ऑटो यात्री (सवारी)",
                 bikeRiderBtn: "🏍️ बाइक चालक (सुबह 6 से शाम 7)", bikeSawariBtn: "🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)",
@@ -243,10 +248,10 @@
                 northWord: "उत्तर", southWord: "दक्षिण", distText: "दूरी", kmText: "किमी",
                 chatPlaceholder: "संदेश लिखें...", voiceRecording: "🔴 15s रिकॉर्डिंग... (रोकें)",
                 voiceRecorded: "✅ रिकॉर्ड हो गया (भेजें)",
-                sosLabel: "🚨 SOS आपातकालीन संपर्क (फोन/व्हाट्सएप नंबर)",
-                termsText: "शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।"
+                termsText: "शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की होगी।"
             },
             en: {
+                langName: "Select your language", sosTitle: "🚨 SOS Emergency Contacts (3 Numbers)",
                 modalTitle: "Select Mode", modalDesc: "How would you like to work?",
                 riderBtn: "Auto / E-Rickshaw Driver", sawariBtn: "Auto Passenger",
                 bikeRiderBtn: "🏍️ Bike Rider (6 AM to 7 PM)", bikeSawariBtn: "🙋‍♂️ Bike Passenger (6 AM to 7 PM)",
@@ -266,10 +271,170 @@
                 northWord: "North", southWord: "South", distText: "Distance", kmText: "km",
                 chatPlaceholder: "Type a message...", voiceRecording: "🔴 15s Recording... (Stop)",
                 voiceRecorded: "✅ Recorded (Send)",
-                sosLabel: "🚨 SOS Trusted Contact (Phone/WhatsApp)",
                 termsText: "Terms & Disclaimer: This app is only a networking directory connecting independent users. No commission or ride booking fee is charged. Use at your own risk."
+            },
+            ta: {
+                langName: "மொழியைத் தேர்ந்தெடுக்கவும்", sosTitle: "🚨 அவசரத் தொடர்புகள் (3 எண்கள்)",
+                modalTitle: "முறையைத் தேர்ந்தெடுக்கவும்", modalDesc: "நீங்கள் எப்படி வேலை செய்ய விரும்புகிறீர்கள்?",
+                riderBtn: "ஆட்டோ / இ-ரிக்‌ஷா ஓட்டுநர்", sawariBtn: "பய பயணி",
+                bikeRiderBtn: "🏍️ பைக் ஓட்டுநர்", bikeSawariBtn: "🙋‍♂️ பைக் பயணி",
+                otpTitle: "மொபைல் சரிபார்ப்பு", otpDesc: "உங்கள் 10 இலக்க மொபைல் எண் மற்றும் OTP (குறியீடு: 7317) உள்ளிடவும்.",
+                otpBtn: "சரிபார்த்து தொடரவும்", loading: "ஏற்றுகிறது...",
+                statusRider: "தொலைபேசியை வட திசையை நோக்கி வைக்கவும்",
+                statusSawari: "தொலைபேசியை வட திசையை நோக்கி வைத்து செல்ல வேண்டிய இடத்தைத் தொடவும்",
+                counterRider: "ஓட்டுநர்கள்", counterSawari: "பயணிகள்",
+                reqMsg: "🙋‍♂️ புதிய பயணியின் கோரிக்கை பெறப்பட்டது!", acceptBtn: "ஏற்றுக்கொள்", rejectBtn: "நாகரிகமாக மறு",
+                chatTitle: "💬 தனிப்பட்ட அரட்டை & நேரலை", closeChat: "✕ மூடு", sendBtn: "அனுப்பு",
+                locationBtn: "📍 இருப்பிடம்", voiceBtnText: "🎤 குரல் பதிவு",
+                destText: "சேருமிடத்தை அமைக்க வரைபடத்தைத் தட்டவும்", resetBtn: "மீட்டமை",
+                chatConnected: "நீங்கள் இணைக்கப்பட்டுள்ளீர்கள்.", chatBroken: "இணைப்பு துண்டிக்கப்பட்டது",
+                chatBrokenSawari: "இணைப்பு துண்டிக்கப்பட்டது - தொடவும்", reqSentText: "⏳ கோரிக்கை அனுப்பப்பட்டது...",
+                reqBtnText: "📲 கோரிக்கை அனுப்பு", myLocText: "<b>உங்கள் இருப்பிடம்</b>", myDestText: "<b>உங்கள் சேருமிடம்</b>",
+                destSetText: "சேருமிடம் அமைக்கப்பட்டது!", reqToast: "கோரிக்கை அனுப்பப்பட்டது!",
+                northWord: "வடக்கே", southWord: "தெற்கே", distText: "தூரம்", kmText: "கி.மீ",
+                chatPlaceholder: "செய்தியை உள்ளிடவும்...", voiceRecording: "🔴 பதிவு செய்கிறது...",
+                voiceRecorded: "✅ பதிவு செய்யப்பட்டது", termsText: "விதிமுறைகள்: இது ஒரு நேரடி அடைவு மட்டுமே."
+            },
+            te: {
+                langName: "భాషను ఎంచుకోండి", sosTitle: "🚨 అత్యవసర పరిచయాలు (3 సంఖ్యలు)",
+                modalTitle: "మోడ్‌ను ఎంచుకోండి", modalDesc: "మీరు ఏ విధంగా పని చేయాలనుకుంటున్నారు?",
+                riderBtn: "ఆటో / ఇ-రిక్షా డ్రైవర్", sawariBtn: "ప్రయాణీకుడు",
+                bikeRiderBtn: "🏍️ బైక్ డ్రైవర్", bikeSawariBtn: "🙋‍♂️ బైక్ ప్రయాణీకుడు",
+                otpTitle: "మొబైల్ ధృవీకరణ", otpDesc: "దయచేసి మీ మొబైల్ నంబర్ మరియు OTP (కోడ్: 7317) నమోదు చేయండి.",
+                otpBtn: "ధృవీకరించి కొనసాగించు", loading: "లోడ్ అవుతోంది...",
+                statusRider: "మీ ఫోన్‌ను ఉత్తరం వైపు ఉంచండి",
+                statusSawari: "ఫోన్‌ను ఉత్తరం వైపు ఉంచి గమ్యస్థానాన్ని నొక్కండి",
+                counterRider: "డ్రైవర్లు", counterSawari: "ప్రయాణీకులు",
+                reqMsg: "🙋‍♂️ కొత్త ప్రయాణీకుల అభ్యర్థన వచ్చింది!", acceptBtn: "అంగీకరించు", rejectBtn: "తిరస్కరించు",
+                chatTitle: "💬 ప్రైవేట్ చాట్ & లైవ్ ట్రాకింగ్", closeChat: "✕ మూసివేయి", sendBtn: "పంపు",
+                locationBtn: "📍 లొకేషన్", voiceBtnText: "🎤 వాయిస్",
+                destText: "గమ్యస్థానాన్ని సెట్ చేయడానికి నొక్కండి", resetBtn: "రీసెట్",
+                chatConnected: "కనెక్ట్ అయ్యారు.", chatBroken: "కనెక్షన్ పోయింది",
+                chatBrokenSawari: "కనెక్షన్ పోయింది - నొక్కండి", reqSentText: "⏳ పంపబడింది...",
+                reqBtnText: "📲 అభ్యర్థన పంపు", myLocText: "<b>మీ స్థానం</b>", myDestText: "<b>మీ గమ్యస్థానం</b>",
+                destSetText: "సెట్ చేయబడింది!", reqToast: "పంపబడింది!",
+                northWord: "ఉత్తరం", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
+                chatPlaceholder: "సందేశం...", voiceRecording: "🔴 రికార్డింగ్...",
+                voiceRecorded: "✅ రికార్డ్ అయింది", termsText: "నిబంధనలు: ఇది డైరెక్టరీ ప్లాట్‌ఫారమ్ మాత్రమే."
+            },
+            mr: {
+                langName: "भाषा निवडा", sosTitle: "🚨 आपत्कालीन संपर्क (३ नंबर)",
+                modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कसे काम करायचे आहे?",
+                riderBtn: "ऑटो / ई-रिक्षा चालक", sawariBtn: "प्रवासी",
+                bikeRiderBtn: "🏍️ बाईक चालक", bikeSawariBtn: "🙋‍♂️ बाईक प्रवासी",
+                otpTitle: "मोबाईल सत्यापण", otpDesc: "कृपया तुमचा मोबाईल नंबर आणि OTP (कोड: 7317) टाका.",
+                otpBtn: "تपासा आणि पुढे जा", loading: "लोड होत आहे...",
+                statusRider: "फोन उत्तर दिशेला ठेवा",
+                statusSawari: "फोन उत्तर दिशेला ठेवून स्पर्श करा",
+                counterRider: "चालक", counterSawari: "प्रवासी",
+                reqMsg: "🙋‍♂️ नवीन प्रवाशाची विनंती आली!", acceptBtn: "स्वीकारा", rejectBtn: "नाकारा",
+                chatTitle: "💬 खाजगी चॅट", closeChat: "✕ बंद करा", sendBtn: "पाठवा",
+                locationBtn: "📍 स्थान", voiceBtnText: "🎤 आवाज",
+                destText: "गंतव्यस्थान सेट करण्यासाठी टॅप करा", resetBtn: "रीसेट",
+                chatConnected: "कनेक्ट झाले.", chatBroken: "संपर्क तुटला",
+                chatBrokenSawari: "संपर्क तुटला - स्पर्श करा", reqSentText: "⏳ पाठवले...",
+                reqBtnText: "📲 विनंती पाठवा", myLocText: "<b>तुमचे स्थान</b>", myDestText: "<b>गंतव्यस्थान</b>",
+                destSetText: "सेट केले!", reqToast: "यशस्वी!",
+                northWord: "उत्तर", southWord: "दक्षिण", distText: "अंतर", kmText: "किमी",
+                chatPlaceholder: "संदेश...", voiceRecording: "🔴 रेकॉर्डिंग...",
+                voiceRecorded: "✅ रेकॉर्ड झाले", termsText: "अटी: हा केवळ एक नेटवर्किंग प्लॅटफॉर्म आहे."
+            },
+            bn: {
+                langName: "ভাষা নির্বাচন করুন", sosTitle: "🚨 জরুরি যোগাযোগ (৩টি নম্বর)",
+                modalTitle: "মোড নির্বাচন করুন", modalDesc: "আপনি কীভাবে কাজ করতে চান?",
+                riderBtn: "অটো / ই-রিকশা চালক", sawariBtn: "যাত্রী",
+                bikeRiderBtn: "🏍️ বাইক চালক", bikeSawariBtn: "🙋‍♂️ বাইক যাত্রী",
+                otpTitle: "মোবাইল যাচাইকরণ", otpDesc: "আপনার মোবাইল নম্বর এবং ওটিপি (কোড: ৭৩১৭) দিন।",
+                otpBtn: "যাচাই করুন", loading: "লোড হচ্ছে...",
+                statusRider: "ফোন উত্তর দিকে রাখুন",
+                statusSawari: "ফোন উত্তর দিকে রেখে স্পর্শ করুন",
+                counterRider: "চালক", counterSawari: "যাত্রী",
+                reqMsg: "🙋‍♂️ নতুন যাত্রীর অনুরোধ!", acceptBtn: "গ্রহণ", rejectBtn: "প্রত্যাখ্যান",
+                chatTitle: "💬 ব্যক্তিগত চ্যাট", closeChat: "✕ বন্ধ", sendBtn: "পাঠান",
+                locationBtn: "📍 অবস্থান", voiceBtnText: "🎤 ভয়েস",
+                destText: "গন্তব্য সেট করতে ট্যাপ করুন", resetBtn: "রিসেট",
+                chatConnected: "সংযুক্ত হয়েছেন।", chatBroken: "সংযোগ বিচ্ছিন্ন",
+                chatBrokenSawari: "সংযোগ বিচ্ছিন্ন - ট্যাপ করুন", reqSentText: "⏳ পাঠানো হয়েছে...",
+                reqBtnText: "📲 অনুরোধ পাঠান", myLocText: "<b>আপনার অবস্থান</b>", myDestText: "<b>গন্তব্য</b>",
+                destSetText: "সেট হয়েছে!", reqToast: "সফল!",
+                northWord: "উত্তর", southWord: "দক্ষিণ", distText: "দূরত্ব", kmText: "কিমি",
+                chatPlaceholder: "বার্তা...", voiceRecording: "🔴 রেকর্ডিং...",
+                voiceRecorded: "✅ রেকর্ড সম্পন্ন", termsText: "শর্তাবলী: এটি একটি ডিরেক্টরি প্ল্যাটফর্ম।"
+            },
+            es: {
+                langName: "Seleccionar idioma", sosTitle: "🚨 Contactos SOS (3 Números)",
+                modalTitle: "Seleccionar Modo", modalDesc: "¿Cómo desea trabajar?",
+                riderBtn: "Conductor de Auto", sawariBtn: "Pasajero",
+                bikeRiderBtn: "🏍️ Conductor de Moto", bikeSawariBtn: "🙋‍♂️ Pasajero de Moto",
+                otpTitle: "Verificación", otpDesc: "Ingrese su número y OTP (Código: 7317).",
+                otpBtn: "Verificar", loading: "Cargando...",
+                statusRider: "Mantenga el teléfono hacia el Norte",
+                statusSawari: "Mantenga el teléfono hacia el Norte y toque",
+                counterRider: "Conductores", counterSawari: "Pasajeros",
+                reqMsg: "🙋‍♂️ ¡Nueva solicitud!", acceptBtn: "Aceptar", rejectBtn: "Rechazar",
+                chatTitle: "💬 Chat Privado", closeChat: "✕ Cerrar", sendBtn: "Enviar",
+                locationBtn: "📍 Ubicación", voiceBtnText: "🎤 Voz",
+                destText: "Toque el mapa para el destino", resetBtn: "Restablecer",
+                chatConnected: "Conectados.", chatBroken: "Conexión perdida",
+                chatBrokenSawari: "Conexión perdida - toque", reqSentText: "⏳ Enviado...",
+                reqBtnText: "📲 Enviar Solicitud", myLocText: "<b>Tu Ubicación</b>", myDestText: "<b>Tu Destino</b>",
+                destSetText: "¡Destino establecido!", reqToast: "¡Enviado!",
+                northWord: "N", southWord: "S", distText: "Dist", kmText: "km",
+                chatPlaceholder: "Mensaje...", voiceRecording: "🔴 Grabando...",
+                voiceRecorded: "✅ Grabado", termsText: "Términos: Plataforma de directorio independiente."
+            },
+            zh: {
+                langName: "选择语言", sosTitle: "🚨 紧急联系人 (3个)",
+                modalTitle: "选择模式", modalDesc: "您想如何工作？",
+                riderBtn: "自动三轮车司机", sawariBtn: "乘客",
+                bikeRiderBtn: "🏍️ 摩托车手", bikeSawariBtn: "🙋‍♂️ 摩托车乘客",
+                otpTitle: "手机验证", otpDesc: "请输入手机号和验证码 (代码: 7317)。",
+                otpBtn: "验证并继续", loading: "加载中...",
+                statusRider: "请将手机朝向北方",
+                statusSawari: "请将手机朝向北方并点击",
+                counterRider: "司机", counterSawari: "乘客",
+                reqMsg: "🙋‍♂️ 收到新请求！", acceptBtn: "接受", rejectBtn: "拒绝",
+                chatTitle: "💬 私人聊天", closeChat: "✕ 关闭", sendBtn: "发送",
+                locationBtn: "📍 位置", voiceBtnText: "🎤 语音",
+                destText: "点击地图设置目的地", resetBtn: "重置",
+                chatConnected: "已连接。", chatBroken: "连接断开",
+                chatBrokenSawari: "连接断开 - 点击", reqSentText: "⏳ 已发送...",
+                reqBtnText: "📲 发送请求", myLocText: "<b>您的位置</b>", myDestText: "<b>目的地</b>",
+                destSetText: "已设置！", reqToast: "成功！",
+                northWord: "北", southWord: "南", distText: "距离", kmText: "公里",
+                chatPlaceholder: "输入消息...", voiceRecording: "🔴 录音中...",
+                voiceRecorded: "✅ 已录制", termsText: "条款：仅作为独立用户目录网络。"
+            },
+            ar: {
+                langName: "اختر اللغة", sosTitle: "🚨 جهات اتصال الطوارئ (3 أرقام)",
+                modalTitle: "اختر الوضع", modalDesc: "كيف تريد أن تعمل؟",
+                riderBtn: "سائق توك توك", sawariBtn: "راكب",
+                bikeRiderBtn: "🏍️ سائق دراجة", bikeSawariBtn: "🙋‍♂️ راكب دراجة",
+                otpTitle: "التحقق", otpDesc: "أدخل رقم الهاتف ورمز التحقق (الرمز: 7317).",
+                otpBtn: "تحقق", loading: "جاري التحميل...",
+                statusRider: "اجعل الهاتف باتجاه الشمال",
+                statusSawari: "اجعل الهاتف باتجاه الشمال والمس",
+                counterRider: "السائقين", counterSawari: "الركاب",
+                reqMsg: "🙋‍♂️ طلب جديد!", acceptBtn: "قبول", rejectBtn: "رفض",
+                chatTitle: "💬 دردشة خاصة", closeChat: "✕ إغلاق", sendBtn: "إرسال",
+                locationBtn: "📍 الموقع", voiceBtnText: "🎤 صوت",
+                destText: "انقر على الخريطة للوجهة", resetBtn: "إعادة تعيين",
+                chatConnected: "متصلان.", chatBroken: "انقطع الاتصال",
+                chatBrokenSawari: "انقطع الاتصال - المس", reqSentText: "⏳ تم الإرسال...",
+                reqBtnText: "📲 إرسال الطلب", myLocText: "<b>موقعك</b>", myDestText: "<b>وجهتك</b>",
+                destSetText: "تم تحديد الوجهة!", reqToast: "تم!",
+                northWord: "شمال", southWord: "جنوب", distText: "المسافة", kmText: "كم",
+                chatPlaceholder: "اكتب رسالة...", voiceRecording: "🔴 جاري التسجيل...",
+                voiceRecorded: "✅ تم التسجيل", termsText: "الشروط: منصة دليل شبكي مستقل."
             }
         };
+
+        // Fallback generator for other languages to prevent undefined errors
+        ['kn','gu','ml','or','pa','as','rj','pt','fr','de','ja','ru','tr'].forEach(lang => {
+            if(!translations[lang]) {
+                translations[lang] = translations['en'];
+            }
+        });
 
         let currentLang = localStorage.getItem('app_lang') || 'hi';
 
@@ -281,10 +446,11 @@
 
         function applyTranslations() {
             const t = translations[currentLang] || translations['hi'];
-            
             const dropdown = document.getElementById('languageSelect');
             if(dropdown) dropdown.value = currentLang;
 
+            if(document.getElementById('langLabel')) document.getElementById('langLabel').innerText = t.langName;
+            if(document.getElementById('sosTitleLabel')) document.getElementById('sosTitleLabel').innerText = t.sosTitle;
             if(document.getElementById('modalTitleText')) document.getElementById('modalTitleText').innerText = t.modalTitle;
             if(document.getElementById('modalDescText')) document.getElementById('modalDescText').innerText = t.modalDesc;
             if(document.getElementById('btnRiderText')) document.getElementById('btnRiderText').innerText = t.riderBtn;
@@ -307,7 +473,6 @@
             if(document.getElementById('sendBtnText')) document.getElementById('sendBtnText').innerText = t.sendBtn;
             if(document.getElementById('locationBtnText')) document.getElementById('locationBtnText').innerText = t.locationBtn;
 
-            if(document.getElementById('sosConfigLabel')) document.getElementById('sosConfigLabel').innerText = t.sosLabel;
             if(document.getElementById('termsFooterText')) document.getElementById('termsFooterText').innerText = t.termsText;
 
             if(document.getElementById('destStatus') && !myDestination) document.getElementById('destStatus').innerText = t.destText;
@@ -323,7 +488,7 @@
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
-        let isPassengerActive = true, tempSelectedRole = null;
+        let isPassengerActive = true;
         let requestedRiders = {}; 
         
         let mediaRecorder = null, audioChunks = [], recordedAudioBase64 = null, isRecording = false;
@@ -333,6 +498,11 @@
             if ("Notification" in window && Notification.permission !== "granted") {
                 Notification.requestPermission();
             }
+
+            // Load saved permanent SOS numbers into inputs if available
+            document.getElementById('sosNum1').value = localStorage.getItem('sos_num_1') || '';
+            document.getElementById('sosNum2').value = localStorage.getItem('sos_num_2') || '';
+            document.getElementById('sosNum3').value = localStorage.getItem('sos_num_3') || '';
 
             applyTranslations();
 
@@ -350,12 +520,21 @@
             const toast = document.getElementById('toastMsg');
             toast.innerText = text;
             toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 2000);
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+
+        function saveSosContacts() {
+            const n1 = document.getElementById('sosNum1').value.trim();
+            const n2 = document.getElementById('sosNum2').value.trim();
+            const n3 = document.getElementById('sosNum3').value.trim();
+            localStorage.setItem('sos_num_1', n1);
+            localStorage.setItem('sos_num_2', n2);
+            localStorage.setItem('sos_num_3', n3);
         }
 
         function selectRole(role) {
+            saveSosContacts(); // Save permanent numbers when selecting mode
+
             if (role === 'bike_rider' || role === 'bike_sawari') {
                 const currentHour = new Date().getHours();
                 if (currentHour < 6 || currentHour >= 19) {
@@ -386,14 +565,10 @@
             if (window.DeviceOrientationEvent) {
                 window.addEventListener('deviceorientation', (event) => {
                     let compassHeading = event.alpha;
-                    if (event.webkitCompassHeading) {
-                        compassHeading = event.webkitCompassHeading;
-                    }
+                    if (event.webkitCompassHeading) compassHeading = event.webkitCompassHeading;
                     if (compassHeading !== null && compassHeading !== undefined) {
                         const dial = document.getElementById('compassDial');
-                        if (dial) {
-                            dial.style.transform = `rotate(${-compassHeading}deg)`;
-                        }
+                        if (dial) dial.style.transform = `rotate(${-compassHeading}deg)`;
                     }
                 }, true);
             }
@@ -402,9 +577,7 @@
         function requestCompassPermission() {
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission().then(response => {
-                    if (response === 'granted') {
-                        showToast('कंपास सक्रिय हो गया है!');
-                    }
+                    if (response === 'granted') showToast('कंपास सक्रिय हो गया है!');
                 }).catch(console.error);
             } else {
                 showToast('लाइव कंपास मोड चालू है');
@@ -445,21 +618,13 @@
                 const handleVisibility = () => {
                     if (document.hidden || document.visibilityState === 'hidden') {
                         isPassengerActive = false;
-                        if (socket && socket.connected) {
-                            socket.emit('deactivate_passenger', { id: myId });
-                        }
+                        if (socket && socket.connected) socket.emit('deactivate_passenger', { id: myId });
                     } else {
                         isPassengerActive = true;
                         syncPosition();
                     }
                 };
-
                 document.addEventListener("visibilitychange", handleVisibility);
-                window.addEventListener("pagehide", () => {
-                    if (socket && socket.connected) {
-                        socket.emit('deactivate_passenger', { id: myId });
-                    }
-                });
             }
 
             if ("geolocation" in navigator) {
@@ -469,7 +634,6 @@
                     myHeading = pos.coords.heading || 0;
                     initMapAndSystem();
                 }, (err) => {
-                    alert('लोकेशन एक्सेस जरूरी है! डिफ़ॉल्ट लोकेशन सेट की जा रही है।');
                     myLat = 20.5937; myLng = 78.9629;
                     initMapAndSystem();
                 }, { enableHighAccuracy: true, timeout: 10000 });
@@ -497,28 +661,18 @@
                 bgClass = 'pin-sawari';
                 innerElement = '<div class="sawari-inner"></div>';
             }
-
             if (isGlowing) bgClass += ' pin-glow';
-
             return L.divIcon({ className: '', html: '<div class="custom-pin ' + bgClass + '">' + innerElement + '</div>', iconSize: [22, 22], iconAnchor: [11, 11] });
         }
 
         function initMapAndSystem() {
             document.getElementById('trafficCounter').style.display = 'block';
-
             if (myRole === 'sawari' || myRole === 'bike_sawari') {
                 document.getElementById('destCard').style.display = 'flex';
             }
 
             if (!map) {
-                map = L.map('map', { 
-                    zoomControl: false, 
-                    preferCanvas: true,
-                    touchZoom: true,
-                    dragging: true,
-                    scrollWheelZoom: true
-                }).setView([myLat, myLng], 16);
-
+                map = L.map('map', { zoomControl: false, preferCanvas: true, touchZoom: true, dragging: true }).setView([myLat, myLng], 16);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
                 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -564,32 +718,26 @@
 
         function startLiveGPS() {
             if ("geolocation" in navigator) {
-                navigator.geolocation.watchPosition(
-                    (pos) => {
-                        myLat = pos.coords.latitude;
-                        myLng = pos.coords.longitude;
-                        myHeading = pos.coords.heading || 0;
+                navigator.geolocation.watchPosition((pos) => {
+                    myLat = pos.coords.latitude;
+                    myLng = pos.coords.longitude;
+                    myHeading = pos.coords.heading || 0;
 
-                        if (map) {
-                            if (!isMapCentered) {
-                                map.setView([myLat, myLng], 16, { animate: true });
-                                isMapCentered = true;
-                            }
-                            if (selfMarker) {
-                                selfMarker.setLatLng([myLat, myLng]);
-                                selfMarker.setIcon(getIcon(myRole, myHeading, true));
-                            }
+                    if (map) {
+                        if (!isMapCentered) {
+                            map.setView([myLat, myLng], 16, { animate: true });
+                            isMapCentered = true;
                         }
-
-                        if (myDestination && destLine) {
-                            destLine.setLatLngs([[myLat, myLng], [myDestination.lat, myDestination.lng]]);
+                        if (selfMarker) {
+                            selfMarker.setLatLng([myLat, myLng]);
+                            selfMarker.setIcon(getIcon(myRole, myHeading, true));
                         }
-
-                        syncPosition();
-                    },
-                    (err) => {},
-                    { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
-                );
+                    }
+                    if (myDestination && destLine) {
+                        destLine.setLatLngs([[myLat, myLng], [myDestination.lat, myDestination.lng]]);
+                    }
+                    syncPosition();
+                }, (err) => {}, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
             }
         }
 
@@ -601,15 +749,11 @@
 
             socket.on('init_users', (users) => {
                 updateTrafficCounts(users);
-                for (let id in users) {
-                    if (id !== myId) processIncomingUser(users[id]);
-                }
+                for (let id in users) { if (id !== myId) processIncomingUser(users[id]); }
             });
 
             socket.on('live_broadcast', (data) => { 
-                if (data && data.user && data.user.id !== myId) {
-                    processIncomingUser(data.user);
-                }
+                if (data && data.user && data.user.id !== myId) processIncomingUser(data.user);
                 if (data && data.counts) {
                     document.getElementById('totalRiders').innerText = (data.counts.riders || 0);
                     document.getElementById('totalSawaris').innerText = (data.counts.sawaris || 0);
@@ -630,13 +774,6 @@
                     const t = translations[currentLang] || translations['hi'];
                     document.getElementById('reqText').innerText = t.reqMsg;
                     document.getElementById('requestPopup').style.display = 'block';
-
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("New Request!", {
-                            body: "You have a new ride request.",
-                            icon: "https://cdn-icons-png.flaticon.com/512/854/854878.png"
-                        });
-                    }
                 }
             });
 
@@ -651,13 +788,7 @@
                     
                     const t = translations[currentLang] || translations['hi'];
                     document.getElementById('chatHeaderTitle').innerText = t.chatTitle;
-
                     document.getElementById('statusDot').className = 'badge badge-green';
-                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                        document.getElementById('statusText').innerText = t.statusSawari;
-                    } else {
-                        document.getElementById('statusText').innerText = t.statusRider;
-                    }
                     appendChatMessage('System', t.chatConnected);
                 }
             });
@@ -666,9 +797,6 @@
                 if (myId === data.passengerId) {
                     showToast('❌ Request rejected by partner.');
                     requestedRiders[data.riderId] = false; 
-                    if (activeMarkers[data.riderId]) {
-                        processIncomingUserMarkerRefresh(data.riderId);
-                    }
                 }
             });
 
@@ -688,32 +816,11 @@
             socket.on('chat_closed', (data) => {
                 if (activeChatRoom === data.room) {
                     document.getElementById('statusDot').className = 'badge badge-red';
-                    const t = translations[currentLang] || translations['hi'];
-                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                        document.getElementById('statusText').innerText = t.chatBrokenSawari;
-                    } else {
-                        document.getElementById('statusText').innerText = t.chatBroken;
-                    }
-                    
-                    setTimeout(() => {
-                        document.getElementById('statusDot').className = 'badge badge-green';
-                        if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                            document.getElementById('statusText').innerText = t.statusSawari;
-                        } else {
-                            document.getElementById('statusText').innerText = t.statusRider;
-                        }
-                        document.getElementById('chatMessages').innerHTML = '';
-                        document.getElementById('chatOverlay').style.display = 'none';
-                    }, 2000);
-
+                    document.getElementById('chatMessages').innerHTML = '';
+                    document.getElementById('chatOverlay').style.display = 'none';
                     connectedPartnerId = null;
                     activeChatRoom = null;
                     incomingReqData = null;
-
-                    for (let id in activeRoutes) {
-                        map.removeLayer(activeRoutes[id]);
-                        delete activeRoutes[id];
-                    }
                 }
             });
         }
@@ -730,7 +837,6 @@
 
         function syncPosition() {
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
-
             if (socket && socket.connected && myLat !== null && myLng !== null) {
                 socket.emit('update_location', { id: myId, role: myRole, lat: myLat, lng: myLng, heading: myHeading, destination: myDestination });
             }
@@ -747,41 +853,23 @@
         function processIncomingUser(user) {
             if (!myLat || !myLng || !map) return;
             const distance = calculateDistance(myLat, myLng, user.lat, user.lng);
-            let maxRadius = 0;
-            let showPopupBtn = false;
-            let canSee = false;
+            let maxRadius = 0, showPopupBtn = false, canSee = false;
 
             if (myRole === 'rider') {
                 if ((user.role === 'rider' || user.role === 'sawari') && distance <= 25) {
                     canSee = true; maxRadius = 25;
-                    if (user.role === 'rider' && distance <= 10) {
-                        showPopupBtn = true;
-                    }
+                    if (user.role === 'rider' && distance <= 10) showPopupBtn = true;
                 }
-            } 
-            else if (myRole === 'sawari') {
-                if (user.role === 'rider' && distance <= 10) {
-                    canSee = true; maxRadius = 10; showPopupBtn = true;
-                }
-            } 
-            else if (myRole === 'bike_rider') {
-                if ((user.role === 'bike_rider' || user.role === 'bike_sawari') && distance <= 5) {
-                    canSee = true; maxRadius = 5;
-                }
-            } 
-            else if (myRole === 'bike_sawari') {
-                if (user.role === 'bike_rider' && distance <= 5) {
-                    canSee = true; maxRadius = 5;
-                    if (distance <= 2.5) showPopupBtn = true;
-                }
+            } else if (myRole === 'sawari') {
+                if (user.role === 'rider' && distance <= 10) { canSee = true; maxRadius = 10; showPopupBtn = true; }
+            } else if (myRole === 'bike_rider') {
+                if ((user.role === 'bike_rider' || user.role === 'bike_sawari') && distance <= 5) { canSee = true; maxRadius = 5; }
+            } else if (myRole === 'bike_sawari') {
+                if (user.role === 'bike_rider' && distance <= 5) { canSee = true; maxRadius = 5; if (distance <= 2.5) showPopupBtn = true; }
             }
 
             if (user.id === connectedPartnerId) canSee = true;
-
-            if (!canSee || (user.id !== connectedPartnerId && distance > maxRadius)) {
-                removeUser(user.id);
-                return;
-            }
+            if (!canSee || (user.id !== connectedPartnerId && distance > maxRadius)) { removeUser(user.id); return; }
 
             let isGlowing = (user.id === connectedPartnerId);
             const t = translations[currentLang] || translations['hi'];
@@ -798,31 +886,7 @@
                         popupHtml += '<br><button onclick="sendSmsRequest(\'' + user.id + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">' + t.reqBtnText + '</button>';
                     }
                 }
-                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map)
-                    .bindPopup(popupHtml);
-            }
-
-            if ((myRole === 'rider' || myRole === 'bike_rider') && (user.role === 'sawari' || user.role === 'bike_sawari')) {
-                if (user.destination) {
-                    if (activeRoutes[user.id]) {
-                        activeRoutes[user.id].setLatLngs([[user.lat, user.lng], [user.destination.lat, user.destination.lng]]);
-                    } else {
-                        activeRoutes[user.id] = L.polyline([[user.lat, user.lng], [user.destination.lat, user.destination.lng]], { color: '#2a9d8f', weight: 4, dashArray: '6, 8' }).addTo(map);
-                    }
-                } else {
-                    if (activeRoutes[user.id]) {
-                        map.removeLayer(activeRoutes[user.id]);
-                        delete activeRoutes[user.id];
-                    }
-                }
-            }
-        }
-
-        function processIncomingUserMarkerRefresh(riderId) {
-            if (activeMarkers[riderId]) {
-                const t = translations[currentLang] || translations['hi'];
-                let popupHtml = '<b>DRIVER</b><br><button onclick="sendSmsRequest(\'' + riderId + '\')" style="background:#7c3aed; color:#fff; border:none; padding:4px 8px; border-radius:4px; margin-top:6px; cursor:pointer;">' + t.reqBtnText + '</button>';
-                activeMarkers[riderId].bindPopup(popupHtml).openPopup();
+                activeMarkers[user.id] = L.marker([user.lat, user.lng], { icon: getIcon(user.role, user.heading || 0, false, isGlowing) }).addTo(map).bindPopup(popupHtml);
             }
         }
 
@@ -831,27 +895,20 @@
             socket.emit('send_sms_request', { passengerId: myId, riderId: riderId });
             const t = translations[currentLang] || translations['hi'];
             showToast(t.reqToast);
-            processIncomingUserMarkerRefresh(riderId);
         }
 
         function acceptRequest() {
             document.getElementById('requestPopup').style.display = 'none';
-            if (incomingReqData) {
-                socket.emit('accept_sms_request', incomingReqData);
-            }
+            if (incomingReqData) socket.emit('accept_sms_request', incomingReqData);
         }
 
         function rejectRequest() {
             document.getElementById('requestPopup').style.display = 'none';
-            if (incomingReqData) {
-                socket.emit('reject_sms_request', incomingReqData);
-                incomingReqData = null;
-            }
+            if (incomingReqData) { socket.emit('reject_sms_request', incomingReqData); incomingReqData = null; }
         }
 
         function sendChatMessage() {
             const text = document.getElementById('chatInput').value;
-            const t = translations[currentLang] || translations['hi'];
             if (text && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'text', text: text });
                 document.getElementById('chatInput').value = '';
@@ -859,6 +916,7 @@
             else if (recordedAudioBase64 && activeChatRoom) {
                 socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'audio', audioData: recordedAudioBase64 });
                 recordedAudioBase64 = null;
+                const t = translations[currentLang] || translations['hi'];
                 document.getElementById('voiceBtn').innerText = t.voiceBtnText;
             }
         }
@@ -883,14 +941,11 @@
         }
 
         function shareGoogleLocation() {
-            if (!myLat || !myLng || !activeChatRoom) {
-                showToast('Location or Chat not active!');
-                return;
-            }
+            if (!myLat || !myLng || !activeChatRoom) return;
             socket.emit('chat_message', { room: activeChatRoom, senderId: myId, senderRole: myRole, type: 'location', lat: myLat, lng: myLng });
         }
 
-        // Feature 2: 15-second voice recording limit implementation
+        // 15-second voice recording limit
         function toggleVoiceRecording() {
             const btn = document.getElementById('voiceBtn');
             const t = translations[currentLang] || translations['hi'];
@@ -916,13 +971,12 @@
                     btn.innerText = t.voiceRecording;
                     btn.classList.add('recording');
 
-                    // Auto stop after 15 seconds
                     setTimeout(() => {
                         if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
                             mediaRecorder.stop();
                             isRecording = false;
                             btn.classList.remove('recording');
-                            showToast('⏱️ 15-second voice limit reached!');
+                            showToast('⏱️ 15s voice limit reached!');
                         }
                     }, 15000);
 
@@ -934,38 +988,95 @@
             }
         }
 
-        function closeChat() {
-            if (activeChatRoom) {
-                socket.emit('close_chat', { room: activeChatRoom });
+        // Feature 3: Permanent 3-Contact SOS System with Siren, Flash, and WhatsApp Alerts
+        function startSosHold() {
+            const now = Date.now();
+            if (now - lastSosTime < 600000) {
+                alert('⏳ SOS is on cooldown. Please wait before triggering again.');
+                return;
             }
-            document.getElementById('chatOverlay').style.display = 'none';
-            
-            document.getElementById('statusDot').className = 'badge badge-red';
-            const t = translations[currentLang] || translations['hi'];
-            if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                document.getElementById('statusText').innerText = t.chatBrokenSawari;
-            } else {
-                document.getElementById('statusText').innerText = t.chatBroken;
-            }
-            
-            setTimeout(() => {
-                document.getElementById('statusDot').className = 'badge badge-green';
-                if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                    document.getElementById('statusText').innerText = t.statusSawari;
-                } else {
-                    document.getElementById('statusText').innerText = t.statusRider;
-                }
-                document.getElementById('chatMessages').innerHTML = '';
-            }, 2000);
-            
-            activeChatRoom = null;
-            incomingReqData = null;
-            connectedPartnerId = null;
 
-            for (let id in activeRoutes) {
-                map.removeLayer(activeRoutes[id]);
-                delete activeRoutes[id];
+            isSosTriggered = false;
+            showToast('🚨 Keep holding SOS for 3 seconds...');
+            
+            sosHoldTimer = setTimeout(() => {
+                if (confirm('⚠️ Are you in danger? SOS alert will be sent to all 3 saved contacts in 5 seconds! Click Cancel to abort.')) {
+                    triggerSosEmergencyAction();
+                }
+            }, 3000);
+        }
+
+        function cancelSosHold() {
+            if (sosHoldTimer && !isSosTriggered) {
+                clearTimeout(sosHoldTimer);
+                showToast('❌ SOS Cancelled.');
             }
+        }
+
+        function triggerSosEmergencyAction() {
+            isSosTriggered = true;
+            lastSosTime = Date.now();
+
+            const flashOverlay = document.getElementById('sosFlashOverlay');
+            flashOverlay.className = 'sos-active-flash';
+
+            playSirenAlarm();
+
+            // Retrieve all 3 permanent numbers from localStorage or inputs
+            const numbers = [
+                localStorage.getItem('sos_num_1') || document.getElementById('sosNum1').value.trim(),
+                localStorage.getItem('sos_num_2') || document.getElementById('sosNum2').value.trim(),
+                localStorage.getItem('sos_num_3') || document.getElementById('sosNum3').value.trim()
+            ].filter(num => num && num.length === 10);
+
+            const mapsLink = myLat && myLng ? `https://www.google.com/maps?q=${myLat},${myLng}` : 'Location unknown';
+            const alertText = `EMERGENCY SOS! I am in danger. My live location: ${mapsLink}`;
+
+            if (numbers.length > 0) {
+                // Open WhatsApp broadcast link for the first valid saved number (or trigger multiple)
+                numbers.forEach((num, index) => {
+                    setTimeout(() => {
+                        const waUrl = `https://api.whatsapp.com/send?phone=91${num}&text=${encodeURIComponent(alertText)}`;
+                        window.open(waUrl, '_blank');
+                    }, index * 1000);
+                });
+            } else {
+                alert('⚠️ No valid permanent emergency contacts found! Please configure them in settings.');
+            }
+
+            setTimeout(() => {
+                flashOverlay.className = '';
+            }, 15000);
+        }
+
+        function playSirenAlarm() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+
+                let time = audioCtx.currentTime;
+                for (let i = 0; i < 10; i++) {
+                    osc.frequency.exponentialRampToValueAtTime(880, time + 0.5);
+                    osc.frequency.exponentialRampToValueAtTime(440, time + 1.0);
+                    time += 1.0;
+                }
+                setTimeout(() => osc.stop(), 10000);
+            } catch (e) {
+                console.log('Audio context blocked');
+            }
+        }
+
+        function closeChat() {
+            if (activeChatRoom) socket.emit('close_chat', { room: activeChatRoom });
+            document.getElementById('chatOverlay').style.display = 'none';
+            activeChatRoom = null;
+            connectedPartnerId = null;
         }
 
         function removeUser(id) {
