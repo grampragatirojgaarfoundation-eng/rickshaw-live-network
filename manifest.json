@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "rickshaw24",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "rickshaw24",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "id": "rickshaw24-app",
+  "description": "Rickshaw24 is best connecting app for riders &amp; passengers"
+}
