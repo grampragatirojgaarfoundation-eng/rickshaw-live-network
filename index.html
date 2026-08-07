@@ -49,10 +49,8 @@
         /* Live Compass styling with Needle and Bold Text */
         .live-compass { background: #ffffff; width: 46px; height: 46px; border-radius: 50%; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; border: 2px solid #2563eb; cursor: pointer; }
         .compass-dial { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; transition: transform 0.1s ease-out; }
-        .compass-n { position: absolute; top: 2px; font-size: 9px; font-weight: 900; color: #dc2626; line-height: 1; }
-        .compass-s { position: absolute; bottom: 2px; font-size: 9px; font-weight: 900; color: #111; line-height: 1; }
-        .compass-e { position: absolute; right: 2px; font-size: 9px; font-weight: 900; color: #111; line-height: 1; }
-        .compass-w { position: absolute; left: 2px; font-size: 9px; font-weight: 900; color: #111; line-height: 1; }
+        .compass-n { position: absolute; top: 2px; font-size: 10px; font-weight: 900; color: #dc2626; line-height: 1; }
+        .compass-s { position: absolute; bottom: 2px; font-size: 10px; font-weight: 900; color: #111; line-height: 1; }
         /* Compass Needle Design */
         .compass-needle { position: absolute; width: 2px; height: 28px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .needle-top { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 14px solid #dc2626; position: absolute; top: 0; }
@@ -174,8 +172,6 @@
                     <div class="needle-bottom"></div>
                 </div>
                 <strong class="compass-s" id="compassSouth">दक्षिण</strong>
-                <strong class="compass-e" id="compassEast">पूर्व</strong>
-                <strong class="compass-w" id="compassWest">पश्चिम</strong>
             </div>
         </div>
     </div>
@@ -240,7 +236,7 @@
                 chatBrokenSawari: "सम्पर्क टूटा - फोन उत्तर दिशा में रखें और टच करें", reqSentText: "⏳ अनुरोध भेजा गया...",
                 reqBtnText: "📲 रिक्वेस्ट भेजें", myLocText: "<b>आपकी लोकेशन</b>", myDestText: "<b>आपकी मंजिल</b>",
                 destSetText: "मंजिल सेट हो गई है!", reqToast: "रिक्वेस्ट सफलतापूर्वक भेज दी गई है!",
-                northWord: "उत्तर", southWord: "दक्षिण", eastWord: "पूर्व", westWord: "पश्चिम", distText: "दूरी", kmText: "किमी",
+                northWord: "उत्तर", southWord: "दक्षिण", distText: "दूरी", kmText: "किमी",
                 chatPlaceholder: "संदेश लिखें...", voiceBtnText: "🎤 वॉइस रिकॉर्ड", voiceRecording: "🔴 रिकॉर्डिंग जारी... (रोकें)",
                 voiceRecorded: "✅ रिकॉर्ड हो गया (भेजें)"
             },
@@ -261,7 +257,7 @@
                 chatBrokenSawari: "Connection Lost - Keep phone pointing North and tap", reqSentText: "⏳ Request Sent...",
                 reqBtnText: "📲 Send Request", myLocText: "<b>Your Location</b>", myDestText: "<b>Your Destination</b>",
                 destSetText: "Destination set!", reqToast: "Request sent successfully!",
-                northWord: "North", southWord: "South", eastWord: "East", westWord: "West", distText: "Distance", kmText: "km",
+                northWord: "North", southWord: "South", distText: "Distance", kmText: "km",
                 chatPlaceholder: "Type a message...", voiceBtnText: "🎤 Voice Record", voiceRecording: "🔴 Recording... (Stop)",
                 voiceRecorded: "✅ Recorded (Send)"
             },
@@ -282,7 +278,7 @@
                 chatBrokenSawari: "இணைப்பு துண்டிக்கப்பட்டது - போனை வடக்கே வைத்து தொடவும்", reqSentText: "⏳ கோரிக்கை அனுப்பப்பட்டது...",
                 reqBtnText: "📲 கோரிக்கை அனுப்பு", myLocText: "<b>உங்கள் இருப்பிடம்</b>", myDestText: "<b>உங்கள் சேருமிடம்</b>",
                 destSetText: "சேருமிடம் அமைக்கப்பட்டது!", reqToast: "கோரிக்கை வெற்றிகரமாக அனுப்பப்பட்டது!",
-                northWord: "வடக்கே", southWord: "தெற்கே", eastWord: "கிழக்கே", westWord: "மேற்கே", distText: "தூரம்", kmText: "கி.மீ",
+                northWord: "வடக்கே", southWord: "தெற்கே", distText: "தூரம்", kmText: "கி.மீ",
                 chatPlaceholder: "செய்தியை உள்ளிடவும்...", voiceBtnText: "🎤 குரல் பதிவு", voiceRecording: "🔴 பதிவு செய்கிறது...",
                 voiceRecorded: "✅ பதிவு செய்யப்பட்டது"
             },
@@ -303,7 +299,7 @@
                 chatBrokenSawari: "కనెక్షన్ పోయింది - ఫోన్‌ను ఉత్తరం వైపు ఉంచి తాకండి", reqSentText: "⏳ అభ్యర్థన పంపబడింది...",
                 reqBtnText: "📲 అభ్యర్థన పంపు", myLocText: "<b>మీ స్థానం</b>", myDestText: "<b>మీ గమ్యస్థానం</b>",
                 destSetText: "గమ్యస్థానం సెట్ చేయబడింది!", reqToast: "అభ్యర్థన విజయవంతంగా పంపబడింది!",
-                northWord: "ఉత్తరం", southWord: "దక్షిణం", eastWord: "తూర్పు", westWord: "పడమర", distText: "దూరం", kmText: "కి.మీ",
+                northWord: "ఉత్తరం", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
                 chatPlaceholder: "సందేశాన్ని టైప్ చేయండి...", voiceBtnText: "🎤 వాయిస్ రికార్డ్", voiceRecording: "🔴 రికార్డింగ్...",
                 voiceRecorded: "✅ రికಾರ್డ్ చేయబడింది"
             },
@@ -324,7 +320,7 @@
                 chatBrokenSawari: "संपर्क तुटला - फोन उत्तर दिशेला ठेवा आणि स्पर्श करा", reqSentText: "⏳ विनंती पाठवली...",
                 reqBtnText: "📲 विनंती पाठवा", myLocText: "<b>तुमचे स्थान</b>", myDestText: "<b>तुमचे गंतव्यस्थान</b>",
                 destSetText: "गंतव्यस्थान सेट केले!", reqToast: "विनंती यशस्वीरित्या पाठवली!",
-                northWord: "उत्तर", southWord: "दक्षिण", eastWord: "पूर्व", westWord: "पश्चिम", distText: "अंतर", kmText: "किमी",
+                northWord: "उत्तर", southWord: "दक्षिण", distText: "अंतर", kmText: "किमी",
                 chatPlaceholder: "संदेश टाईप करा...", voiceBtnText: "🎤 आवाज रेकॉर्ड", voiceRecording: "🔴 रेकॉर्डिंग सुरू आहे...",
                 voiceRecorded: "✅ रेकॉर्ड झाले"
             },
@@ -333,7 +329,7 @@
                 riderBtn: "অটো / ই-রিকশা চালক", sawariBtn: "যাত্রী",
                 bikeRiderBtn: "🏍️ বাইক চালক (সকাল ৬ থেকে সন্ধ্যা ৭)", bikeSawariBtn: "🙋‍♂️ বাইক যাত্রী (সকাল ৬ থেকে সন্ধ্যা ৭)",
                 disclaimer: "শর্তাবলী এবং অস্বীকৃতি: এই অ্যাপটি শুধুমাত্র স্বাধীন ব্যবহারকারীদের সংযোগকারী একটি নেটওয়ার্কিং ডিরেক্টরি। এটি কোনো ট্যাক্সি বুকিং বা পরিবহন পরিষেবা নয়। অ্যাপ কোনো কমিশন নেয় না। ভ্রমণের সময় নিরাপত্তার সম্পূর্ণ দায়িত্ব ব্যবহারকারীদের নিজস্ব হবে।",
-                otpTitle: "মোবাইল যাচাইকরণ", otpDesc: "দয়া করে আপনার ১০ অঙ্কের মোবাইল নম্বর এবং ওটিপি (কোড: ৭জীবান) দিন।",
+                otpTitle: "মোবাইল যাচাইকরণ", otpDesc: "দয়া করে আপনার ১০ অঙ্কের মোবাইল নম্বর এবং ওটিপি (কোড: ৭৩১৭) দিন।",
                 otpBtn: "যাচাই করুন এবং এগিয়ে যান", loading: "লোড হচ্ছে...",
                 statusRider: "আপনার ফোনটি সর্বদা উত্তর দিকে রেখে মানচিত্র দেখুন",
                 statusSawari: "ফোনটি উত্তর দিকে রেখে মানচিত্র দেখুন এবং কোথায় যেতে চান তা স্পর্শ করুন",
@@ -345,7 +341,7 @@
                 chatBrokenSawari: "সংযোগ বিচ্ছিন্ন - ফোন উত্তর দিকে রাখুন এবং স্পর্শ করুন", reqSentText: "⏳ অনুরোধ পাঠানো হয়েছে...",
                 reqBtnText: "📲 অনুরোধ পাঠান", myLocText: "<b>আপনার অবস্থান</b>", myDestText: "<b>আপনার গন্তব্য</b>",
                 destSetText: "গন্তব্য সেট করা হয়েছে!", reqToast: "অনুরোধ সফলভাবে পাঠানো হয়েছে!",
-                northWord: "উত্তর", southWord: "দক্ষিণ", eastWord: "পূর্ব", westWord: "পশ্চিম", distText: "দূরত্ব", kmText: "কিমি",
+                northWord: "উত্তর", southWord: "দক্ষিণ", distText: "দূরত্ব", kmText: "কিমি",
                 chatPlaceholder: "একটি বার্তা লিখুন...", voiceBtnText: "🎤 ভয়েস রেকর্ড", voiceRecording: "🔴 রেকর্ডিং হচ্ছে...",
                 voiceRecorded: "✅ রেকর্ড সম্পন্ন"
             },
@@ -366,7 +362,7 @@
                 chatBrokenSawari: "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ - ಫೋನ್ ಉತ್ತರಕ್ಕೆ ಇರಿಸಿ ಸ್ಪರ್ಶಿಸಿ", reqSentText: "⏳ ವಿನಂತಿ ಕಳುಹಿಸಲಾಗಿದೆ...",
                 reqBtnText: "📲 ವಿನಂತಿ ಕಳುಹಿಸಿ", myLocText: "<b>ನಿಮ್ಮ ಸ್ಥಳ</b>", myDestText: "<b>ನಿಮ್ಮ ಗಮ್ಯಸ್ಥಾನ</b>",
                 destSetText: "ಗಮ್ಯಸ್ಥಾನ ಹೊಂದಿಸಲಾಗಿದೆ!", reqToast: "ವಿನಂತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ!",
-                northWord: "ಉತ್ತರ", southWord: "ದಕ್ಷಿಣ", eastWord: "ಪೂರ್ವ", westWord: "ಪಶ್ಚಿಮ", distText: "ದೂರ", kmText: "ಕಿ.ಮೀ",
+                northWord: "ಉತ್ತರ", southWord: "ದಕ್ಷಿಣ", distText: "ದೂರ", kmText: "ಕಿ.ಮೀ",
                 chatPlaceholder: "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ...", voiceBtnText: "🎤 ಧ್ವನಿ ರೆಕಾರ್ಡ್", voiceRecording: "🔴 ರೆಕಾರ್ಡಿಂಗ್...",
                 voiceRecorded: "✅ ರೆಕಾರ್ಡ್ ಆಗಿದೆ"
             },
@@ -387,7 +383,7 @@
                 chatBrokenSawari: "સંપર્ક તૂટ્યો - ફોન ઉત્તર દિશામાં રાખી સ્પર્શ કરો", reqSentText: "⏳ વિનંતી મોકલાઈ...",
                 reqBtnText: "📲 વિનંતી મોકલો", myLocText: "<b>તમારું લોકેશન</b>", myDestText: "<b>તમારી મંઝિલ</b>",
                 destSetText: "મંઝિલ નક્કી થઈ ગઈ!", reqToast: "વિનંતી સફળતાપૂર્વક મોકલી દેવાઈ છે!",
-                northWord: "ઉત્તર", southWord: "દક્ષિણ", eastWord: "પૂર્વ", westWord: "પશ્ચिम", distText: "અંતર", kmText: "કિમી",
+                northWord: "ઉત્તર", southWord: "દક્ષિણ", distText: "અંતર", kmText: "કિમી",
                 chatPlaceholder: "સંદેશ લખો...", voiceBtnText: "🎤 વોઇસ રેકોર્ડ", voiceRecording: "🔴 રેકોર્ડિંગ ચાલુ છે...",
                 voiceRecorded: "✅ રેકોર્ડ થઈ ગયું"
             },
@@ -408,7 +404,7 @@
                 chatBrokenSawari: "ബന്ധം നഷ്ടമായി - ഫോൺ വടക്കോട്ട് പിടിച്ച് തൊടുക", reqSentText: "⏳ അഭ്യർത്ഥന അയച്ചു...",
                 reqBtnText: "📲 അഭ്യർത്ഥന അയക്കുക", myLocText: "<b>നിങ്ങളുടെ സ്ഥാനം</b>", myDestText: "<b>നിങ്ങളുടെ ലക്ഷ്യസ്ഥാനം</b>",
                 destSetText: "ലക്ഷ്യസ്ഥാനം സജ്ജീകരിച്ചു!", reqToast: "അഭ്യർത്ഥന വിജയകരമായി അയച്ചു!",
-                northWord: "വടക്ക്", southWord: "തെക്ക്", eastWord: "കിഴക്ക്", westWord: "പടിഞ്ഞാറ്", distText: "ദൂരം", kmText: "കി.മീ",
+                northWord: "വടക്ക്", southWord: "തെക്ക്", distText: "ദൂരം", kmText: "കി.മീ",
                 chatPlaceholder: "സന്ദേശം ടൈപ്പ് ചെയ്യുക...", voiceBtnText: "🎤 വോイス് റെക്കോർഡ്", voiceRecording: "🔴 റെക്കോർഡിംഗ്...",
                 voiceRecorded: "✅ റെക്കോർഡ് ചെയ്തു"
             },
@@ -429,7 +425,7 @@
                 chatBrokenSawari: "ସଂଯୋଗ ବିଚ୍ଛିନ୍ନ - ଫୋନ୍ ଉତ୍ତର ଦିଗରେ ରଖି ଟଚ୍ କରନ୍ତୁ", reqSentText: "⏳ ଅନୁରୋଧ ପଠାଗଲା...",
                 reqBtnText: "📲 ଅନୁରୋଧ ପଠାନ୍ତୁ", myLocText: "<b>ଆପଣଙ୍କର ସ୍ଥାନ</b>", myDestText: "<b>ଆପଣଙ୍କର ଗନ୍ତବ୍ୟସ୍ଥଳ</b>",
                 destSetText: "ଗନ୍ତବ୍ୟସ୍ଥଳ ସେଟ୍ ହୋଇଗଲା!", reqToast: "ଅନୁରୋଧ ସଫଳତାର ସହିତ ପଠାଗଲା!",
-                northWord: "ଉତ୍ତର", southWord: "ଦକ୍ଷିଣ", eastWord: "ପୂର୍ବ", westWord: "ପଶ୍ଚିମ", distText: "ଦୂରତା", kmText: "କି.ମି.",
+                northWord: "ଉତ୍ତର", southWord: "ଦକ୍ଷିଣ", distText: "ଦୂରତା", kmText: "କି.ମି.",
                 chatPlaceholder: "ଏକ ବାର୍ତ୍ତା ଟାଇପ୍ କରନ୍ତୁ...", voiceBtnText: "🎤 ଭଏସ୍ ରେକର୍ଡ", voiceRecording: "🔴 ରେକର୍ଡିଂ ହେଉଛି...",
                 voiceRecorded: "✅ ରେକର୍ଡ ହୋଇଗଲା"
             },
@@ -437,9 +433,9 @@
                 modalTitle: "ਮੋਡ ਚੁਣੋ", modalDesc: "ਤੁਸੀਂ ਕਿਸ ਰੂਪ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
                 riderBtn: "ਆਟੋ / ਈ-ਰਿਕਸ਼ਾ ਡਰਾਈਵਰ", sawariBtn: "ਸਵਾਰੀ",
                 bikeRiderBtn: "🏍️ ਬਾਈਕ ਡਰਾਈਵਰ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)", bikeSawariBtn: "🙋‍♂️ ਬਾਈਕ ਸਵਾਰੀ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)",
-                disclaimer: "ਸ਼ਰਤਾਂ ਅਤੇ ਬੇਦਾਵਾ: ਇਹ ਐਪ ਸਿਰਫ਼ ਸੁਤੰਤਰ ਉਪਭੋਗਤਾਵਾਂ ਨੂੰ ਆਪਸ ਵਿੱਚ ਜੋੜਨ ਵਾਲੀ ਇੱਕ ਨੈੱਟਵਰਕਿੰਗ ਡਾਇਰੈক্টਰੀ ਹੈ। ਇਹ ਕੋਈ ਟੈਕਸੀ ਬੁਕਿੰਗ ਜਾਂ ਆਵਾਜਾਈ ਸੇਵਾ ਨਹੀਂ ਹੈ। ਐਪ ਕੋਈ ਕਮਿਸ਼ਨ ਨਹੀਂ ਲੈਂਦਾ। ਯਾਤਰਾ ਦੌਰਾਨ ਸੁਰੱਖਿਆ ਦੀ ਪੂਰੀ ਜ਼ਿੰਮੇਵਾਰੀ ਉਪਭੋਗਤਾਵਾਂ ਦੀ ਆਪਣੀ ਹੋਵੇਗੀ।",
+                disclaimer: "ਸ਼ਰਤਾਂ ਅਤੇ ਬੇਦਾਵਾ: ਇਹ ਐਪ ਸਿਰਫ਼ ਸੁਤੰਤਰ ਉਪਭੋਗਤਾਵਾਂ ਨੂੰ ਆਪਸ ਵਿੱਚ ਜੋੜਨ ਵਾਲੀ ਇੱਕ ਨੈੱਟਵਰਕਿੰਗ ਡਾਇਰੈক্টਰੀ ਹੈ। ਇਹ ਕੋਈ ਟੈਕਸੀ ਬੁਕਿੰਗ ਜਾਂ ਆਵਾਜਾਈ ਸੇਵਾ ਨਹੀਂ ਹੈ। ਐਪ ਕੋਈ ਕਮিশਨ ਨਹੀਂ ਲੈਂਦਾ। ਯਾਤਰਾ ਦੌਰਾਨ ਸੁਰੱਖਿਆ ਦੀ ਪੂਰੀ ਜ਼ਿੰਮੇਵਾਰੀ ਉਪਭੋਗਤਾਵਾਂ ਦੀ ਆਪਣੀ ਹੋਵੇਗੀ।",
                 otpTitle: "ਮੋਬਾਈਲ ਤਸਦੀਕ", otpDesc: "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ 10 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਅਤੇ OTP (ਕੋਡ: 7317) ਦਰਜ ਕਰੋ।",
-                otpBtn: "ਤਸਦੀਕ ਕਰੋ ਅਤੇ ਅੱਗੇ ਵਧੋ", loading: "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+                otpBtn: "तਸਦੀਕ ਕਰੋ ਅਤੇ ਅੱਗੇ ਵਧੋ", loading: "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
                 statusRider: "ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਹਮੇਸ਼ਾ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ",
                 statusSawari: "ਫ਼ੋਨ ਨੂੰ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ ਅਤੇ ਜਿੱਥੇ ਜਾਣਾ ਹੈ ਉੱਥੇ ਛੋਹਵੋ",
                 counterRider: "ਡਰਾਈਵਰ", counterSawari: "ਸਵਾਰੀ",
@@ -447,11 +443,11 @@
                 chatTitle: "💬 ਪ੍ਰਾਈਵੇਟ ਚੈਟ ਅਤੇ ਲਾਈਵ ਟਰੈਕਿੰਗ", closeChat: "✕ ਬੰਦ ਕਰੋ", sendBtn: "ਭੇਜੋ",
                 locationBtn: "📍 ਸਥਾਨ ਸਾਂਝਾ ਕਰੋ", destText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਕਰਨ ਲਈ ਮੈਪ 'ਤੇ ਟੈਪ ਕਰੋ", resetBtn: "ਰੀਸੈਟ ਕਰੋ",
                 chatConnected: "ਤੁਸੀਂ ਆਪਸ ਵਿੱਚ ਜੁੜ ਗਏ ਹੋ।", chatBroken: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖੋ",
-                chatBrokenSawari: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖ ਕੇ ਛੋਹਵੋ", reqSentText: "⏳ ਬੇਨਤੀ ਭੇਜੀ ਗਈ...",
+                chatBrokenSawari: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖ ਕੇ ਛੋਹਵੋ", reqSentText: "⏳ ਬੇਨਤੀ ਭੇਜੀ गई...",
                 reqBtnText: "📲 ਬੇਨਤੀ ਭੇਜੋ", myLocText: "<b>ਤੁਹਾਡਾ ਸਥਾਨ</b>", myDestText: "<b>ਤੁਹਾਡੀ ਮੰਜ਼ਿਲ</b>",
-                destSetText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਹੋ ਗਈ ਹੈ!", reqToast: "ਬੇਨਤੀ ਸਫਲਤਾਪૂર્વਕ ਭੇਜੀ ਗਈ ਹੈ!",
-                northWord: "ਉੱਤਰ", southWord: "ਦੱਖਣ", eastWord: "ਪੂਰਬ", westWord: "ਪੱਛਮ", distText: "ਦੂਰੀ", kmText: "ਕિਮੀ",
-                chatPlaceholder: "ਸੁਨੇਹਾ ਲਿਖੋ...", voiceBtnText: "🎤 ਵాయిਸ ਰਿਕਾਰਡ", voiceRecording: "🔴 ਰਿਕਾਰਡਿੰਗ...",
+                destSetText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਹੋ گئی ہے!", reqToast: "ਬੇਨਤੀ ਸਫਲਤਾਪૂર્વਕ ਭ भेजी ਗਈ ਹੈ!",
+                northWord: "ਉੱਤਰ", southWord: "ਦੱਖਣ", distText: "ਦੂਰੀ", kmText: "ਕિਮੀ",
+                chatPlaceholder: " ਸੁਨੇਹਾ ਲਿਖੋ...", voiceBtnText: "🎤 ਵాయిਸ ਰਿਕਾਰਡ", voiceRecording: "🔴 ਰਿਕਾਰਡਿੰਗ...",
                 voiceRecorded: "✅ ਰਿਕਾਰਡ ਹੋ ਗਿਆ"
             },
             as: {
@@ -464,14 +460,14 @@
                 statusRider: "আপোনাৰ ফোনটো সদায় উত্তৰ দিশলৈ ৰাখি মেপখন চাওক",
                 statusSawari: "ফোনটো উত্তৰ দিশলৈ ৰাখি মেপ চাওক আৰু ক'লৈ যাব লাগিব স্পৰ্শ কৰক",
                 counterRider: "চালক", counterSawari: "যাত্ৰী",
-                reqMsg: "🙋‍♂️ নতুন যাত্ৰীৰ অনুৰোধ আহিছে!", acceptBtn: "গ্ৰহଣ কৰক", rejectBtn: "প্ৰত্যাখ্যাত কৰক",
+                reqMsg: "🙋‍♂️ নতুন যাত্ৰীৰ অনুৰোধ আহিছে!", acceptBtn: "গ্ৰହଣ কৰক", rejectBtn: "প্ৰত্যাখ্যাত কৰক",
                 chatTitle: "💬 প্ৰাইভেট চাট আৰু লাইভ ট্ৰেকিং", closeChat: "✕ বন্ধ কৰক", sendBtn: "প্ৰেবণ কৰক",
                 locationBtn: "📍 অৱস্থান শ্বেয়াৰ কৰক", destText: "গন্তব্যস্থান নিৰ্ধাৰণ কৰিবলৈ মেপত টেপ কৰক", resetBtn: "ৰীছেট",
                 chatConnected: "আপুনি পৰস্পৰ সংযুক্ত হৈছে।", chatBroken: "সংযোগ বিচ্ছিন্ন - ফোন উত্তৰ দিশত ৰাখক",
                 chatBrokenSawari: "সংযোগ বিচ্ছিন্ন - ফোন উত্তৰত ৰাখি স্পৰ্শ কৰক", reqSentText: "⏳ অনুৰোধ প্ৰেসন কৰা হ'ল...",
                 reqBtnText: "📲 অনুৰোধ প্ৰেৰণ কৰক", myLocText: "<b>আপোনাৰ অৱস্থান</b>", myDestText: "<b>আপোনাৰ গন্তব্যস্থান</b>",
-                destSetText: "গন্তব্যস্থান নিৰ্ধাৰণ কৰা হ'ল!", reqToast: "অনুৰোধ সফলভাৱে প্ৰেৰণ কৰা হ'ল!",
-                northWord: "উত্তৰ", southWord: "দক্ষিণ", eastWord: "পূব", westWord: "পশ্চিম", distText: "দূৰত্ব", kmText: "কি.মি.",
+                destSetText: "গন্তব্যস্থান নিৰ্ধাৰଣ কৰা হ'ল!", reqToast: "অনুৰোধ সফলভাৱে প্ৰেৰণ কৰা হ'ল!",
+                northWord: "উত্তৰ", southWord: "দক্ষিণ", distText: "দূৰত্ব", kmText: "কি.মি.",
                 chatPlaceholder: "বাৰ্তা টাইপ কৰক...", voiceBtnText: "🎤 ভয়েচ ৰেকৰ্ড", voiceRecording: "🔴 ৰেকৰ্ডিং চলি আছে...",
                 voiceRecorded: "✅ ৰেকৰ্ড হ'ল"
             },
@@ -492,7 +488,7 @@
                 chatBrokenSawari: "संपर्क टूट्यो - फोन उत्तर दिशा में राख टच करो", reqSentText: "⏳ रिक्वेस्ट भेज दी है...",
                 reqBtnText: "📲 रिक्वेस्ट भेजो", myLocText: "<b>थारी लोकेशन</b>", myDestText: "<b>थारी मंजिल</b>",
                 destSetText: "मंजिल सेट हो गई है!", reqToast: "रिक्वेस्ट सफलतापर्वक भेज दी गई है!",
-                northWord: "उत्तर", southWord: "दक्षिण", eastWord: "पूर्व", westWord: "पश्चिम", distText: "अंतर", kmText: "किमी",
+                northWord: "उत्तर", southWord: "दक्षिण", distText: "अंतर", kmText: "किमी",
                 chatPlaceholder: "संदेश लिखो...", voiceBtnText: "🎤 आवाज रिकॉर्ड", voiceRecording: "🔴 रिकॉर्डिंग चालू है...",
                 voiceRecorded: "✅ रिकॉर्ड हो ग्यो"
             },
@@ -513,7 +509,7 @@
                 chatBrokenSawari: "Conexión perdida - Mantenga el teléfono hacia el Norte y toque", reqSentText: "⏳ Solicitud enviada...",
                 reqBtnText: "📲 Enviar Solicitud", myLocText: "<b>Tu Ubicación</b>", myDestText: "<b>Tu Destino</b>",
                 destSetText: "¡Destino establecido!", reqToast: "¡Solicitud enviada con éxito!",
-                northWord: "N", southWord: "S", eastWord: "E", westWord: "W", distText: "Dist", kmText: "km",
+                northWord: "N", southWord: "S", distText: "Dist", kmText: "km",
                 chatPlaceholder: "Type a message...", voiceBtnText: "🎤 Voice Record", voiceRecording: "🔴 Recording...",
                 voiceRecorded: "✅ Recorded"
             },
@@ -534,7 +530,7 @@
                 chatBrokenSawari: "连接断开 - 请将手机保持朝向北方并点击", reqSentText: "⏳ 请求已发送...",
                 reqBtnText: "📲 发送请求", myLocText: "<b>您的位置</b>", myDestText: "<b>您的目的地</b>",
                 destSetText: "目的地已设置！", reqToast: "请求发送成功！",
-                northWord: "北", southWord: "南", eastWord: "东", westWord: "西", distText: "距离", kmText: "公里",
+                northWord: "北", southWord: "南", distText: "距离", kmText: "公里",
                 chatPlaceholder: "输入消息...", voiceBtnText: "🎤 语音录制", voiceRecording: "🔴 录音中...",
                 voiceRecorded: "✅ 已录制"
             },
@@ -555,7 +551,7 @@
                 chatBrokenSawari: "انقطع الاتصال - اجعل الهاتف باتجاه الشمال والمس", reqSentText: "⏳ تم إرسال الطلب...",
                 reqBtnText: "📲 إرسال الطلب", myLocText: "<b>موقعك</b>", myDestText: "<b>وجهتك</b>",
                 destSetText: "تم تحديد الوجهة!", reqToast: "تم إرسال الطلب بنجاح!",
-                northWord: "شمال", southWord: "جنوب", eastWord: "شرق", westWord: "غرب", distText: "المسافة", kmText: "كم",
+                northWord: "شمال", southWord: "جنوب", distText: "المسافة", kmText: "كم",
                 chatPlaceholder: "اكتب رسالة...", voiceBtnText: "🎤 تسجيل صوتي", voiceRecording: "🔴 جاري التسجيل...",
                 voiceRecorded: "✅ تم التسجيل"
             },
@@ -576,7 +572,7 @@
                 chatBrokenSawari: "Conexão perdida - Mantenha o telefone para o Norte e toque", reqSentText: "⏳ Solicitação enviada...",
                 reqBtnText: "📲 Enviar Solicitação", myLocText: "<b>Sua Localização</b>", myDestText: "<b>Seu Destino</b>",
                 destSetText: "Destino definido!", reqToast: "Solicitação enviada com sucesso!",
-                northWord: "N", southWord: "S", eastWord: "E", westWord: "W", distText: "Distância", kmText: "km",
+                northWord: "N", southWord: "S", distText: "Distância", kmText: "km",
                 chatPlaceholder: "Digite uma mensagem...", voiceBtnText: "🎤 Gravar áudio", voiceRecording: "...",
                 voiceRecorded: "✅ Gravado"
             },
@@ -597,7 +593,7 @@
                 chatBrokenSawari: "Connexion perdue - Gardez le téléphone vers le Nord et touchez", reqSentText: "⏳ Demande envoyée...",
                 reqBtnText: "📲 Envoyer la demande", myLocText: "<b>Votre position</b>", myDestText: "<b>Votre destination</b>",
                 destSetText: "Destination définie !", reqToast: "Demande envoyée avec succès !",
-                northWord: "N", southWord: "S", eastWord: "E", westWord: "O", distText: "Distance", kmText: "km",
+                northWord: "N", southWord: "S", distText: "Distance", kmText: "km",
                 chatPlaceholder: "Tapez un message...", voiceBtnText: "🎤 Enregistrement", voiceRecording: "🔴 Enregistrement...",
                 voiceRecorded: "✅ Enregistré"
             },
@@ -618,7 +614,7 @@
                 chatBrokenSawari: "Verbindung unterbrochen - Handy nach Norden halten und tippen", reqSentText: "⏳ Anfrage gesendet...",
                 reqBtnText: "📲 Anfrage senden", myLocText: "<b>Ihr Standort</b>", myDestText: "<b>Ihr Ziel</b>",
                 destSetText: "Ziel festgelegt!", reqToast: "Anfrage erfolgreich gesendet!",
-                northWord: "N", southWord: "S", eastWord: "O", westWord: "W", distText: "Entfernung", kmText: "km",
+                northWord: "N", southWord: "S", distText: "Entfernung", kmText: "km",
                 chatPlaceholder: "Nachricht eingeben...", voiceBtnText: "🎤 Sprachaufnahme", voiceRecording: "🔴 Aufnahme...",
                 voiceRecorded: "✅ Aufgenommen"
             },
@@ -639,7 +635,7 @@
                 chatBrokenSawari: "接続が切れました - スマホを北に向けてタップしてください", reqSentText: "⏳ リクエスト送信済み...",
                 reqBtnText: "📲 リクエスト送信", myLocText: "<b>現在地</b>", myDestText: "<b>目的地</b>",
                 destSetText: "目的地が設定されました！", reqToast: "リクエストが正常に送信されました！",
-                northWord: "北", southWord: "南", eastWord: "東", westWord: "西", distText: "距離", kmText: "km",
+                northWord: "北", southWord: "南", distText: "距離", kmText: "km",
                 chatPlaceholder: "メッセージを入力...", voiceBtnText: "🎤 音声録音", voiceRecording: "🔴 録音中...",
                 voiceRecorded: "✅ 録音完了"
             },
@@ -660,7 +656,7 @@
                 chatBrokenSawari: "Связь потеряна - держите телефон на Север и коснитесь", reqSentText: "⏳ Запрос отправлен...",
                 reqBtnText: "📲 Отправить запрос", myLocText: "<b>Ваше местоположение</b>", myDestText: "<b>Ваш пункт назначения</b>",
                 destSetText: "Пункт назначения установлен!", reqToast: "Запрос успешно отправлен!",
-                northWord: "С", southWord: "Ю", eastWord: "В", westWord: "З", distText: "Расстояние", kmText: "км",
+                northWord: "С", southWord: "Ю", distText: "Расстояние", kmText: "км",
                 chatPlaceholder: "Введите сообщение...", voiceBtnText: "🎤 Запись голоса", voiceRecording: "🔴 Запись...",
                 voiceRecorded: "✅ Записано"
             },
@@ -668,7 +664,7 @@
                 modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmak istersiniz?",
                 riderBtn: "Oto / E-Rickshaw Sürücüsü", sawariBtn: "Yolcu",
                 bikeRiderBtn: "🏍️ Motosiklet Sürücüsü (06:00 - 19:00)", bikeSawariBtn: "🙋‍♂️ Motosiklet Yolcusu (06:00 - 19:00)",
-                disclaimer: "Şartlar و Sorumluluk Reddi: Bu uygulama, yalnızca bağımsız kullanıcıları birbirine bağlayan bir ağ dizinidir. Bir taksi rezervasyonu veya taşımacılık hizmeti değildir. Uygulama herhangi bir komisyon almaz. Yolculuk sırasında güvenliğin tüm sorumluluğu tamamen kullanıcıların kendisine aittir.",
+                disclaimer: "Şartlar ve Sorumluluk Reddi: Bu uygulama, yalnızca bağımsız kullanıcıları birbirine bağlayan bir ağ dizinidir. Bir taksi rezervasyonu veya taşımacılık hizmeti değildir. Uygulama herhangi bir komisyon almaz. Yolculuk sırasında güvenliğin tüm sorumluluğu tamamen kullanıcıların kendisine aittir.",
                 otpTitle: "Mobil Doğrulama", otpDesc: "Lütfen 10 haneli cep telefonu numaranızı و OTP'yi (Kod: 7317) girin.",
                 otpBtn: "Doğrula و İlerle", loading: "Yükleniyor...",
                 statusRider: "Telefonunuzu her zaman kuzey yönüne tutarak haritayı görüntüleyin",
@@ -681,7 +677,7 @@
                 chatBrokenSawari: "Bağlantı Kesildi - Telefonu kuzeye doğru tutup dokunun", reqSentText: "⏳ İstek Gönderildi...",
                 reqBtnText: "📲 İstek Gönder", myLocText: "<b>Konumunuz</b>", myDestText: "<b>Varış Noktanız</b>",
                 destSetText: "Varış noktası belirlendi!", reqToast: "İstek başarıyla gönderildi!",
-                northWord: "K", southWord: "G", eastWord: "D", westWord: "B", distText: "Mesafe", kmText: "km",
+                northWord: "K", southWord: "G", distText: "Mesafe", kmText: "km",
                 chatPlaceholder: "Bir mesaj yazın...", voiceBtnText: "🎤 Ses Kaydı", voiceRecording: "🔴 Kayıt yapılıyor...",
                 voiceRecorded: "✅ Kaydedildi"
             }
@@ -730,8 +726,6 @@
             // Updated for Compass & Chat Input & Voice Recorder
             if(document.getElementById('compassNorth')) document.getElementById('compassNorth').innerText = t.northWord;
             if(document.getElementById('compassSouth')) document.getElementById('compassSouth').innerText = t.southWord;
-            if(document.getElementById('compassEast')) document.getElementById('compassEast').innerText = t.eastWord;
-            if(document.getElementById('compassWest')) document.getElementById('compassWest').innerText = t.westWord;
             if(document.getElementById('chatInput')) document.getElementById('chatInput').placeholder = t.chatPlaceholder;
             if(document.getElementById('voiceBtn') && !isRecording) document.getElementById('voiceBtn').innerText = t.voiceBtnText;
         }
