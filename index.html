@@ -225,7 +225,7 @@
                 bikeRiderBtn: "🏍️ बाइक चालक (सुबह 6 से शाम 7)", bikeSawariBtn: "🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)",
                 disclaimer: "शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।",
                 otpTitle: "मोबाइल सत्यापन", otpDesc: "कृपया अपना 10 अंकों का मोबाइल नंबर और OTP (कोड: 7317) दर्ज करें।",
-                otpBtn: "सत्यापित करें और आगे बढ़ें", loading: "लोड हो रहा है...",
+                otpBtn: "सत्यापित करें और आगे बढ़ें", loading: "लोड हो रहा...",
                 statusRider: "फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें",
                 statusSawari: "फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें",
                 counterRider: "चालक", counterSawari: "सवारी",
@@ -1020,7 +1020,7 @@
             socket = io({ transports: ['websocket'], reconnection: true });
 
             socket.on('connect', () => { 
-                // Reset sync state to force sync on fresh socket connection
+                // रीकनेक्ट होने पर तुरंत लोकेशन सिंक फ़ोर्स करें
                 lastSyncedLat = null;
                 lastSyncedLng = null;
                 syncPosition(); 
@@ -1067,9 +1067,29 @@
                 }
             });
 
+            // 🔥 FIX 3: पैसेंजर को मैसेज मिलते ही तुरंत UI चैटबॉक्स खोलें
             socket.on('join_chat_room', (data) => {
-                // Passenger सर्वर को कहेगा कि उसने रूम जॉइन कर लिया है
                 socket.emit('join_room_confirm', data);
+
+                if (myId === data.passengerId) {
+                    activeChatRoom = data.room;
+                    connectedPartnerId = data.riderId;
+
+                    document.getElementById('chatMessages').innerHTML = '';
+                    document.getElementById('requestPopup').style.display = 'none';
+                    document.getElementById('chatOverlay').style.display = 'block';
+                    
+                    const t = translations[currentLang] || translations['hi'];
+                    document.getElementById('chatHeaderTitle').innerText = t.chatTitle;
+
+                    document.getElementById('statusDot').className = 'badge badge-green';
+                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
+                        document.getElementById('statusText').innerText = t.statusSawari;
+                    } else {
+                        document.getElementById('statusText').innerText = t.statusRider;
+                    }
+                    appendChatMessage('System', t.chatConnected);
+                }
             });
 
             socket.on('request_accepted', (data) => {

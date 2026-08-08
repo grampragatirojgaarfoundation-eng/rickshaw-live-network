@@ -189,6 +189,9 @@ async function broadcastSpatialRemoval(user) {
 io.on('connection', (socket) => {
 
     socket.on('update_location', async (data) => {
+        // 🔥 FIX 1: हर यूजर को उसकी अपनी ID वाले रूम में जोड़ें
+        socket.join(data.id);
+
         const existingUser = await getUserFromRedis(data.id);
         const isNewUser = !existingUser;
 
@@ -245,43 +248,30 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Chat & Request Logic
+    // 🔥 FIX 2: सीधे User ID पर मैसेज भेजें (Socket ID पर निर्भर न रहें)
     socket.on('send_sms_request', async (data) => {
-        const rider = await getUserFromRedis(data.riderId);
-        if (rider && rider.socketId) {
-            io.to(rider.socketId).emit('receive_sms_request', { passengerId: data.passengerId, riderId: data.riderId });
-        }
+        io.to(data.riderId).emit('receive_sms_request', { passengerId: data.passengerId, riderId: data.riderId });
     });
 
     socket.on('accept_sms_request', async (data) => {
         const room = 'room_' + data.passengerId + '_' + data.riderId;
         
-        // 1. Rider इस रूम को जॉइन करेगा
+        // 1. राइडर इस रूम में जुड़ेगा
         socket.join(room);
         
-        // 2. Passenger का डेटा Redis से निकालें
-        const passenger = await getUserFromRedis(data.passengerId);
+        // 2. पैसेंजर को उसकी User ID पर सीधे इवेंट भेजें ताकि उसका चैटबॉक्स खुले
+        io.to(data.passengerId).emit('join_chat_room', { room, passengerId: data.passengerId, riderId: data.riderId });
         
-        if (passenger && passenger.socketId) {
-            // 3. Passenger को सीधे मैसेज भेजकर कहें कि वह भी रूम जॉइन करे और चैट बॉक्स खोले
-            io.to(passenger.socketId).emit('join_chat_room', { room, passengerId: data.passengerId, riderId: data.riderId });
-        }
-        
-        // 4. Rider की स्क्रीन पर चैट बॉक्स खोलने के लिए
+        // 3. राइडर की स्क्रीन पर चैटबॉक्स खोलें
         socket.emit('request_accepted', { room, passengerId: data.passengerId, riderId: data.riderId });
     });
 
-    // 5. Passenger जब 'join_chat_room' मिलने पर रूम जॉइन करेगा:
     socket.on('join_room_confirm', (data) => {
         socket.join(data.room);
-        socket.emit('request_accepted', data);
     });
 
     socket.on('reject_sms_request', async (data) => {
-        const passenger = await getUserFromRedis(data.passengerId);
-        if (passenger && passenger.socketId) {
-            io.to(passenger.socketId).emit('request_rejected', data);
-        }
+        io.to(data.passengerId).emit('request_rejected', data);
     });
 
     socket.on('chat_message', (data) => {
