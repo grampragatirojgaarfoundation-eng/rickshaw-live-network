@@ -307,7 +307,7 @@
                 modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
                 riderBtn: "ऑटो / ई-रिक्षा चालक", sawariBtn: "ऑटो प्रवासी",
                 bikeRiderBtn: "🏍️ बाईक चालक (सकाळी 6 ते संध्याकाळी 7)", bikeSawariBtn: "🙋‍♂️ बाईक प्रवासी (सकाळी 6 ते संध्याकाळी 7)",
-                disclaimer: "अटी आणि अस्वीकरण: हे अॅप केवळ स्वतंत्र वापरकर्त्यांना जोडणारी नेटवर्किंग डायरेक्टरी आहे. ही कोणतीही टॅक्सी बुकिंग किंवा वाहतूक सेवा नाही. अॅप कोणतेही कमिशन घेत नाही. प्रवासादरम्यान सुरक्षेची संपूर्ण जबाबदारी वापरकर्त्यांची स्वतःची असेल.",
+                disclaimer: "अटी आणि अस्वीकरण: हे अॅप केवळ स्वतंत्र वापरकर्त्यांना जोडणारे नेटवर्किंग डायरेक्टरी आहे. ही कोणतीही टॅक्सी बुकिंग किंवा वाहतूक सेवा नाही. अॅप कोणतेही कमिशन घेत नाही. प्रवासादरम्यान सुरक्षेची संपूर्ण जबाबदारी वापरकर्त्यांची स्वतःची असेल.",
                 otpTitle: "मोबाईल सत्यापण", otpDesc: "कृपया तुमचा 10 अंकी मोबाईल नंबर आणि OTP (कोड: 7317) प्रविष्ट करा.",
                 otpBtn: "तपासा आणि पुढे जा", loading: "लोड होत आहे...",
                 statusRider: "तुमचा फोन नेहमी उत्तर दिशेला ठेवून नकाशा पहा",
@@ -626,7 +626,7 @@
                 otpTitle: "携帯電話認証", otpDesc: "10桁の携帯電話番号とOTP（コード: 7317）を入力してください。",
                 otpBtn: "確認して進む", loading: "読み込み中...",
                 statusRider: "スマホを常に北に向けた状態でマップを確認してください",
-                statusSawari: "スマホを常に北に向けた状態でマップを確認し、行きたい場所をタップしてください",
+                statusSawari: "スマホ को 常に北に向けた状態でマップを確認し、行きたい場所をタップしてください",
                 counterRider: "運転手", counterSawari: "乗客",
                 reqMsg: "🙋‍♂️ 新しい乗客のリクエストが届きました！", acceptBtn: "承認", rejectBtn: "拒否",
                 chatTitle: "💬 プライベートチャットとライブ追跡", closeChat: "✕ 閉じる", sendBtn: "送信",
@@ -675,7 +675,7 @@
                 locationBtn: "📍 Konum Paylaş", destText: "Hedefinizi belirlemek için haritaya dokunun", resetBtn: "Rotayı Sıfırla",
                 chatConnected: "Artık birbirinizle bağlantı kurdunuz.", chatBroken: "Bağlantı Kesildi - Telefonu kuzeye doğru tutun",
                 chatBrokenSawari: "Bağlantı Kesildi - Telefonu kuzeye doğru tutup dokunun", reqSentText: "⏳ İstek Gönderildi...",
-                reqBtnText: "📲 İstek Gönder", myLocText: "<b>Konumunuz</b>", myDestText: "<b>Varış Noktanız</b>",
+                reqBtnText: "📲 İstek Gönder", myLocText: "<b>Konumunuz</b>", myDestText: "<b>Varış Nokتانız</b>",
                 destSetText: "Varış noktası belirlendi!", reqToast: "İstek başarıyla gönderildi!",
                 northWord: "K", southWord: "G", distText: "Mesafe", kmText: "km",
                 chatPlaceholder: "Bir mesaj yazın...", voiceBtnText: "🎤 Ses Kaydı", voiceRecording: "🔴 Kayıt yapılıyor...",
@@ -1065,6 +1065,11 @@
                         });
                     }
                 }
+            });
+
+            socket.on('join_chat_room', (data) => {
+                // Passenger सर्वर को कहेगा कि उसने रूम जॉइन कर लिया है
+                socket.emit('join_room_confirm', data);
             });
 
             socket.on('request_accepted', (data) => {

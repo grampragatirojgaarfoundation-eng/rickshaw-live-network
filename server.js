@@ -255,15 +255,26 @@ io.on('connection', (socket) => {
 
     socket.on('accept_sms_request', async (data) => {
         const room = 'room_' + data.passengerId + '_' + data.riderId;
+        
+        // 1. Rider इस रूम को जॉइन करेगा
         socket.join(room);
         
+        // 2. Passenger का डेटा Redis से निकालें
         const passenger = await getUserFromRedis(data.passengerId);
+        
         if (passenger && passenger.socketId) {
-            // Join passenger socket to room using adapter (works across all PM2 workers)
-            io.in(passenger.socketId).socketsJoin(room);
+            // 3. Passenger को सीधे मैसेज भेजकर कहें कि वह भी रूम जॉइन करे और चैट बॉक्स खोले
+            io.to(passenger.socketId).emit('join_chat_room', { room, passengerId: data.passengerId, riderId: data.riderId });
         }
         
-        io.to(room).emit('request_accepted', { room, passengerId: data.passengerId, riderId: data.riderId });
+        // 4. Rider की स्क्रीन पर चैट बॉक्स खोलने के लिए
+        socket.emit('request_accepted', { room, passengerId: data.passengerId, riderId: data.riderId });
+    });
+
+    // 5. Passenger जब 'join_chat_room' मिलने पर रूम जॉइन करेगा:
+    socket.on('join_room_confirm', (data) => {
+        socket.join(data.room);
+        socket.emit('request_accepted', data);
     });
 
     socket.on('reject_sms_request', async (data) => {
