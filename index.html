@@ -20,7 +20,6 @@
         .modal-box h2 { font-size: 20px; color: #111; margin-bottom: 6px; font-weight: 800; }
         .modal-box p { font-size: 12px; color: #666; margin-bottom: 18px; line-height: 1.4; }
         
-        /* Language Selector Dropdown Style */
         .lang-select-container { margin-bottom: 14px; text-align: left; }
         .lang-select-container label { display: block; font-size: 11px; font-weight: 700; color: #2563eb; margin-bottom: 4px; }
         .lang-dropdown { width: 100%; padding: 10px; border: 1px solid #2563eb; border-radius: 8px; font-size: 13px; font-weight: bold; background: #f8fafc; color: #111; cursor: pointer; }
@@ -32,26 +31,22 @@
         .btn-bike-rider { background: #d97706; }
         .btn-bike-sawari { background: #7c3aed; }
 
-        /* Disclaimer Footer Style inside Modal */
         .disclaimer-text { font-size: 9.5px; color: #777; margin-top: 14px; line-height: 1.35; text-align: justify; border-top: 1px solid #eee; padding-top: 8px; }
 
         .otp-input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; text-align: center; }
         .otp-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
-        /* Top bar container holding status card and live compass side by side */
         .top-container { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; display: none; align-items: center; gap: 8px; width: 94%; max-width: 420px; justify-content: center; }
 
         .status-card { background: #ffffff; padding: 10px 16px; border-radius: 30px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; align-items: center; gap: 8px; flex: 1; text-align: left; }
         .badge { width: 10px; height: 10px; border-radius: 50%; display: none; flex-shrink: 0; }
-        .badge-green { background: #16a34a; display: inline-block; }
-        .badge-red { background: #dc2626; display: inline-block; }
+        .badge-green { background: #16a34a; display: inline-block; width: 10px; height: 10px; }
+        .badge-red { background: #dc2626; display: inline-block; width: 10px; height: 10px; }
 
-        /* Live Compass styling with Needle and Bold Text */
         .live-compass { background: #ffffff; width: 46px; height: 46px; border-radius: 50%; box-shadow: 0 4px 18px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; border: 2px solid #2563eb; cursor: pointer; }
         .compass-dial { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; transition: transform 0.1s ease-out; }
         .compass-n { position: absolute; top: 2px; font-size: 10px; font-weight: 900; color: #dc2626; line-height: 1; }
         .compass-s { position: absolute; bottom: 2px; font-size: 10px; font-weight: 900; color: #111; line-height: 1; }
-        /* Compass Needle Design */
         .compass-needle { position: absolute; width: 2px; height: 28px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .needle-top { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 14px solid #dc2626; position: absolute; top: 0; }
         .needle-bottom { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 14px solid #333; position: absolute; bottom: 0; }
@@ -103,7 +98,6 @@
 
     <div class="modal-overlay" id="roleModal" style="display: flex;">
         <div class="modal-box">
-            <!-- Select Language Section -->
             <div class="lang-select-container">
                 <label for="languageSelect">Select your language</label>
                 <select id="languageSelect" class="lang-dropdown" onchange="changeAppLanguage(this.value)">
@@ -141,7 +135,6 @@
                 <button class="role-btn btn-bike-sawari" id="btnBikeSawariText" onclick="selectRole('bike_sawari')">🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)</button>
             </div>
 
-            <!-- Disclaimer Footer Added at the bottom of the Mode modal box -->
             <div class="disclaimer-text" id="disclaimerText">
                 शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।
             </div>
@@ -158,7 +151,6 @@
         </div>
     </div>
 
-    <!-- Top Container with Status Card and Live Compass side by side -->
     <div class="top-container" id="topContainer">
         <div class="status-card" id="statusBar">
             <div id="statusDot" class="badge"></div>
@@ -217,7 +209,6 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
-        // Comprehensive Multi-Language Dictionary with Disclaimer Text Added
         const translations = {
             hi: {
                 modalTitle: "मोड चुनें (Select Mode)", modalDesc: "आप किस रूप में काम करना चाहते हैं?",
@@ -225,7 +216,7 @@
                 bikeRiderBtn: "🏍️ बाइक चालक (सुबह 6 से शाम 7)", bikeSawariBtn: "🙋‍♂️ बाइक यात्री (सुबह 6 से शाम 7)",
                 disclaimer: "शर्तें और अस्वीकरण: यह ऐप केवल स्वतंत्र उपयोगकर्ताओं को आपस में जोड़ने वाली एक नेटवर्किंग डायरेक्टरी है। यह कोई टैक्सी बुकिंग या परिवहन सेवा नहीं है। ऐप कोई कमीशन नहीं लेता। सफर के दौरान सुरक्षा की पूरी जिम्मेदारी उपयोगकर्ताओं की स्वयं की होगी।",
                 otpTitle: "मोबाइल सत्यापन", otpDesc: "कृपया अपना 10 अंकों का मोबाइल नंबर और OTP (कोड: 7317) दर्ज करें।",
-                otpBtn: "सत्यापित करें और आगे बढ़ें", loading: "लोड हो रहा...",
+                otpBtn: "सत्यापित करें और आगे बढ़ें", loading: "लोड हो रहा है...",
                 statusRider: "फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें",
                 statusSawari: "फोन को हमेशा उत्तर दिशा की तरफ करके मैप देखें और आपको किधर जाना है टच करें",
                 counterRider: "चालक", counterSawari: "सवारी",
@@ -307,7 +298,7 @@
                 modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
                 riderBtn: "ऑटो / ई-रिक्षा चालक", sawariBtn: "ऑटो प्रवासी",
                 bikeRiderBtn: "🏍️ बाईक चालक (सकाळी 6 ते संध्याकाळी 7)", bikeSawariBtn: "🙋‍♂️ बाईक प्रवासी (सकाळी 6 ते संध्याकाळी 7)",
-                disclaimer: "अटी आणि अस्वीकरण: हे अॅप केवळ स्वतंत्र वापरकर्त्यांना जोडणारे नेटवर्किंग डायरेक्टरी आहे. ही कोणतीही टॅक्सी बुकिंग किंवा वाहतूक सेवा नाही. अॅप कोणतेही कमिशन घेत नाही. प्रवासादरम्यान सुरक्षेची संपूर्ण जबाबदारी वापरकर्त्यांची स्वतःची असेल.",
+                disclaimer: "अटी आणि अस्वीकरण: हे अॅप केवळ स्वतंत्र वापरकर्त्यांना जोडणारी नेटवर्किंग डायरेक्टरी आहे. ही कोणतीही टॅक्सी बुकिंग किंवा वाहतूक सेवा नाही. अॅप कोणतेही कमिशन घेत नाही. प्रवासादरम्यान सुरक्षेची संपूर्ण जबाबदारी वापरकर्त्यांची स्वतःची असेल.",
                 otpTitle: "मोबाईल सत्यापण", otpDesc: "कृपया तुमचा 10 अंकी मोबाईल नंबर आणि OTP (कोड: 7317) प्रविष्ट करा.",
                 otpBtn: "तपासा आणि पुढे जा", loading: "लोड होत आहे...",
                 statusRider: "तुमचा फोन नेहमी उत्तर दिशेला ठेवून नकाशा पहा",
@@ -626,7 +617,7 @@
                 otpTitle: "携帯電話認証", otpDesc: "10桁の携帯電話番号とOTP（コード: 7317）を入力してください。",
                 otpBtn: "確認して進む", loading: "読み込み中...",
                 statusRider: "スマホを常に北に向けた状態でマップを確認してください",
-                statusSawari: "スマホ को 常に北に向けた状態でマップを確認し、行きたい場所をタップしてください",
+                statusSawari: "スマホを常に北に向けた状態でマップを確認し、行きたい場所をタップしてください",
                 counterRider: "運転手", counterSawari: "乗客",
                 reqMsg: "🙋‍♂️ 新しい乗客のリクエストが届きました！", acceptBtn: "承認", rejectBtn: "拒否",
                 chatTitle: "💬 プライベートチャットとライブ追跡", closeChat: "✕ 閉じる", sendBtn: "送信",
@@ -675,7 +666,7 @@
                 locationBtn: "📍 Konum Paylaş", destText: "Hedefinizi belirlemek için haritaya dokunun", resetBtn: "Rotayı Sıfırla",
                 chatConnected: "Artık birbirinizle bağlantı kurdunuz.", chatBroken: "Bağlantı Kesildi - Telefonu kuzeye doğru tutun",
                 chatBrokenSawari: "Bağlantı Kesildi - Telefonu kuzeye doğru tutup dokunun", reqSentText: "⏳ İstek Gönderildi...",
-                reqBtnText: "📲 İstek Gönder", myLocText: "<b>Konumunuz</b>", myDestText: "<b>Varış Nokتانız</b>",
+                reqBtnText: "📲 İstek Gönder", myLocText: "<b>Konumunuz</b>", myDestText: "<b>Varış Noktanız</b>",
                 destSetText: "Varış noktası belirlendi!", reqToast: "İstek başarıyla gönderildi!",
                 northWord: "K", southWord: "G", distText: "Mesafe", kmText: "km",
                 chatPlaceholder: "Bir mesaj yazın...", voiceBtnText: "🎤 Ses Kaydı", voiceRecording: "🔴 Kayıt yapılıyor...",
@@ -736,7 +727,6 @@
         let isPassengerActive = true, tempSelectedRole = null;
         let requestedRiders = {}; 
         
-        // 3-Meter Movement Threshold Sync Variables
         let lastSyncedLat = null;
         let lastSyncedLng = null;
         
@@ -759,6 +749,13 @@
                 document.getElementById('roleModal').style.display = 'flex';
             }
         };
+
+        // Window Unload Listener for Instant Chat Session Teardown
+        window.addEventListener('beforeunload', () => {
+            if (activeChatRoom && socket && socket.connected) {
+                socket.emit('close_chat', { room: activeChatRoom, userId: myId });
+            }
+        });
 
         function showToast(text) {
             const toast = document.getElementById('toastMsg');
@@ -965,7 +962,6 @@
 
             document.getElementById('destStatus').innerText = t.destSetText;
             
-            // Force immediate sync upon setting new destination
             lastSyncedLat = null;
             lastSyncedLng = null;
             syncPosition();
@@ -978,7 +974,6 @@
             const t = translations[currentLang] || translations['hi'];
             document.getElementById('destStatus').innerText = t.destText;
             
-            // Force immediate sync upon resetting destination
             lastSyncedLat = null;
             lastSyncedLng = null;
             syncPosition();
@@ -1020,7 +1015,6 @@
             socket = io({ transports: ['websocket'], reconnection: true });
 
             socket.on('connect', () => { 
-                // रीकनेक्ट होने पर तुरंत लोकेशन सिंक फ़ोर्स करें
                 lastSyncedLat = null;
                 lastSyncedLng = null;
                 syncPosition(); 
@@ -1067,31 +1061,7 @@
                 }
             });
 
-            // 🔥 FIX 3: पैसेंजर को मैसेज मिलते ही तुरंत UI चैटबॉक्स खोलें
-            socket.on('join_chat_room', (data) => {
-                socket.emit('join_room_confirm', data);
-
-                if (myId === data.passengerId) {
-                    activeChatRoom = data.room;
-                    connectedPartnerId = data.riderId;
-
-                    document.getElementById('chatMessages').innerHTML = '';
-                    document.getElementById('requestPopup').style.display = 'none';
-                    document.getElementById('chatOverlay').style.display = 'block';
-                    
-                    const t = translations[currentLang] || translations['hi'];
-                    document.getElementById('chatHeaderTitle').innerText = t.chatTitle;
-
-                    document.getElementById('statusDot').className = 'badge badge-green';
-                    if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                        document.getElementById('statusText').innerText = t.statusSawari;
-                    } else {
-                        document.getElementById('statusText').innerText = t.statusRider;
-                    }
-                    appendChatMessage('System', t.chatConnected);
-                }
-            });
-
+            // Guaranteed Chat Overlay Opening Handler for Both Rider and Passenger
             socket.on('request_accepted', (data) => {
                 if (myId === data.passengerId || myId === data.riderId) {
                     activeChatRoom = data.room;
@@ -1137,8 +1107,9 @@
                 }
             });
 
+            // Chat Closure Handler when partner disconnects, closes app, or leaves chat
             socket.on('chat_closed', (data) => {
-                if (activeChatRoom === data.room) {
+                if (activeChatRoom === data.room || (data.room && activeChatRoom && activeChatRoom === data.room) || (connectedPartnerId && data.disconnectedUser === connectedPartnerId)) {
                     document.getElementById('statusDot').className = 'badge badge-red';
                     const t = translations[currentLang] || translations['hi'];
                     if (myRole === 'sawari' || myRole === 'bike_sawari') {
@@ -1180,10 +1151,9 @@
             document.getElementById('totalSawaris').innerText = sCount;
         }
 
-        // Precise Haversine distance calculator in Meters
         function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
             if (lat1 === null || lon1 === null || lat2 === null || lon2 === null) return Infinity;
-            const R = 6371000; // Earth radius in meters
+            const R = 6371000;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -1197,7 +1167,6 @@
             if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
 
             if (socket && socket.connected && myLat !== null && myLng !== null) {
-                // Evaluate 3-meter threshold rule before sending packet to server
                 const movementMeters = calculateDistanceMeters(lastSyncedLat, lastSyncedLng, myLat, myLng);
                 
                 if (movementMeters >= 3) {
@@ -1210,7 +1179,6 @@
                         destination: myDestination 
                     });
                     
-                    // Update last synced coordinates upon successful emission
                     lastSyncedLat = myLat;
                     lastSyncedLng = myLng;
                 }
@@ -1398,7 +1366,6 @@
             const t = translations[currentLang] || translations['hi'];
             if (!isRecording) {
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                    // Audio Bitrate Limit Set to 16 kbps (30-40 KB size reduction)
                     mediaRecorder = new MediaRecorder(stream, { audioBitsPerSecond: 16000 });
                     audioChunks = [];
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
@@ -1449,7 +1416,7 @@
 
         function closeChat() {
             if (activeChatRoom) {
-                socket.emit('close_chat', { room: activeChatRoom });
+                socket.emit('close_chat', { room: activeChatRoom, userId: myId });
             }
             document.getElementById('chatOverlay').style.display = 'none';
             

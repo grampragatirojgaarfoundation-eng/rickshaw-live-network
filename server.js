@@ -63,6 +63,7 @@ const REDIS_SOCKET_HASH = 'socket_to_user';         // Hash: socketId -> userId
 const REDIS_GEO_KEY = 'user_locations';             // GEO index
 const REDIS_RIDERS_COUNT = 'global_riders_count';   // Atomic Counter
 const REDIS_SAWARIS_COUNT = 'global_sawaris_count'; // Atomic Counter
+const REDIS_ACTIVE_CHATS_HASH = 'active_chats';     // Hash: userId -> { room, partnerId }
 
 // Helper functions for updating counters atomically across all PM2 Cores
 async function incrementRoleCount(role) {
@@ -168,12 +169,32 @@ async function getNearbyUserIds(lat, lng, radiusKm = 15) {
     }
 }
 
+// Cleanup active chat session when a user disconnects or deactivates
+async function handleUserChatDisconnect(userId) {
+    if (!isRedisConnected || !userId) return;
+    try {
+        const chatDataStr = await pubClient.hGet(REDIS_ACTIVE_CHATS_HASH, userId);
+        if (chatDataStr) {
+            const chatData = JSON.parse(chatDataStr);
+            if (chatData && chatData.room) {
+                // Broadcast chat_closed to room so the partner UI closes automatically
+                io.to(chatData.room).emit('chat_closed', { room: chatData.room, disconnectedUser: userId });
+            }
+            // Delete chat mappings for both users from Redis
+            await pubClient.hDel(REDIS_ACTIVE_CHATS_HASH, userId);
+            if (chatData.partnerId) {
+                await pubClient.hDel(REDIS_ACTIVE_CHATS_HASH, chatData.partnerId);
+            }
+        }
+    } catch (err) {
+        console.error("Error in handleUserChatDisconnect:", err);
+    }
+}
+
 // Broadcasts (Spreading via Redis Pub/Sub through Socket.io Adapter)
 async function broadcastSpatialUpdate(user) {
     if (!user || user.lat === undefined || user.lng === undefined) return;
     const globalCounts = await getGlobalCounts();
-    
-    // Emit event globally; client checks distance or processes update
     io.emit('live_broadcast', { user: user, counts: globalCounts });
 }
 
@@ -189,9 +210,6 @@ async function broadcastSpatialRemoval(user) {
 io.on('connection', (socket) => {
 
     socket.on('update_location', async (data) => {
-        // 🔥 FIX 1: हर यूजर को उसकी अपनी ID वाले रूम में जोड़ें
-        socket.join(data.id);
-
         const existingUser = await getUserFromRedis(data.id);
         const isNewUser = !existingUser;
 
@@ -209,7 +227,6 @@ io.on('connection', (socket) => {
         await saveUserInRedis(data);
 
         if (isNewUser) {
-            // Find nearby user IDs within 15 km using Redis GEO
             const nearbyIds = await getNearbyUserIds(data.lat, data.lng, 15);
             let nearbyUsers = {};
 
@@ -233,6 +250,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', async () => {
         const user = await getUserBySocketId(socket.id);
         if (user) {
+            await handleUserChatDisconnect(user.id);
             await decrementRoleCount(user.role);
             await removeUserFromRedis(user.id, socket.id);
             await broadcastSpatialRemoval(user);
@@ -242,44 +260,74 @@ io.on('connection', (socket) => {
     socket.on('deactivate_passenger', async (data) => {
         const user = await getUserFromRedis(data.id);
         if (user) {
+            await handleUserChatDisconnect(user.id);
             await decrementRoleCount(user.role);
             await removeUserFromRedis(data.id, user.socketId);
             await broadcastSpatialRemoval(user);
         }
     });
 
-    // 🔥 FIX 2: सीधे User ID पर मैसेज भेजें (Socket ID पर निर्भर न रहें)
+    // Chat & Request Logic
     socket.on('send_sms_request', async (data) => {
-        io.to(data.riderId).emit('receive_sms_request', { passengerId: data.passengerId, riderId: data.riderId });
+        const rider = await getUserFromRedis(data.riderId);
+        if (rider && rider.socketId) {
+            io.to(rider.socketId).emit('receive_sms_request', { passengerId: data.passengerId, riderId: data.riderId });
+        }
     });
 
     socket.on('accept_sms_request', async (data) => {
         const room = 'room_' + data.passengerId + '_' + data.riderId;
         
-        // 1. राइडर इस रूम में जुड़ेगा
+        // Rider socket joins room
         socket.join(room);
         
-        // 2. पैसेंजर को उसकी User ID पर सीधे इवेंट भेजें ताकि उसका चैटबॉक्स खुले
-        io.to(data.passengerId).emit('join_chat_room', { room, passengerId: data.passengerId, riderId: data.riderId });
-        
-        // 3. राइडर की स्क्रीन पर चैटबॉक्स खोलें
-        socket.emit('request_accepted', { room, passengerId: data.passengerId, riderId: data.riderId });
-    });
+        const passenger = await getUserFromRedis(data.passengerId);
+        const rider = await getUserFromRedis(data.riderId);
 
-    socket.on('join_room_confirm', (data) => {
-        socket.join(data.room);
+        // Await cross-worker socket join across Redis Adapter PM2 cluster
+        if (passenger && passenger.socketId) {
+            await io.in(passenger.socketId).socketsJoin(room);
+        }
+        if (rider && rider.socketId) {
+            await io.in(rider.socketId).socketsJoin(room);
+        }
+
+        // Save active chat state in Redis Hash for disconnect tracking
+        const chatDataPassenger = JSON.stringify({ room: room, partnerId: data.riderId });
+        const chatDataRider = JSON.stringify({ room: room, partnerId: data.passengerId });
+        await pubClient.hSet(REDIS_ACTIVE_CHATS_HASH, data.passengerId, chatDataPassenger);
+        await pubClient.hSet(REDIS_ACTIVE_CHATS_HASH, data.riderId, chatDataRider);
+
+        const payload = { room: room, passengerId: data.passengerId, riderId: data.riderId };
+
+        // Emit via room AND direct unicast backup to guarantee delivery on both screens
+        io.to(room).emit('request_accepted', payload);
+        if (passenger && passenger.socketId) {
+            io.to(passenger.socketId).emit('request_accepted', payload);
+        }
+        if (rider && rider.socketId) {
+            io.to(rider.socketId).emit('request_accepted', payload);
+        }
     });
 
     socket.on('reject_sms_request', async (data) => {
-        io.to(data.passengerId).emit('request_rejected', data);
+        const passenger = await getUserFromRedis(data.passengerId);
+        if (passenger && passenger.socketId) {
+            io.to(passenger.socketId).emit('request_rejected', data);
+        }
     });
 
     socket.on('chat_message', (data) => {
         io.to(data.room).emit('chat_message', data);
     });
 
-    socket.on('close_chat', (data) => {
-        io.to(data.room).emit('chat_closed', { room: data.room });
+    socket.on('close_chat', async (data) => {
+        if (data && data.room) {
+            io.to(data.room).emit('chat_closed', { room: data.room });
+        }
+        if (data && data.userId) {
+            await handleUserChatDisconnect(data.userId);
+        }
     });
 });
 
