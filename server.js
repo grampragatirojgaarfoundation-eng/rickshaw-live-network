@@ -5,6 +5,7 @@ const cors = require('cors');
 const path = require('path');
 const { createClient } = require('redis');
 const { createAdapter } = require('@socket.io/redis-adapter');
+const geohash = require('ngeohash'); // Geohash library imported
 
 const app = express();
 app.use(cors());
@@ -52,7 +53,7 @@ let isRedisConnected = false;
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
     io.adapter(createAdapter(pubClient, subClient));
     isRedisConnected = true;
-    console.log("🚀 Redis Connected Successfully! Multi-Core Clustering Active.");
+    console.log("🚀 Redis Connected Successfully! Multi-Core Clustering & GeoSearch Active.");
 }).catch((err) => {
     console.error("❌ Redis Connection Error:", err);
 });
@@ -98,18 +99,6 @@ async function getGlobalCounts() {
     };
 }
 
-// Distance Calculation Helper
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    if (!lat1 || !lon1 || !lat2 || !lon2) return 9999;
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
 // Save User state in Redis
 async function saveUserInRedis(user) {
     if (!isRedisConnected) return;
@@ -119,7 +108,7 @@ async function saveUserInRedis(user) {
     // Map Socket ID to User ID
     await pubClient.hSet(REDIS_SOCKET_HASH, user.socketId, user.id);
     
-    // Add/Update in Redis GEO Index (Longitude, Latitude, Member)
+    // Add/Update in Redis GEO Index
     await pubClient.geoAdd(REDIS_GEO_KEY, {
         longitude: user.lng,
         latitude: user.lat,
@@ -153,10 +142,13 @@ async function removeUserFromRedis(userId, socketId) {
     await pubClient.zRem(REDIS_GEO_KEY, userId);
 }
 
-// Find nearby user IDs (15km radius using Redis GEO Engine)
+// ==========================================
+// SERVER-SIDE REDIS GEO-SEARCH ENGINE (15KM Radius)
+// ==========================================
 async function getNearbyUserIds(lat, lng, radiusKm = 15) {
     if (!isRedisConnected) return [];
     try {
+        // Rediss Server-Side Spatial Index Query (Direct 15km Filter)
         const nearbyIds = await pubClient.geoSearch(
             REDIS_GEO_KEY,
             { longitude: lng, latitude: lat },
@@ -164,7 +156,7 @@ async function getNearbyUserIds(lat, lng, radiusKm = 15) {
         );
         return nearbyIds || [];
     } catch (err) {
-        console.error("GeoSearch Error:", err);
+        console.error("❌ Redis GeoSearch Error:", err);
         return [];
     }
 }
@@ -177,10 +169,8 @@ async function handleUserChatDisconnect(userId) {
         if (chatDataStr) {
             const chatData = JSON.parse(chatDataStr);
             if (chatData && chatData.room) {
-                // Broadcast chat_closed to room so the partner UI closes automatically
                 io.to(chatData.room).emit('chat_closed', { room: chatData.room, disconnectedUser: userId });
             }
-            // Delete chat mappings for both users from Redis
             await pubClient.hDel(REDIS_ACTIVE_CHATS_HASH, userId);
             if (chatData.partnerId) {
                 await pubClient.hDel(REDIS_ACTIVE_CHATS_HASH, chatData.partnerId);
@@ -191,17 +181,34 @@ async function handleUserChatDisconnect(userId) {
     }
 }
 
-// Broadcasts (Spreading via Redis Pub/Sub through Socket.io Adapter)
+// ==========================================
+// OPTIMIZED GEOHASH BROADCASTING LOGIC
+// ==========================================
 async function broadcastSpatialUpdate(user) {
     if (!user || user.lat === undefined || user.lng === undefined) return;
     const globalCounts = await getGlobalCounts();
-    io.emit('live_broadcast', { user: user, counts: globalCounts });
+    
+    // 5-Character Geohash (~4.9km x 4.9km grid)
+    const centerHash = geohash.encode(user.lat, user.lng, 5);
+    const neighbors = geohash.neighbors(centerHash);
+    const targetRooms = [centerHash, ...neighbors].map(h => 'geo_' + h);
+
+    // Broadcast only to users present in these local 9 grids
+    io.to(targetRooms).emit('live_broadcast', { user: user, counts: globalCounts });
 }
 
 async function broadcastSpatialRemoval(user) {
     if (!user) return;
     const globalCounts = await getGlobalCounts();
-    io.emit('remove_user', { id: user.id, counts: globalCounts });
+
+    if (user.lat !== undefined && user.lng !== undefined) {
+        const centerHash = geohash.encode(user.lat, user.lng, 5);
+        const neighbors = geohash.neighbors(centerHash);
+        const targetRooms = [centerHash, ...neighbors].map(h => 'geo_' + h);
+        io.to(targetRooms).emit('remove_user', { id: user.id, counts: globalCounts });
+    } else {
+        io.emit('remove_user', { id: user.id, counts: globalCounts });
+    }
 }
 
 // ==========================================
@@ -223,27 +230,42 @@ io.on('connection', (socket) => {
         data.socketId = socket.id;
         data.lastUpdated = Date.now();
 
-        // Save to Centralized Redis
+        // Save location to Centralized Redis GEO Index & Hash
         await saveUserInRedis(data);
 
+        // Dynamic Geohash Room Management
+        if (data.lat !== undefined && data.lng !== undefined) {
+            const currentHash = geohash.encode(data.lat, data.lng, 5);
+            const newGeoRoom = 'geo_' + currentHash;
+
+            if (socket.currentGeoRoom && socket.currentGeoRoom !== newGeoRoom) {
+                socket.leave(socket.currentGeoRoom);
+            }
+            socket.join(newGeoRoom);
+            socket.currentGeoRoom = newGeoRoom;
+        }
+
+        // Jab Naya User Connect Ho - Direct Server-Side Redis GeoSearch Se 15km Users Nikalein
         if (isNewUser) {
-            const nearbyIds = await getNearbyUserIds(data.lat, data.lng, 15);
+            const nearbyIds = await getNearbyUserIds(data.lat, data.lng, 15); // Server-Side GeoSearch Call
             let nearbyUsers = {};
 
             for (let targetId of nearbyIds) {
                 if (targetId !== data.id) {
                     let tUser = await getUserFromRedis(targetId);
-                    if (tUser && calculateDistance(data.lat, data.lng, tUser.lat, tUser.lng) <= 15) {
+                    if (tUser) {
                         nearbyUsers[targetId] = tUser;
                     }
                 }
             }
 
+            // Client ko keval 15km ke daayre wale users hi bhejein
             socket.emit('init_users', nearbyUsers);
             const counts = await getGlobalCounts();
             socket.emit('live_broadcast', { counts });
         }
 
+        // Local Geohash Room Broadcasting
         await broadcastSpatialUpdate(data);
     });
 
@@ -278,13 +300,11 @@ io.on('connection', (socket) => {
     socket.on('accept_sms_request', async (data) => {
         const room = 'room_' + data.passengerId + '_' + data.riderId;
         
-        // Rider socket joins room
         socket.join(room);
         
         const passenger = await getUserFromRedis(data.passengerId);
         const rider = await getUserFromRedis(data.riderId);
 
-        // Await cross-worker socket join across Redis Adapter PM2 cluster
         if (passenger && passenger.socketId) {
             await io.in(passenger.socketId).socketsJoin(room);
         }
@@ -292,7 +312,6 @@ io.on('connection', (socket) => {
             await io.in(rider.socketId).socketsJoin(room);
         }
 
-        // Save active chat state in Redis Hash for disconnect tracking
         const chatDataPassenger = JSON.stringify({ room: room, partnerId: data.riderId });
         const chatDataRider = JSON.stringify({ room: room, partnerId: data.passengerId });
         await pubClient.hSet(REDIS_ACTIVE_CHATS_HASH, data.passengerId, chatDataPassenger);
@@ -300,7 +319,6 @@ io.on('connection', (socket) => {
 
         const payload = { room: room, passengerId: data.passengerId, riderId: data.riderId };
 
-        // Emit via room AND direct unicast backup to guarantee delivery on both screens
         io.to(room).emit('request_accepted', payload);
         if (passenger && passenger.socketId) {
             io.to(passenger.socketId).emit('request_accepted', payload);
