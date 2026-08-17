@@ -125,49 +125,24 @@ const REDIS_RIDERS_COUNT = 'global_riders_count';
 const REDIS_SAWARIS_COUNT = 'global_sawaris_count'; 
 const REDIS_ACTIVE_CHATS_HASH = 'active_chats';     
 
-async function incrementRoleCount(role) {
-    if (!isRedisConnected) return;
-    try {
-        if (role === 'rider' || role === 'bike_rider') {
-            await pubClient.incr(REDIS_RIDERS_COUNT);
-        }
-        if (role === 'sawari' || role === 'bike_sawari') {
-            await pubClient.incr(REDIS_SAWARIS_COUNT);
-        }
-    } catch (err) {
-        console.error("Error in incrementRoleCount:", err);
-    }
-}
-
-async function decrementRoleCount(role) {
-    if (!isRedisConnected) return;
-    try {
-        if (role === 'rider' || role === 'bike_rider') {
-            const val = await pubClient.decr(REDIS_RIDERS_COUNT);
-            if (val < 0) await pubClient.set(REDIS_RIDERS_COUNT, 0);
-        }
-        if (role === 'sawari' || role === 'bike_sawari') {
-            const val = await pubClient.decr(REDIS_SAWARIS_COUNT);
-            if (val < 0) await pubClient.set(REDIS_SAWARIS_COUNT, 0);
-        }
-    } catch (err) {
-        console.error("Error in decrementRoleCount:", err);
-    }
-}
+async function incrementRoleCount(role) { /* Empty - Now Dynamic */ }
+async function decrementRoleCount(role) { /* Empty - Now Dynamic */ }
 
 async function getGlobalCounts() {
     if (!isRedisConnected) return { riders: 0, sawaris: 0 };
     try {
-        const ridersStr = await pubClient.get(REDIS_RIDERS_COUNT);
-        const sawarisStr = await pubClient.get(REDIS_SAWARIS_COUNT);
-        const riders = parseInt(ridersStr || '0', 10);
-        const sawaris = parseInt(sawarisStr || '0', 10);
-        return { 
-            riders: Math.max(0, isNaN(riders) ? 0 : riders), 
-            sawaris: Math.max(0, isNaN(sawaris) ? 0 : sawaris) 
-        };
+        const allUsers = await pubClient.hGetAll(REDIS_USERS_HASH);
+        let riders = 0;
+        let sawaris = 0;
+        for (let id in allUsers) {
+            try {
+                const user = JSON.parse(allUsers[id]);
+                if (user.role === 'rider' || user.role === 'bike_rider') riders++;
+                if (user.role === 'sawari' || user.role === 'bike_sawari') sawaris++;
+            } catch (e) {}
+        }
+        return { riders, sawaris };
     } catch (err) {
-        console.error("Error in getGlobalCounts:", err);
         return { riders: 0, sawaris: 0 };
     }
 }
@@ -314,16 +289,6 @@ io.on('connection', (socket) => {
         if (!data || !data.id) return;
 
         try {
-            const existingUser = await getUserFromRedis(data.id);
-            const isNewUser = !existingUser;
-
-            if (!isNewUser && existingUser.role !== data.role) {
-                await decrementRoleCount(existingUser.role);
-                await incrementRoleCount(data.role);
-            } else if (isNewUser) {
-                await incrementRoleCount(data.role);
-            }
-
             data.socketId = socket.id;
             data.lastUpdated = Date.now();
 
@@ -340,6 +305,7 @@ io.on('connection', (socket) => {
                 socket.currentGeoRoom = newGeoRoom;
             }
 
+            const isNewUser = !(await getUserFromRedis(data.id));
             if (isNewUser && typeof data.lat === 'number' && typeof data.lng === 'number') {
                 const nearbyIds = await getNearbyUserIds(data.lat, data.lng, 5);
                 let nearbyUsers = {};
@@ -369,7 +335,6 @@ io.on('connection', (socket) => {
             const user = await getUserBySocketId(socket.id);
             if (user) {
                 await handleUserChatDisconnect(user.id);
-                await decrementRoleCount(user.role);
                 await removeUserFromRedis(user.id, socket.id);
                 await broadcastSpatialRemoval(user);
             }
@@ -384,7 +349,6 @@ io.on('connection', (socket) => {
             const user = await getUserFromRedis(data.id);
             if (user) {
                 await handleUserChatDisconnect(user.id);
-                await decrementRoleCount(user.role);
                 await removeUserFromRedis(data.id, user.socketId || socket.id);
                 await broadcastSpatialRemoval(user);
             }
@@ -476,29 +440,30 @@ io.on('connection', (socket) => {
 // ==========================================
 // 10 सेकंड का सख्त Redis TTL / ऑटो-डिलीट वर्कर
 // ==========================================
-setInterval(async () => {
-    if (!isRedisConnected) return;
-    try {
-        const allUsers = await pubClient.hGetAll(REDIS_USERS_HASH);
-        const currentTime = Date.now();
-        const TIMEOUT_LIMIT = 10000; // ठीक 10 सेकंड का TTL[cite: 1]
+const instanceId = process.env.NODE_APP_INSTANCE || '0';
+if (instanceId === '0') {
+    setInterval(async () => {
+        if (!isRedisConnected) return;
+        try {
+            const allUsers = await pubClient.hGetAll(REDIS_USERS_HASH);
+            const currentTime = Date.now();
+            const TIMEOUT_LIMIT = 10000; 
 
-        for (let userId in allUsers) {
-            const userData = JSON.parse(allUsers[userId]);
-            
-            if (currentTime - (userData.lastUpdated || 0) > TIMEOUT_LIMIT) {
-                console.log(`⏱️ Redis TTL Expired: Immediately Deleting Inactive User ${userId}`);
-                
-                await handleUserChatDisconnect(userId);
-                await decrementRoleCount(userData.role);
-                await removeUserFromRedis(userId, userData.socketId);
-                await broadcastSpatialRemoval(userData);
+            for (let userId in allUsers) {
+                const userData = JSON.parse(allUsers[userId]);
+                if (currentTime - (userData.lastUpdated || 0) > TIMEOUT_LIMIT) {
+                    console.log(`⏱️ Redis TTL Expired: Immediately Deleting Inactive User ${userId}`);
+                    
+                    await handleUserChatDisconnect(userId);
+                    await removeUserFromRedis(userId, userData.socketId);
+                    await broadcastSpatialRemoval(userData);
+                }
             }
+        } catch (err) {
+            console.error("Error in 10s TTL Cleanup Worker:", err);
         }
-    } catch (err) {
-        console.error("Error in 10s TTL Cleanup Worker:", err);
-    }
-}, 3000); // हर 3 सेकंड में चेक करेगा ताकि तुरंत 10 सेकंड के भीतर डिलीट हो जाए
+    }, 3000);
+}
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
