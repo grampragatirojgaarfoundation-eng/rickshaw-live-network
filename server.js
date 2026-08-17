@@ -7,16 +7,14 @@ const path = require('path');
 const { createClient } = require('redis');
 const { createAdapter } = require('@socket.io/redis-adapter');
 const geohash = require('ngeohash');
+const crypto = require('crypto'); // क्रिप्टोग्राफिक UUID के लिए
+const multer = require('multer');
+const fs = require('fs');
 
 const app = express();
 
-// ==========================================
-// SECURITY & CLOUDFLARE PROXY CONFIGURATION
-// ==========================================
-// Cloudflare Proxy / Nginx se real user IP read karne ke liye:
 app.set('trust proxy', 1);
 
-// 1. General Rate Limiter (Har IP ke liye 15 minute me max 100 requests)
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
@@ -28,48 +26,40 @@ const apiLimiter = rateLimit({
     }
 });
 
-// 2. Strict OTP / Login Limiter (Brute-force protection: 15 min me max 5 attempts)
-const otpLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-        success: false,
-        message: "Aapne bahut baar galat OTP try kiya hai. Kripya 15 minute baad prayas karein."
-    }
-});
-
-// Rate limiters apply karein
 app.use(apiLimiter);
-app.use('/verify-otp', otpLimiter);
-
-// Standard Express Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// ZERO DISK I/O - OTP Authentication in Memory Only
-app.post('/verify-otp', (req, res) => {
-    const { mobileNumber, enteredOtp } = req.body || {};
-    const FIXED_OTP = "7317";
+// ==========================================
+// VPS LOCAL AUDIO STORAGE CONFIGURATION
+// ==========================================
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
-    if (!mobileNumber || String(mobileNumber).length < 10) {
-        return res.json({ success: false, message: "Kripya sahi 10 ankon ka mobile number daalein." });
-    }
+app.use('/uploads', express.static(uploadDir));
 
-    if (String(enteredOtp) === FIXED_OTP) {
-        return res.json({ 
-            success: true, 
-            message: "Login Successful!", 
-            token: "token_" + Math.random().toString(36).substring(2)
-        });
-    } else {
-        return res.json({ 
-            success: false, 
-            message: "Galat OTP hai! Kripya '7317' daalein." 
-        });
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadDir),
+    filename: (req, file, cb) => {
+        const uniqueName = `audio_${Date.now()}_${Math.random().toString(36).substring(7)}.webm`;
+        cb(null, uniqueName);
     }
+});
+
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // Max 5MB
+});
+
+app.post('/upload-audio', upload.single('audio'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: "File upload nahi hui" });
+    }
+    const fileUrl = `/uploads/${req.file.filename}`;
+    res.json({ success: true, fileUrl: fileUrl });
 });
 
 app.get('/', (req, res) => {
@@ -79,9 +69,6 @@ app.get('/', (req, res) => {
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
-// ==========================================
-// REDIS CLIENT & ADAPTER SETUP (RECONNECT & FAULT TOLERANT)
-// ==========================================
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
 
 const redisOptions = {
@@ -100,7 +87,6 @@ const subClient = pubClient.duplicate();
 
 let isRedisConnected = false;
 
-// Event listeners for Redis Pub/Sub Clients
 pubClient.on('ready', () => {
     isRedisConnected = true;
     console.log("🚀 Redis Connected & Ready! Multi-Core Clustering & GeoSearch Active.");
@@ -120,28 +106,25 @@ subClient.on('error', (err) => {
     console.error("❌ Redis SubClient Error:", err.message);
 });
 
-// Connection Handshake with PM2 Auto-Restart Guard
 async function connectRedis() {
     try {
         await Promise.all([pubClient.connect(), subClient.connect()]);
         io.adapter(createAdapter(pubClient, subClient));
     } catch (err) {
         console.error("💥 Fatal: Redis Initial Connection Failed!", err);
-        process.exit(1); // Exit trigger so PM2 cluster automatically reboots this core
+        process.exit(1);
     }
 }
 
 connectRedis();
 
-// Redis Helper Keys
-const REDIS_USERS_HASH = 'active_users';           // Hash: userId -> user JSON string
-const REDIS_SOCKET_HASH = 'socket_to_user';         // Hash: socketId -> userId
-const REDIS_GEO_KEY = 'user_locations';             // GEO index
-const REDIS_RIDERS_COUNT = 'global_riders_count';   // Atomic Counter
-const REDIS_SAWARIS_COUNT = 'global_sawaris_count'; // Atomic Counter
-const REDIS_ACTIVE_CHATS_HASH = 'active_chats';     // Hash: userId -> { room, partnerId }
+const REDIS_USERS_HASH = 'active_users';           
+const REDIS_SOCKET_HASH = 'socket_to_user';         
+const REDIS_GEO_KEY = 'user_locations';             
+const REDIS_RIDERS_COUNT = 'global_riders_count';   
+const REDIS_SAWARIS_COUNT = 'global_sawaris_count'; 
+const REDIS_ACTIVE_CHATS_HASH = 'active_chats';     
 
-// Helper functions for updating counters atomically across all PM2 Cores
 async function incrementRoleCount(role) {
     if (!isRedisConnected) return;
     try {
@@ -189,7 +172,6 @@ async function getGlobalCounts() {
     }
 }
 
-// Save User state in Redis
 async function saveUserInRedis(user) {
     if (!isRedisConnected || !user || !user.id) return;
     try {
@@ -210,7 +192,6 @@ async function saveUserInRedis(user) {
     }
 }
 
-// Get User by ID (Safely parsed)
 async function getUserFromRedis(userId) {
     if (!isRedisConnected || !userId) return null;
     try {
@@ -222,7 +203,6 @@ async function getUserFromRedis(userId) {
     }
 }
 
-// Get User by Socket ID
 async function getUserBySocketId(socketId) {
     if (!isRedisConnected || !socketId) return null;
     try {
@@ -235,7 +215,6 @@ async function getUserBySocketId(socketId) {
     }
 }
 
-// Remove User State from Redis
 async function removeUserFromRedis(userId, socketId) {
     if (!isRedisConnected || !userId) return;
     try {
@@ -249,10 +228,7 @@ async function removeUserFromRedis(userId, socketId) {
     }
 }
 
-// ==========================================
-// SERVER-SIDE REDIS GEO-SEARCH ENGINE (15KM Radius)
-// ==========================================
-async function getNearbyUserIds(lat, lng, radiusKm = 15) {
+async function getNearbyUserIds(lat, lng, radiusKm = 5) {
     if (!isRedisConnected || typeof lat !== 'number' || typeof lng !== 'number') return [];
     try {
         const nearbyIds = await pubClient.geoSearch(
@@ -267,7 +243,6 @@ async function getNearbyUserIds(lat, lng, radiusKm = 15) {
     }
 }
 
-// Cleanup active chat session when a user disconnects or deactivates
 async function handleUserChatDisconnect(userId) {
     if (!isRedisConnected || !userId) return;
     try {
@@ -287,20 +262,15 @@ async function handleUserChatDisconnect(userId) {
     }
 }
 
-// ==========================================
-// OPTIMIZED GEOHASH BROADCASTING LOGIC
-// ==========================================
 async function broadcastSpatialUpdate(user) {
     if (!user || typeof user.lat !== 'number' || typeof user.lng !== 'number') return;
     try {
         const globalCounts = await getGlobalCounts();
         
-        // 5-Character Geohash (~4.9km x 4.9km grid)
         const centerHash = geohash.encode(user.lat, user.lng, 5);
         const neighbors = geohash.neighbors(centerHash);
         const targetRooms = [centerHash, ...neighbors].map(h => 'geo_' + h);
 
-        // Broadcast only to users present in these local 9 grids
         io.to(targetRooms).emit('live_broadcast', { user: user, counts: globalCounts });
     } catch (err) {
         console.error("Error in broadcastSpatialUpdate:", err);
@@ -325,10 +295,20 @@ async function broadcastSpatialRemoval(user) {
     }
 }
 
-// ==========================================
-// SOCKET.IO EVENT HANDLERS
-// ==========================================
 io.on('connection', (socket) => {
+
+    socket.on('heartbeat', async (data) => {
+        if (!data || !data.id) return;
+        try {
+            const user = await getUserFromRedis(data.id);
+            if (user) {
+                user.lastUpdated = Date.now();
+                await saveUserInRedis(user);
+            }
+        } catch (err) {
+            console.error("Error in Heartbeat:", err);
+        }
+    });
 
     socket.on('update_location', async (data) => {
         if (!data || !data.id) return;
@@ -347,10 +327,8 @@ io.on('connection', (socket) => {
             data.socketId = socket.id;
             data.lastUpdated = Date.now();
 
-            // Save location to Centralized Redis GEO Index & Hash
             await saveUserInRedis(data);
 
-            // Dynamic Geohash Room Management
             if (typeof data.lat === 'number' && typeof data.lng === 'number') {
                 const currentHash = geohash.encode(data.lat, data.lng, 5);
                 const newGeoRoom = 'geo_' + currentHash;
@@ -362,9 +340,8 @@ io.on('connection', (socket) => {
                 socket.currentGeoRoom = newGeoRoom;
             }
 
-            // Jab Naya User Connect Ho - Direct Server-Side Redis GeoSearch Se 15km Users Nikalein
             if (isNewUser && typeof data.lat === 'number' && typeof data.lng === 'number') {
-                const nearbyIds = await getNearbyUserIds(data.lat, data.lng, 15);
+                const nearbyIds = await getNearbyUserIds(data.lat, data.lng, 5);
                 let nearbyUsers = {};
 
                 for (let targetId of nearbyIds) {
@@ -376,13 +353,11 @@ io.on('connection', (socket) => {
                     }
                 }
 
-                // Client ko keval 15km ke daayre wale users hi bhejein
                 socket.emit('init_users', nearbyUsers);
                 const counts = await getGlobalCounts();
                 socket.emit('live_broadcast', { counts });
             }
 
-            // Local Geohash Room Broadcasting
             await broadcastSpatialUpdate(data);
         } catch (err) {
             console.error("Error in socket update_location:", err);
@@ -418,7 +393,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Chat & Request Logic
     socket.on('send_sms_request', async (data) => {
         if (!data || !data.riderId || !data.passengerId) return;
         try {
@@ -498,6 +472,30 @@ io.on('connection', (socket) => {
         }
     });
 });
+
+setInterval(async () => {
+    if (!isRedisConnected) return;
+    try {
+        const allUsers = await pubClient.hGetAll(REDIS_USERS_HASH);
+        const currentTime = Date.now();
+        const TIMEOUT_LIMIT = 35000;
+
+        for (let userId in allUsers) {
+            const userData = JSON.parse(allUsers[userId]);
+            
+            if (currentTime - (userData.lastUpdated || 0) > TIMEOUT_LIMIT) {
+                console.log(`👻 Cleanup Worker: Removing Ghost User ${userId}`);
+                
+                await handleUserChatDisconnect(userId);
+                await decrementRoleCount(userData.role);
+                await removeUserFromRedis(userId, userData.socketId);
+                await broadcastSpatialRemoval(userData);
+            }
+        }
+    } catch (err) {
+        console.error("Error in Ghost Cleanup Worker:", err);
+    }
+}, 10000);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
