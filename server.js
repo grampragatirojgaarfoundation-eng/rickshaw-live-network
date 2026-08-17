@@ -7,7 +7,7 @@ const path = require('path');
 const { createClient } = require('redis');
 const { createAdapter } = require('@socket.io/redis-adapter');
 const geohash = require('ngeohash');
-const crypto = require('crypto'); // क्रिप्टोग्राफिक UUID के लिए
+const crypto = require('crypto');
 const multer = require('multer');
 const fs = require('fs');
 
@@ -473,18 +473,21 @@ io.on('connection', (socket) => {
     });
 });
 
+// ==========================================
+// 10 सेकंड का सख्त Redis TTL / ऑटो-डिलीट वर्कर
+// ==========================================
 setInterval(async () => {
     if (!isRedisConnected) return;
     try {
         const allUsers = await pubClient.hGetAll(REDIS_USERS_HASH);
         const currentTime = Date.now();
-        const TIMEOUT_LIMIT = 35000;
+        const TIMEOUT_LIMIT = 10000; // ठीक 10 सेकंड का TTL[cite: 1]
 
         for (let userId in allUsers) {
             const userData = JSON.parse(allUsers[userId]);
             
             if (currentTime - (userData.lastUpdated || 0) > TIMEOUT_LIMIT) {
-                console.log(`👻 Cleanup Worker: Removing Ghost User ${userId}`);
+                console.log(`⏱️ Redis TTL Expired: Immediately Deleting Inactive User ${userId}`);
                 
                 await handleUserChatDisconnect(userId);
                 await decrementRoleCount(userData.role);
@@ -493,9 +496,9 @@ setInterval(async () => {
             }
         }
     } catch (err) {
-        console.error("Error in Ghost Cleanup Worker:", err);
+        console.error("Error in 10s TTL Cleanup Worker:", err);
     }
-}, 10000);
+}, 3000); // हर 3 सेकंड में चेक करेगा ताकि तुरंत 10 सेकंड के भीतर डिलीट हो जाए
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
