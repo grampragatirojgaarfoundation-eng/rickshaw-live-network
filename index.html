@@ -197,11 +197,76 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
-        // होम बटन से वापस आने पर पेज स्वतः फ्रेश रीफ्रेश करने के लिए कोड
-        document.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === "visible") {
-                window.location.reload();
+        // =========================================================================
+        // UNIFIED PAGE LIFECYCLE & INSTANT BACKGROUND SESSION DESTRUCTION ENGINE
+        // =========================================================================
+        let isSessionTerminating = false;
+
+        function terminateAppSession() {
+            if (isSessionTerminating) return;
+            isSessionTerminating = true;
+
+            if (socket) {
+                try {
+                    if (socket.connected) {
+                        if (myId) {
+                            socket.emit('deactivate_passenger', { id: myId });
+                        }
+                        if (activeChatRoom) {
+                            socket.emit('close_chat', { room: activeChatRoom, userId: myId });
+                        }
+                        socket.disconnect();
+                    }
+                } catch (e) {
+                    console.error("Socket teardown error:", e);
+                }
+                socket = null;
             }
+
+            if (map) {
+                try {
+                    map.remove();
+                } catch (e) {
+                    console.error("Map destruction error:", e);
+                }
+                map = null;
+            }
+
+            myRole = null;
+            myLat = null;
+            myLng = null;
+            myDestination = null;
+            activeChatRoom = null;
+            connectedPartnerId = null;
+            activeMarkers = {};
+            activeRoutes = {};
+            userLastSeen = {};
+            requestedRiders = {};
+
+            sessionStorage.setItem('force_fresh_start', 'true');
+        }
+
+        function handleBackgroundLifecycle(event) {
+            if (document.visibilityState === 'hidden' || event.type === 'pagehide' || event.type === 'freeze') {
+                terminateAppSession();
+            }
+        }
+
+        ['visibilitychange', 'pagehide', 'freeze', 'blur'].forEach(eventType => {
+            window.addEventListener(eventType, handleBackgroundLifecycle, { capture: true });
+        });
+
+        function handleForegroundLifecycle(event) {
+            if (document.visibilityState === 'visible' || event.type === 'pageshow' || event.type === 'resume') {
+                if (isSessionTerminating || sessionStorage.getItem('force_fresh_start') === 'true') {
+                    sessionStorage.removeItem('force_fresh_start');
+                    window.location.reload(true);
+                }
+            }
+        }
+
+        ['visibilitychange', 'pageshow', 'resume', 'focus'].forEach(eventType => {
+            window.addEventListener(eventType, handleForegroundLifecycle, { capture: true });
         });
 
         const translations = {
@@ -242,8 +307,8 @@
                 reqBtnText: "📲 Send Request", myLocText: "<b>Your Location</b>", myDestText: "<b>Your Destination</b>",
                 destSetText: "Destination set!", reqToast: "Request sent successfully!",
                 northWord: "North", southWord: "South", distText: "Distance", kmText: "km",
-                chatPlaceholder: "Type a message...", voiceBtnText: "🎤 Voice Record", voiceRecording: "🔴 Recording... (Stop)",
-                voiceRecorded: "✅ Recorded (Send)"
+                chatPlaceholder: "Type a message...", voiceBtnText: "🎤 Voice Record", voiceRecording: "🔴 Recording...",
+                voiceRecorded: "✅ Recorded"
             },
             ta: {
                 modalTitle: "முறையைத் தேர்ந்தெடுக்கவும்", modalDesc: "நீங்கள் எப்படி வேலை செய்ய விரும்புகிறீர்கள்?",
@@ -283,7 +348,7 @@
                 destSetText: "గమ్యస్థానం సెట్ చేయబడింది!", reqToast: "అభ్యర్థన విజయవంతంగా పంపబడింది!",
                 northWord: "ఉత్తరం", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
                 chatPlaceholder: "సందేశాన్ని టైప్ చేయండి...", voiceBtnText: "🎤 వాయిస్ రికార్డ్", voiceRecording: "🔴 రికార్డింగ్...",
-                voiceRecorded: "✅ రికಾರ್డ్ చేయబడింది"
+                voiceRecorded: "✅ రికార్డ్ చేయబడింది"
             },
             mr: {
                 modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
@@ -409,20 +474,20 @@
                 modalTitle: "ਮੋਡ ਚੁਣੋ", modalDesc: "ਤੁਸੀਂ ਕਿਸ ਰੂਪ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
                 riderBtn: "ਆਟੋ / ਈ-ਰਿਕਸ਼ਾ ਡਰਾਈਵਰ", sawariBtn: "ਸਵਾਰੀ",
                 bikeRiderBtn: "🏍️ ਬਾਈਕ ਡਰਾਈਵਰ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)", bikeSawariBtn: "🙋‍♂️ ਬਾਈਕ ਸਵਾਰੀ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)",
-                disclaimer: "ਸ਼ਰਤਾਂ और ਬੇਦਾਵਾ: ਇਹ ਐਪ ਸਿਰਫ਼ ਸੁਤੰਤਰ ਉਪਭੋਗਤਾਵਾਂ ਨੂੰ ਆਪਸ ਵਿੱਚ ਜੋੜਨ ਵਾਲੀ ਇੱਕ ਨੈੱਟਵਰਕਿੰਗ ਡਾਇਰੈਕਟਰੀ ਹੈ। ਇਹ ਕੋਈ ਟੈਕਸੀ ਬੁਕਿੰਗ ਜਾਂ ਆਵਾਜਾਈ ਸੇਵਾ ਨਹੀਂ है। ਐਪ ਕੋਈ ਕਮਿਸ਼ਨ ਨਹੀਂ ਲੈਂਦਾ। ਯਾਤਰਾ ਦੌਰਾਨ ਸੁਰੱਖਿਆ ਦੀ ਪੂਰੀ ਜ਼ਿੰਮੇਵਾਰੀ ਉਪਭੋਗਤਾਵਾਂ ਦੀ ਆਪਣੀ ਹੋਵੇਗੀ।",
-                loading: "ਲੋਡ ਹੋ ਰਿਹਾ है...",
+                disclaimer: "ਸ਼ਰਤਾਂ और ਬੇਦਾਵਾ: ਇਹ ਐਪ ਸਿਰਫ਼ ਸੁਤੰਤਰ ਉਪਭੋਗਤਾਵਾਂ ਨੂੰ ਆਪਸ ਵਿੱਚ ਜੋੜਨ ਵਾਲੀ ਇੱਕ ਨੈੱਟਵਰਕਿੰਗ ਡਾਇਰੈਕਟਰੀ ਹੈ। ਇਹ ਕੋਈ ਟੈਕਸੀ ਬੁਕਿੰਗ ਜਾਂ ਆਵਾਜਾਈ ਸੇਵਾ ਨਹੀਂ ਹੈ। ਐਪ ਕੋਈ ਕਮਿਸ਼ਨ ਨਹੀਂ ਲੈਂਦਾ। ਯਾਤਰਾ ਦੌਰਾਨ ਸੁਰੱਖਿਆ ਦੀ ਪੂਰੀ ਜ਼ਿੰਮੇਵਾਰੀ ਉਪਭੋਗਤਾਵਾਂ ਦੀ ਆਪਣੀ ਹੋਵੇਗੀ।",
+                loading: "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
                 statusRider: "ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਹਮੇਸ਼ਾ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ",
-                statusSawari: "ਫ਼ੋਨ ਨੂੰ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ और ਜਿੱਥੇ ਜਾਣਾ है ਉੱਥੇ ਛੋਹਵੋ",
+                statusSawari: "ਫ਼ੋਨ ਨੂੰ ਉੱਤਰ ਦਿਸ਼ਾ ਵੱਲ ਰੱਖ ਕੇ ਮੈਪ ਦੇਖੋ और ਜਿੱਥੇ ਜਾਣਾ ਹੈ ਉੱਥੇ ਛੋਹਵੋ",
                 counterRider: "ਡਰਾਈਵਰ", counterSawari: "ਸਵਾਰੀ",
                 reqMsg: "🙋‍♂️ ਨਵੀਂ ਸਵਾਰੀ ਦੀ ਬੇਨਤੀ ਆਈ ਹੈ!", acceptBtn: "ਸਵੀਕਾਰ ਕਰੋ", rejectBtn: "ਅਸਵੀਕਾਰ ਕਰੋ",
                 chatTitle: "💬 ਪ੍ਰਾਈਵੇਟ ਚੈਟ और ਲਾਈਵ ਟਰੈਕਿੰਗ", closeChat: "✕ ਬੰਦ ਕਰੋ", sendBtn: "ਭੇਜੋ",
                 locationBtn: "📍 ਸਥਾਨ ਸਾਂਝਾ ਕਰੋ", destText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਕਰਨ ਲਈ ਮੈਪ 'ਤੇ ਟੈਪ ਕਰੋ", resetBtn: "ਰੀਸੈਟ ਕਰੋ",
                 chatConnected: "ਤੁਸੀਂ ਆਪਸ ਵਿੱਚ ਜੁੜ ਗਏ ਹੋ।", chatBroken: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖੋ",
                 chatBrokenSawari: "ਸੰਪਰਕ ਟੁੱਟਿਆ - ਫ਼ੋਨ ਉੱਤਰ ਵੱਲ ਰੱਖ ਕੇ ਛੋਹਵੋ", reqSentText: "⏳ ਬੇਨਤੀ ਭੇਜੀ ਗਈ...",
-                reqBtnText: "📲 ਬੇਨਤੀ ਭੇਜੋ", myLocText: "<b>ਤੁਹਾਡا ਸਥਾਨ</b>", myDestText: "<b>ਤੁਹਾਡੀ ਮੰਜ਼ਿਲ</b>",
-                destSetText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਹੋ ਗਈ है!", reqToast: "ਬੇਨਤੀ ਸਫਲਤਾਪੂਰਵਕ ਭੇਜੀ ਗਈ है!",
+                reqBtnText: "📲 ਬੇਨਤੀ ਭੇਜੋ", myLocText: "<b>ਤੁਹਾਡਾ ਸਥਾਨ</b>", myDestText: "<b>ਤੁਹਾਡੀ ਮੰਜ਼ਿਲ</b>",
+                destSetText: "ਮੰਜ਼ਿਲ ਸੈੱਟ ਹੋ ਗਈ ਹੈ!", reqToast: "ਬੇਨਤੀ ਸਫਲਤਾਪੂਰਵਕ ਭੇਜੀ ਗਈ ਹੈ!",
                 northWord: "ਉੱਤਰ", southWord: "ਦੱਖਣ", distText: "ਦੂਰੀ", kmText: "ਕਿਲੋਮੀਟਰ",
-                chatPlaceholder: "ਸੁਨੇਹਾ ਲਿਖੋ...", voiceBtnText: "🎤 ਵਾਇس ਰਿਕਾਰਡ", voiceRecording: "🔴 ਰਿਕਾਰਡਿੰਗ...",
+                chatPlaceholder: "ਸੁਨੇਹਾ ਲਿਖੋ...", voiceBtnText: "🎤 ਵਾਇਸ ਰਿਕਾਰਡ", voiceRecording: "🔴 ਰਿਕਾਰਡਿੰਗ...",
                 voiceRecorded: "✅ ਰਿਕਾਰਡ ਹੋ ਗਿਆ"
             },
             as: {
@@ -693,7 +758,6 @@
         let myRole = null, selfMarker = null, myLat = null, myLng = null, myHeading = 0, myDestination = null;
         let destMarker = null, destLine = null, activeMarkers = {}, activeRoutes = {}, isMapCentered = false;
         let incomingReqData = null, activeChatRoom = null, connectedPartnerId = null;
-        let isPassengerActive = true, tempSelectedRole = null;
         let requestedRiders = {}; 
         
         let mediaRecorder = null, audioChunks = [], isRecording = false;
@@ -723,9 +787,7 @@
         };
 
         window.addEventListener('beforeunload', () => {
-            if (activeChatRoom && socket && socket.connected) {
-                socket.emit('close_chat', { room: activeChatRoom, userId: myId });
-            }
+            terminateAppSession();
         });
 
         function showToast(text) {
@@ -794,27 +856,6 @@
         }
 
         function initializeAppAfterLogin() {
-            if (myRole === 'sawari' || myRole === 'bike_sawari') {
-                const handleVisibility = () => {
-                    if (document.hidden || document.visibilityState === 'hidden') {
-                        isPassengerActive = false;
-                        if (socket && socket.connected) {
-                            socket.emit('deactivate_passenger', { id: myId });
-                        }
-                    } else {
-                        isPassengerActive = true;
-                        syncPosition();
-                    }
-                };
-
-                document.addEventListener("visibilitychange", handleVisibility);
-                window.addEventListener("pagehide", () => {
-                    if (socket && socket.connected) {
-                        socket.emit('deactivate_passenger', { id: myId });
-                    }
-                });
-            }
-
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((pos) => {
                     myLat = pos.coords.latitude;
@@ -980,7 +1021,7 @@
                 removeUser(data.id);
                 delete userLastSeen[data.id];
                 if (data.id === myId) {
-                    window.location.reload();
+                    window.location.reload(true);
                 }
                 if (data && data.counts) {
                     document.getElementById('totalRiders').innerText = (data.counts.riders || 0);
@@ -1093,9 +1134,7 @@
         }
 
         function syncPosition() {
-            if ((myRole === 'sawari' || myRole === 'bike_sawari') && !isPassengerActive) return;
-
-            if (socket && socket.connected && myLat !== null && myLng !== null) {
+            if (socket && socket.connected && myLat !== null && myLng !== null && myRole) {
                 socket.emit('update_location', { 
                     id: myId, 
                     role: myRole, 
