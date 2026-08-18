@@ -6,6 +6,7 @@ const cors = require('cors');
 const path = require('path');
 const { createClient } = require('redis');
 const { createAdapter } = require('@socket.io/redis-adapter');
+const { RateLimiterRedis } = require('rate-limiter-flexible');
 const geohash = require('ngeohash');
 const crypto = require('crypto');
 const multer = require('multer');
@@ -67,7 +68,7 @@ app.get('/', (req, res) => {
 });
 
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, { cors: { origin: "https://rickshaw24.co.in" } });
 
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
 
@@ -117,6 +118,21 @@ async function connectRedis() {
 }
 
 connectRedis();
+
+// ==========================================
+// SOCKET RATE LIMITER (rate-limiter-flexible)
+// ==========================================
+let locationRateLimiter = null;
+setTimeout(() => {
+    if (isRedisConnected) {
+        locationRateLimiter = new RateLimiterRedis({
+            storeClient: pubClient,
+            keyPrefix: 'socket_limit_loc',
+            points: 2, // 1 सेकंड में अधिकतम 2 बार
+            duration: 1, // प्रति 1 सेकंड
+        });
+    }
+}, 2000);
 
 const REDIS_USERS_HASH = 'active_users';           
 const REDIS_SOCKET_HASH = 'socket_to_user';         
@@ -287,6 +303,16 @@ io.on('connection', (socket) => {
 
     socket.on('update_location', async (data) => {
         if (!data || !data.id) return;
+
+        // Rate Limiter Check (1 सेकंड में अधिकतम 2 पैकेट)
+        if (locationRateLimiter) {
+            try {
+                await locationRateLimiter.consume(data.id);
+            } catch (rateLimiterRes) {
+                // सीमा पार होने पर अतिरिक्त पैकेट को तुरंत ड्रॉप (डस्टबिन में) कर दिया जाएगा
+                return;
+            }
+        }
 
         try {
             data.socketId = socket.id;
