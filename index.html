@@ -197,6 +197,13 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <script>
+        // होम बटन से वापस आने पर पेज स्वतः फ्रेश रीफ्रेश करने के लिए कोड[cite: 5]
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === "visible") {
+                window.location.reload();
+            }
+        });
+
         const translations = {
             hi: {
                 modalTitle: "मोड चुनें (Select Mode)", modalDesc: "आप किस रूप में काम करना चाहते हैं?",
@@ -275,7 +282,7 @@
                 reqBtnText: "📲 అభ్యర్థన పంపు", myLocText: "<b>మీ స్థానం</b>", myDestText: "<b>మీ గమ్యస్థానం</b>",
                 destSetText: "గమ్యస్థానం సెట్ చేయబడింది!", reqToast: "అభ్యర్థన విజయవంతంగా పంపబడింది!",
                 northWord: "ఉత్తరం", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
-                chatPlaceholder: "సందేశాన్ని టైప్ చేయండి...", voiceBtnText: "🎤 వాయిస్ రికార్డ్", voiceRecording: "🔴 రికార్డింగ్...",
+                chatPlaceholder: "సందేశాన్ని టైప్ చేయండి...", voiceBtnText: "🎤 వాయిస్ రికార్ড", voiceRecording: "🔴 రికార్డింగ్...",
                 voiceRecorded: "✅ రికార్డ్ చేయబడింది"
             },
             mr: {
@@ -630,7 +637,7 @@
                 reqMsg: "🙋‍♂️ Yeni yolcu talebi geldi!", acceptBtn: "Kabul Et", rejectBtn: "Reddet",
                 chatTitle: "💬 Özel Sohbet ve Canlı Takip", closeChat: "✕ Kapat", sendBtn: "Gönder",
                 locationBtn: "📍 Konum Paylaş", destText: "Hedefinizi belirlemek için haritaya dokunun", resetBtn: "Rotayı Sıfırla",
-                chatConnected: "Artık birbirinizle bağlantı kurdunuz.", chatBroken: "Bağlantı Kesildi - Telefonu kuzeye doğru tutun",
+                chatConnected: "Artık birbirinizle bağlantı kurدunuz.", chatBroken: "Bağlantı Kesildi - Telefonu kuzeye doğru tutun",
                 chatBrokenSawari: "Bağlantı Kesildi - Telefonu kuzeye doğru tutup dokunun", reqSentText: "⏳ İstek Gönderildi...",
                 reqBtnText: "📲 İstek Gönder", myLocText: "<b>Konumunuz</b>", myDestText: "<b>Varış Noktanız</b>",
                 destSetText: "Varış noktası belirlendi!", reqToast: "İstek başarıyla gönderildi!",
