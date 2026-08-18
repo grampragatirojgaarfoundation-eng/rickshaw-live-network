@@ -464,7 +464,7 @@ io.on('connection', (socket) => {
 });
 
 // ==========================================
-// 15 सेकंड का सख्त Redis TTL / ऑटो-डिलीट वर्कर
+// 12 सेकंड का सख्त Redis TTL / ऑटो-डिलीट वर्कर
 // ==========================================
 const instanceId = process.env.NODE_APP_INSTANCE || '0';
 if (instanceId === '0') {
@@ -473,7 +473,7 @@ if (instanceId === '0') {
         try {
             const allUsers = await pubClient.hGetAll(REDIS_USERS_HASH);
             const currentTime = Date.now();
-            const TIMEOUT_LIMIT = 15000; 
+            const TIMEOUT_LIMIT = 12000; 
 
             for (let userId in allUsers) {
                 const userData = JSON.parse(allUsers[userId]);
@@ -486,7 +486,7 @@ if (instanceId === '0') {
                 }
             }
         } catch (err) {
-            console.error("Error in 10s TTL Cleanup Worker:", err);
+            console.error("Error in 12s TTL Cleanup Worker:", err);
         }
     }, 3000);
 }
