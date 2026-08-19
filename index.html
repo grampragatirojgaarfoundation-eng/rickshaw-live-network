@@ -49,23 +49,24 @@
         .needle-top { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 14px solid #dc2626; position: absolute; top: 0; }
         .needle-bottom { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 14px solid #333; position: absolute; bottom: 0; }
 
-        .traffic-counter { position: fixed; top: 68px; right: 14px; z-index: 1000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; }
+        .traffic-counter { position: fixed; top: 68px; right: 14px; z-index: 10000; background: rgba(0, 0, 0, 0.75); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: none; }
 
+        /* Updated Refresh Button to remain visible and accessible everywhere */
         .refresh-btn-floating {
             position: fixed;
-            top: 68px;
+            top: 14px;
             left: 14px;
-            z-index: 1000;
+            z-index: 100000;
             background: #ffffff;
             color: #111;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
             border: 2px solid #2563eb;
             font-weight: bold;
@@ -113,6 +114,11 @@
     </style>
 </head>
 <body>
+
+    <!-- Always Visible Refresh Button (Even on Language/Mode Selection Modal) -->
+    <div class="refresh-btn-floating" onclick="manualAppRefresh()" title="Refresh App">
+        🔄
+    </div>
 
     <div class="modal-overlay" id="roleModal" style="display: flex;">
         <div class="modal-box">
@@ -178,11 +184,6 @@
 
     <div class="traffic-counter" id="trafficCounter">
         🌍 <span id="counterRiderLabel">चालक</span>: <span id="totalRiders">0</span> | <span id="counterSawariLabel">सवारी</span>: <span id="totalSawaris">0</span>
-    </div>
-
-    <!-- Naya Refresh Floating Button -->
-    <div class="refresh-btn-floating" onclick="manualAppRefresh()" title="Refresh App">
-        🔄
     </div>
 
     <div class="request-popup" id="requestPopup">
@@ -271,7 +272,7 @@
             sessionStorage.setItem('force_fresh_start', 'true');
         }
 
-        // Naya Manual Refresh Logic Function
+        // Manual Refresh Button Action Handler
         function manualAppRefresh() {
             showToast('🔄 App Refreshing...');
             terminateAppSession();
@@ -296,7 +297,7 @@
 
         function handleForegroundLifecycle(event) {
             if (document.visibilityState === 'visible' || event.type === 'pageshow' || event.type === 'resume') {
-                if (isSessionTerminating || sessionStorage.getItem('force_fresh_start') === 'true') {
+                if (isSessionTerminating || sessionStorage.getItem('force_fresh_start'] === 'true') {
                     sessionStorage.removeItem('force_fresh_start');
                     window.location.reload(true);
                 }
@@ -386,7 +387,7 @@
                 destSetText: "గమ్యస్థానం సెట్ చేయబడింది!", reqToast: "అభ్యర్థన విజయవంతంగా పంపబడింది!",
                 northWord: "ఉత్తరం", southWord: "దక్షిణం", distText: "దూరం", kmText: "కి.మీ",
                 chatPlaceholder: "సందేశాన్ని టైప్ చేయండి...", voiceBtnText: "🎤 వాయిస్ రికార్డ్", voiceRecording: "🔴 రికార్డింగ్...",
-                voiceRecorded: "✅ రికಾರ್డ్ చేయబడింది"
+                voiceRecorded: "✅ రికಾರ್ಡ್ చేయబడింది"
             },
             mr: {
                 modalTitle: "मोड निवडा", modalDesc: "तुम्हाला कोणत्या स्वरूपात काम करायचे आहे?",
@@ -509,7 +510,7 @@
                 voiceRecorded: "✅ ରେକର୍ଡ ହୋଇଗଲା"
             },
             pa: {
-                modalTitle: "ਮੋਡ ਚੁਣੋ", modalDesc: "ਤੁਸੀਂ ਕਿਸ ਰੂਪ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਚाहੁੰਦੇ ਹੋ?",
+                modalTitle: "ਮੋਡ ਚੁਣੋ", modalDesc: "ਤੁਸੀਂ ਕਿਸ ਰੂਪ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
                 riderBtn: "ਆਟੋ / ਈ-ਰਿਕਸ਼ਾ ਡਰਾਈਵਰ", sawariBtn: "ਸਵਾਰੀ",
                 bikeRiderBtn: "🏍️ ਬਾਈਕ ਡਰਾਈਵਰ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)", bikeSawariBtn: "🙋‍♂️ ਬਾਈਕ ਸਵਾਰੀ (ਸਵੇਰੇ 6 ਤੋਂ ਸ਼ਾਮ 7)",
                 disclaimer: "ਸ਼ਰਤਾਂ और ਬੇਦਾਵਾ: ਇਹ ਐਪ ਸਿਰਫ਼ ਸੁਤੰਤਰ ਉਪਭੋਗਤਾਵਾਂ ਨੂੰ ਆਪਸ ਵਿੱਚ ਜੋੜਨ ਵਾਲੀ ਇੱਕ ਨੈੱਟਵਰਕਿੰਗ ਡਾਇਰੈਕटਰੀ ਹੈ। ਇਹ ਕੋਈ ਟੈਕਸੀ ਬੁਕਿੰਗ ਜਾਂ ਆਵਾਜਾਈ ਸੇਵਾ ਨਹੀਂ ਹੈ। ਐਪ ਕੋਈ ਕਮਿਸ਼ਨ ਨਹੀਂ ਲੈਂਦਾ। ਯਾਤਰਾ ਦੌਰਾਨ ਸੁਰੱਖਿਆ ਦੀ ਪੂਰੀ ਜ਼ਿੰਮੇਵਾਰੀ ਉਪਭੋਗਤਾਵਾਂ ਦੀ ਆਪਣੀ ਹੋਵੇਗੀ।",
@@ -544,7 +545,7 @@
                 chatBrokenSawari: "সংযোগ বিচ্ছিন্ন - ফোন উত্তৰত ৰাখি স্পৰ্শ কৰক", reqSentText: "⏳ অনুৰোধ প্ৰেসন কৰা হ'ল...",
                 reqBtnText: "📲 অনুৰোধ প্ৰেৰণ কৰক", myLocText: "<b>আপোনাৰ অৱস্থান</b>", myDestText: "<b>আপোনাৰ গন্তব্যস্থান</b>",
                 destSetText: "গন্তব্যস্থান নিৰ্ধাৰণ কৰা হ'ল!", reqToast: "অনুৰোধ সফলভাৱে প্ৰেৰণ কৰা হ'ল!",
-                northWord: "উତ୍ତৰ", southWord: "দক্ষিণ", distText: "দূৰত্ব", kmText: "কি.মি.",
+                northWord: "উত্তৰ", southWord: "দক্ষিণ", distText: "দূৰত্ব", kmText: "কি.মি.",
                 chatPlaceholder: "বাৰ্তা টাইপ কৰক...", voiceBtnText: "🎤 ভয়েচ ৰেকৰ্ড", voiceRecording: "🔴 ৰেকৰ্ডিং চলি আছে...",
                 voiceRecorded: "✅ ৰেকৰ্ড হ'ল"
             },
@@ -732,14 +733,14 @@
                 modalTitle: "Mod Seçin", modalDesc: "Nasıl çalışmak istersiniz?",
                 riderBtn: "Oto / E-Rickshaw Sürücüsü", sawariBtn: "Yolcu",
                 bikeRiderBtn: "🏍️ Motosiklet Sürücüsü (06:00 - 19:00)", bikeSawariBtn: "🙋‍♂️ Motosiklet Yolcusu (06:00 - 19:00)",
-                disclaimer: "Şartlar und Sorumluluk Reddi: Bu uygulama, yalnızca bağımsız kullanıcıları birbirine bağlayan bir ağ dizinidir. Bir taksi rezervasyonu veya taşımacılık hizmeti değildir. Uygulama herhangi bir komisyon almaz. Yolculuk sırasında güvenliğin tüm sorumluluğu tamamen kullanıcıların kendisine aittir.",
+                disclaimer: "Şartlar und Sorumluluk Reddi: Bu uygulama, yalnızca bağımsız kullanıcıları birbirine bağlayan bir ağ dizinidir. Bir taxibuchungs- noch um einen Transportdienst. Die App nimmt keine Provision. Die Nutzer sind während der Reise allein für ihre eigene Sicherheit verantwortlich.",
                 loading: "Yükleniyor...",
                 statusRider: "Telefonunuzu her zaman kuzey yönüne tutarak haritayı görüntüleyin",
-                statusSawari: "Telefonunuzu kuzey yönüne tutun, haritaya bakın এবং gitmek istediğiniz yere dokunun",
+                statusSawari: "Telefonunuzu kuzey yönüne tutun, haritaya bakın සහ gitmek istediğiniz yere dokunun",
                 counterRider: "Sürücüler", counterSawari: "Yolcular",
                 reqMsg: "🙋‍♂️ Yeni yolcu talebi geldi!", acceptBtn: "Kabul Et", rejectBtn: "Reddet",
                 chatTitle: "💬 Özel Sohbet und Canlı Takip", closeChat: "✕ Kapat", sendBtn: "Gönder",
-                locationBtn: "📍 Konum Paylaş", destText: "Hedefinizi belirlemek için haritaya dokunun", resetBtn: "Rotayı Sıفırlayıp sıfırlamadığınızı kontrol edin",
+                locationBtn: "📍 Konum Paylaş", destText: "Hedefinizi belirlemek için haritaya dokunun", resetBtn: "Rotayı Sıfırla",
                 chatConnected: "Artık birbirinizle bağlantı kurدunuz.", chatBroken: "Bağlantı Kesildi - Telefonu kuzeye doğru tutun",
                 chatBrokenSawari: "Bağlantı Kesildi - Telefonu kuzeye doğru tutup dokunun", reqSentText: "⏳ İstek Gönderildi...",
                 reqBtnText: "📲 İstek Gönder", myLocText: "<b>Konumunuz</b>", myDestText: "<b>Varış Noktanız</b>",
@@ -801,7 +802,6 @@
         let mediaRecorder = null, audioChunks = [], isRecording = false;
         let recordingTimer = null; 
         
-        // प्रत्येक यूजर की आखिरी अपडेट टाइम याद रखने के लिए मैपिंग
         let userLastSeen = {};
 
         window.onload = function() {
@@ -812,7 +812,6 @@
             applyTranslations();
             document.getElementById('roleModal').style.display = 'flex';
 
-            // क्लाइंट साइड घोस्ट पिन क्लीनर: यदि कोई यूजर 12 सेकंड से अपडेट न भेजे, तो उसका पिन मैप से हटा दें
             setInterval(() => {
                 const now = Date.now();
                 for (let id in userLastSeen) {
