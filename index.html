@@ -524,7 +524,7 @@
                 statusRider: "फोन ने हमेशा उत्तर दिशा की तरफ राख्न ने मेप देखनो",
                 statusSawari: "फोन ने उत्तर दिशा में राख्न मेप देखनो अर कटे जाणो है थामे टच करो",
                 counterRider: "चालक", counterSawari: "सवारी",
-                reqMsg: "🙋‍♂️ नई सवारी की रिक्वेस्ट आई है!", acceptBtn: "स्वीकार करो", rejectBtn: "मना करो",
+                reqMsg: "🙋‍♂️ नई सवारी की रिक्वेस्ट आई છે!", acceptBtn: "स्वीकार करो", rejectBtn: "मना करो",
                 chatTitle: "💬 प्राइवेट चैट अर लाइव ट्रैकिंग", closeChat: "✕ बंद करो", sendBtn: "भेजो",
                 locationBtn: "📍 लोकेशन शेयर करो", destText: "मंजिल सेट करण खातिर मेप पर टैप करो", resetBtn: "रूट रीसेट",
                 chatConnected: "थाणे आपस में जुड़ गया हां।", chatBroken: "संपर्क टूट्यो - फोन उत्तर दिशा में राखो",
@@ -1464,21 +1464,72 @@
         }
 
         // =========================================================
-        // MANUAL APP REFRESH (Trading App Style)
+        // MANUAL APP REFRESH (Trading App Style - Smooth Soft Reset)
         // =========================================================
         function manualRefresh() {
-            showToast('🔄 ऐप रिफ्रेश हो रहा है...');
+            // 1. बटन को गोल घुमाने (Spin) का प्रीमियम एनीमेशन
+            const btn = document.getElementById('refreshAppBtn');
+            if(btn) {
+                btn.style.transition = "transform 0.5s ease";
+                btn.style.transform = "rotate(360deg)";
+                setTimeout(() => { btn.style.transform = "rotate(0deg)"; }, 500);
+            }
+
+            // अगर ऐप बैकग्राउंड से आया है और मैप की मेमोरी क्रैश हो चुकी है, तो ही हार्ड रीलोड करें
+            if (!map) {
+                window.location.reload(true);
+                return;
+            }
+
+            showToast('🔄 रिफ्रेश हो रहा है...');
             
-            // अगर यूजर का रोल है, तो उसे सेव रखें ताकि पॉपअप दोबारा न आए
             if (myRole) {
                 sessionStorage.setItem('saved_role', myRole);
             }
             
-            // हल्का सा डिले देकर पेज को हार्ड-रीलोड करें 
-            // (इससे पुरानी ID डिलीट होगी, नई ID बनेगी और घोस्ट पिंस साफ हो जाएंगे)
+            // 2. पुरानी चैट और रिक्वेस्ट बॉक्स को तुरंत छुपाएं
+            document.getElementById('chatOverlay').style.display = 'none';
+            document.getElementById('requestPopup').style.display = 'none';
+            
+            // 3. सर्वर से पुराना कनेक्शन तोड़ें (ताकि पुरानी ID सर्वर से तुरंत डिलीट हो जाए)
+            if (socket) {
+                if (socket.connected && myId) {
+                    socket.emit('deactivate_passenger', { id: myId });
+                }
+                socket.disconnect();
+                socket = null;
+            }
+
+            // 4. मैप से सभी घोस्ट यूज़र्स और पुरानी पिंस हटा दें (आपकी खुद की पिन अपनी जगह रहेगी)
+            for (let id in activeMarkers) {
+                if (map) map.removeLayer(activeMarkers[id]);
+            }
+            for (let id in activeRoutes) {
+                if (map) map.removeLayer(activeRoutes[id]);
+            }
+            
+            // 5. सारे पुराने डेटा और मेमोरी को साफ करें (Zero Ghost Data)
+            activeMarkers = {};
+            activeRoutes = {};
+            userLastSeen = {};
+            requestedRiders = {};
+            connectedPartnerId = null;
+            activeChatRoom = null;
+            incomingReqData = null;
+
+            // 6. ट्रैफिक काउंटर 0 कर दें ताकि फ्रेश काउंटिंग हो
+            document.getElementById('totalRiders').innerText = "0";
+            document.getElementById('totalSawaris').innerText = "0";
+
+            // 7. एक बिल्कुल नई फ्रेश User ID बनाएं (New Active Session)
+            myId = 'user_' + (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2));
+
+            // 8. बिना स्क्रीन ब्लिंक किए (बिना पेज रीलोड के) दोबारा लाइव नेटवर्क से जुड़ें
             setTimeout(() => {
-                window.location.reload(true);
-            }, 300);
+                connectSocketServer();
+                syncPosition(); 
+                showToast('✅ रिफ्रेश पूरा हुआ!');
+            }, 500);
         }
     </script>
 </body>
