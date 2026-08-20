@@ -9,8 +9,6 @@ const { createAdapter } = require('@socket.io/redis-adapter');
 const { RateLimiterRedis } = require('rate-limiter-flexible');
 const geohash = require('ngeohash');
 const crypto = require('crypto');
-const multer = require('multer');
-const fs = require('fs');
 
 const app = express();
 
@@ -31,37 +29,6 @@ app.use(apiLimiter);
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
-
-// ==========================================
-// VPS LOCAL AUDIO STORAGE CONFIGURATION
-// ==========================================
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-app.use('/uploads', express.static(uploadDir));
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) => {
-        const uniqueName = `audio_${Date.now()}_${Math.random().toString(36).substring(7)}.webm`;
-        cb(null, uniqueName);
-    }
-});
-
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 } // Max 5MB
-});
-
-app.post('/upload-audio', upload.single('audio'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ success: false, message: "File upload nahi hui" });
-    }
-    const fileUrl = `/uploads/${req.file.filename}`;
-    res.json({ success: true, fileUrl: fileUrl });
-});
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -304,12 +271,10 @@ io.on('connection', (socket) => {
     socket.on('update_location', async (data) => {
         if (!data || !data.id) return;
 
-        // Rate Limiter Check (1 सेकंड में अधिकतम 2 पैकेट)
         if (locationRateLimiter) {
             try {
                 await locationRateLimiter.consume(data.id);
             } catch (rateLimiterRes) {
-                // सीमा पार होने पर अतिरिक्त पैकेट को तुरंत ड्रॉप (डस्टबिन में) कर दिया जाएगा
                 return;
             }
         }
@@ -464,7 +429,7 @@ io.on('connection', (socket) => {
 });
 
 // ==========================================
-// 12 सेकंड का सख्त Redis TTL / ऑटो-डिलीट वर्कर
+// 08 सेकंड का सख्त Redis TTL / ऑटो-डिलीट वर्कर
 // ==========================================
 const instanceId = process.env.NODE_APP_INSTANCE || '0';
 if (instanceId === '0') {
@@ -473,7 +438,7 @@ if (instanceId === '0') {
         try {
             const allUsers = await pubClient.hGetAll(REDIS_USERS_HASH);
             const currentTime = Date.now();
-            const TIMEOUT_LIMIT = 12000; 
+            const TIMEOUT_LIMIT = 8000; 
 
             for (let userId in allUsers) {
                 const userData = JSON.parse(allUsers[userId]);
@@ -486,7 +451,7 @@ if (instanceId === '0') {
                 }
             }
         } catch (err) {
-            console.error("Error in 12s TTL Cleanup Worker:", err);
+            console.error("Error in 08s TTL Cleanup Worker:", err);
         }
     }, 3000);
 }
